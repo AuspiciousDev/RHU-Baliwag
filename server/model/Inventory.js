@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const schema = new Schema(
   {
-    medicineID: {
+    stockID: {
       type: String,
       required: true,
     },
