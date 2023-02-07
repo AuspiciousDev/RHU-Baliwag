@@ -51,6 +51,7 @@ app.use(express.static(path.resolve(__dirname, "public")));
 // ! Require JWT Token to access data
 // app.use(verifyJWT);
 app.use("/api/inventory", require("./routes/api/inventoryRoute"));
+app.use("/api/restock", require("./routes/api/restockRoute"));
 
 app.use(errorHandler);
 

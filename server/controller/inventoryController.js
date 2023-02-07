@@ -39,7 +39,7 @@ const inventoryController = {
       if (!walkInQTY) emptyFields.push("Walk in Quantity");
       if (!onlineQTY) emptyFields.push("Online Quantity");
       if (!supplier) emptyFields.push("Supplier");
-      if (!createdBy) emptyFields.push("CreatedBy");
+      if (!createdBy) emptyFields.push("Created By");
       if (emptyFields.length > 0)
         return res
           .status(400)
