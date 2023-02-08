@@ -519,7 +519,7 @@ const Inventory = () => {
                 }}
               >
                 <Typography variant="h6" fontWeight="500">
-                  Add Medicine
+                  Add Stock
                 </Typography>
               </Button>
             )}

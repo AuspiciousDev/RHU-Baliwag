@@ -106,6 +106,7 @@ const userController = {
         return res
           .status(400)
           .json({ message: `User [${username}] not found!` });
+      res.json(doc);
     } catch (error) {
       console.log(
         "🚀 ~ file: userController.js:144 ~ getDocByID: ~ error",
@@ -116,7 +117,69 @@ const userController = {
   },
   updateDocByID: async (req, res) => {
     try {
+      if (!req.params.username)
+        return res.status(400).json({ message: "Employee ID is required!" });
+
+      const {
+        username,
+        empType,
+        userType,
+        firstName,
+        middleName,
+        lastName,
+        dateOfBirth,
+        placeOfBirth,
+        gender,
+        civilStatus,
+        nationality,
+        religion,
+        address,
+        city,
+        province,
+        mobile,
+        telephone,
+        emergencyContactName,
+        emergencyContactNumber,
+        emergencyContactRelationship,
+      } = req.body;
+
+      const findDoc = await User.findOne({ username }).exec();
+      if (!findDoc)
+        return res
+          .status(204)
+          .json({ message: `User [${username}] does not exists!` });
+      const docObject = {
+        empType,
+        userType,
+        firstName,
+        middleName,
+        lastName,
+        dateOfBirth,
+        placeOfBirth,
+        gender,
+        civilStatus,
+        nationality,
+        religion,
+        address,
+        city,
+        province,
+        mobile,
+        telephone,
+        emergencyContactName,
+        emergencyContactNumber,
+        emergencyContactRelationship,
+      };
+      console.log(docObject);
+      const update = await User.findOneAndUpdate({ username }, docObject);
+      if (!update)
+        return res.status(400).json({ message: "Updating user failed!" });
+      res.json(update);
     } catch (error) {
+      console.log(
+        "🚀 ~ file: userController.js:176 ~ updateDocByID: ~ error",
+        error
+      );
+
       res.status(500).json({ message: error.message });
     }
   },

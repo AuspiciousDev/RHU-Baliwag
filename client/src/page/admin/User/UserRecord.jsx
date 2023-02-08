@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { tokens } from "../../../theme";
 import ConfirmDialogue from "../../../global/ConfirmDialogue";
@@ -9,25 +9,41 @@ import ValidateDialogue from "../../../global/ValidateDialogue";
 import LoadingDialogue from "../../../global/LoadingDialogue";
 import {
   Box,
+  Button,
   IconButton,
+  InputBase,
   Paper,
   Typography,
+  Divider,
+  ButtonBase,
   useTheme,
-  Avatar,
   Menu,
   MenuItem,
+  Avatar,
 } from "@mui/material";
+import {
+  Delete,
+  CheckCircle,
+  Cancel,
+  Add,
+  Search,
+  MoreVert,
+  School,
+  LocalPrintshopOutlined,
+  DescriptionOutlined,
+  ScheduleOutlined,
+} from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import { MoreVert } from "@mui/icons-material";
 import { format } from "date-fns-tz";
+import { DataGrid, GridToolbar, GridToolbarContainer } from "@mui/x-data-grid";
+
 const UserRecord = () => {
   const { username } = useParams();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
   const axiosPrivate = useAxiosPrivate();
-  const [getUserDetails, setUserDetails] = useState([]);
-
+  const [val, setVal] = useState([]);
   const getAge = (birthDate) =>
     Math.floor((new Date() - new Date(birthDate).getTime()) / 3.15576e10);
 
@@ -44,12 +60,12 @@ const UserRecord = () => {
     const getUsersDetails = async () => {
       try {
         setLoadingDialog({ isOpen: true });
-        const response = await axiosPrivate.get(`/api/user/${username}`);
+        const response = await axiosPrivate.get(`/api/user/search/${username}`);
         if (response.status === 200) {
           const json = await response.data;
           console.log("Employees GET : ", json);
           setLoadingDialog({ isOpen: false });
-          setUserDetails(json);
+          setVal(json);
         }
       } catch (error) {
         console.log(
@@ -105,7 +121,7 @@ const UserRecord = () => {
     title: "",
     message: "",
   });
-  
+
   return (
     <Box className="container-layout_body_contents">
       <ConfirmDialogue
@@ -128,6 +144,7 @@ const UserRecord = () => {
         loadingDialog={loadingDialog}
         setLoadingDialog={setLoadingDialog}
       />
+
       <Paper
         elevation={2}
         sx={{
@@ -159,268 +176,327 @@ const UserRecord = () => {
                 textTransform: "uppercase",
               }}
             >
-              USER &#62; {username}
+              Users &#62; {username}
             </Typography>
           </Box>
         </Box>
       </Paper>
       <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: "1fr",
-          height: "100%",
-          gap: 2,
-          mt: 2,
-        }}
+        sx={{ display: "grid", gridTemplateColumns: "1fr 3fr", gap: 2, mt: 2 }}
       >
         <Paper
+          elevation={2}
           sx={{
             display: "flex",
-            alignItems: "center",
             justifyContent: "center",
+            position: "relative",
           }}
         >
           <Box
-            sx={{
-              display: "flex",
-              height: "100%",
-              alignItems: "center",
-              justifyContent: "center",
-              padding: 2,
-              flexDirection: "column",
-              gap: 2,
-            }}
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            alignItems="center"
+            padding="20px"
+            gap={2}
           >
             <Paper
               sx={{
-                width: "250px",
-                height: "250px",
-                maxHeight: "250px",
-                maxWidth: "250px",
+                borderRadius: "65px",
+                width: "130px",
+                height: "130px",
                 position: "relative",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                borderRadius: "125px",
-                p: 3,
               }}
             >
               <Avatar
                 alt="profile-user"
                 sx={{ width: "100%", height: "100%" }}
-                src={getUserDetails?.imgURL}
+                src={val?.imgURL}
                 style={{
                   objectFit: "contain",
+                  borderRadius: "50%",
                 }}
               />
             </Paper>
-
-            <Box
+            <Typography
+              variant="h3"
+              fontWeight="bold"
+              textTransform="capitalize"
+              sx={{ mt: "10px" }}
+              textAlign="center"
+            >
+              {val?.middleName
+                ? val?.firstName +
+                  " " +
+                  val?.middleName.charAt(0) +
+                  ". " +
+                  val?.lastName
+                : val?.firstName + " " + val?.lastName}
+            </Typography>
+            <Paper
               sx={{
                 display: "flex",
-                flexDirection: "column",
+                flexDirection: "row",
+                borderRadius: "10px",
+                padding: "10px 20px",
                 alignItems: "center",
-                justifyContent: "center",
-                gap: 1,
-                zIndex: 1,
               }}
             >
-              <Typography
-                variant="h3"
-                textTransform="capitalize"
-                fontWeight={600}
-              >
-                {getUserDetails?.middleName
-                  ? getUserDetails?.firstName +
-                    " " +
-                    getUserDetails?.middleName.charAt(0) +
-                    ". " +
-                    getUserDetails?.lastName
-                  : getUserDetails?.firstName + " " + getUserDetails?.lastName}
+              {/* <School /> */}
+              <Typography sx={{ ml: "10px" }} textTransform="capitalize">
+                {val?.userType}
               </Typography>
-              <Typography
-                variant="h3"
-                textTransform="capitalize"
-                color="primary"
-                fontWeight={600}
-              >
-                {getUserDetails?.username ? getUserDetails?.username : username}
+            </Paper>
+            <Box sx={{ display: "flex", gap: 1 }}>
+              <Typography variant="h6" textAlign="center">
+                Date Created:
               </Typography>
-              <Paper
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 1,
-                  mt: 1,
-                  p: 1,
-                  width: "200px",
-                  backgroundColor: colors.greenOnly[500],
-                  borderRadius: "20px",
-                }}
-              >
-                <Typography
-                  variant="h5"
-                  sx={{
-                    color: colors.whiteOnly[500],
-                    textTransform: "uppercase",
-                  }}
-                >
-                  {getUserDetails?.userType || "user"}
-                </Typography>
-              </Paper>
+
+              <Typography variant="h6" fontWeight={800}>
+                {val?.createdAt &&
+                  format(new Date(val?.createdAt), "MMMM dd, yyyy")}
+              </Typography>
             </Box>
           </Box>
         </Paper>
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: "1fr",
-            gap: 2,
-            "& > .MuiPaper-root": {
-              padding: "2em 4em 2em 4em",
-            },
-          }}
-        >
-          {/*  // ! Basic Information */}
-          <Paper
-            sx={{
-              position: "relative",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <Typography variant="h3" alignSelf="start" fontWeight={600}>
-              User Information
-            </Typography>
-            <Box sx={{ position: "absolute", top: 5, right: 5 }}>
-              <IconButton onClick={handleClick}>
-                <MoreVert sx={{ fontSize: "20pt" }} />
-              </IconButton>
-              <Menu
-                id="basic-menu"
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
-                MenuListProps={{
-                  "aria-labelledby": "basic-button",
-                }}
-              >
-                <MenuItem
-                  onClick={() => {
-                    navigate(`/registrar/user/edit/${username}`);
+        <Paper sx={{ position: "relative" }} elevation={2}>
+          <Box sx={{ position: "absolute", top: 5, right: 5 }}>
+            <IconButton onClick={handleClick}>
+              <MoreVert sx={{ fontSize: "20pt" }} />
+              {/* <PersonOutlinedIcon sx={{ fontSize: "20pt" }} /> */}
+            </IconButton>
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+              MenuListProps={{
+                "aria-labelledby": "basic-button",
+              }}
+            >
+              <MenuItem>
+                <Link
+                  to={`/admin/user/edit/${val?.username}`}
+                  style={{
+                    alignItems: "center",
+                    color: colors.black[100],
+                    textDecoration: "none",
                   }}
                 >
-                  <Typography>Edit Profile</Typography>
-                </MenuItem>
-              </Menu>
-            </Box>
+                  Edit Profile
+                </Link>
+              </MenuItem>
+            </Menu>
+          </Box>
+          <Box sx={{ padding: 1, display: "grid", gridTemplateRows: "1fr" }}>
             <Box
-              sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr" }}
+              sx={{ display: "flex", flexDirection: "column" }}
+              padding="10px 10px 0 10px"
             >
+              <Typography variant="h4">Student Profile</Typography>
               <Box
+                mt="10px"
+                display="grid"
                 sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  mt: 2,
-                  gap: 1,
+                  gridTemplateColumns: {
+                    xs: "1fr",
+                    sm: "1fr 1fr 1fr",
+                  },
                 }}
               >
-                <Typography textTransform="uppercase" variant="h4">
-                  Name
-                </Typography>
-                <Typography
-                  textTransform="uppercase"
-                  variant="h5"
-                  fontWeight={600}
-                >
-                  {getUserDetails?.middleName
-                    ? getUserDetails?.firstName +
-                      " " +
-                      getUserDetails?.middleName.charAt(0) +
-                      ". " +
-                      getUserDetails?.lastName
-                    : getUserDetails?.firstName +
-                      " " +
-                      getUserDetails?.lastName}
-                </Typography>
+                <Box mt="10px" display="flex" flexDirection="row">
+                  <Typography>Gender : </Typography>
+                  <Typography
+                    ml="10px"
+                    textTransform="capitalize"
+                    fontWeight="bold"
+                  >
+                    {val?.gender}
+                  </Typography>
+                </Box>
+                <Box mt="10px" display="flex" flexDirection="row">
+                  <Typography>Date of Birth : </Typography>
+                  <Typography
+                    ml="10px"
+                    textTransform="capitalize"
+                    fontWeight="bold"
+                  >
+                    {val?.dateOfBirth
+                      ? format(new Date(val?.dateOfBirth), "MMMM dd, yyyy")
+                      : ""}
+                  </Typography>
+                </Box>
+
+                <Box mt="10px" display="flex" flexDirection="row">
+                  <Typography>Civil Status : </Typography>
+                  <Typography
+                    ml="10px"
+                    textTransform="capitalize"
+                    fontWeight="bold"
+                  >
+                    {val?.civilStatus}
+                  </Typography>
+                </Box>
+                <Box mt="10px" display="flex" flexDirection="row">
+                  <Typography>Nationality : </Typography>
+                  <Typography
+                    ml="10px"
+                    textTransform="capitalize"
+                    fontWeight="bold"
+                  >
+                    {val?.nationality}
+                  </Typography>
+                </Box>
+                <Box mt="10px" display="flex" flexDirection="row">
+                  <Typography>Religion : </Typography>
+                  <Typography
+                    ml="10px"
+                    textTransform="capitalize"
+                    fontWeight="bold"
+                  >
+                    {val?.religion}
+                  </Typography>
+                </Box>
               </Box>
+              <Divider sx={{ mt: "20px" }} />
+            </Box>
+            <Box padding="10px 10px 0 10px">
+              <Typography variant="h4"> Address Information</Typography>
               <Box
+                mt="10px"
+                display="grid"
                 sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  mt: 2,
-                  gap: 1,
+                  gridTemplateColumns: {
+                    xs: "1fr",
+                    sm: "1fr 1fr 1fr",
+                  },
                 }}
               >
-                <Typography textTransform="uppercase" variant="h4">
-                  Age
-                </Typography>
-                <Typography
-                  textTransform="uppercase"
-                  variant="h5"
-                  fontWeight={600}
-                >
-                  {getUserDetails?.dateOfBirth
-                    ? getAge(
-                        format(
-                          new Date(getUserDetails?.dateOfBirth),
-                          " MMMM dd, yyyy"
-                        )
-                      ) + " yrs."
-                    : "-"}
-                </Typography>
+                <Box mt="10px" display="flex" flexDirection="row">
+                  <Typography>Address : </Typography>
+                  <Typography
+                    ml="10px"
+                    textTransform="capitalize"
+                    fontWeight="bold"
+                  >
+                    {val?.address}
+                  </Typography>
+                </Box>
+                <Box mt="10px" display="flex" flexDirection="row">
+                  <Typography>City : </Typography>
+                  <Typography
+                    ml="10px"
+                    textTransform="capitalize"
+                    fontWeight="bold"
+                  >
+                    {val?.city}
+                  </Typography>
+                </Box>
+                <Box mt="10px" display="flex" flexDirection="row">
+                  <Typography>Province : </Typography>
+                  <Typography
+                    ml="10px"
+                    textTransform="capitalize"
+                    fontWeight="bold"
+                  >
+                    {val?.province}
+                  </Typography>
+                </Box>
               </Box>
+              <Divider sx={{ mt: "20px" }} />
+            </Box>
+            <Box padding="10px 10px 0 10px">
+              <Typography variant="h4">Contact Information</Typography>
               <Box
+                mt="10px"
+                display="grid"
                 sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  mt: 3,
-                  gap: 1,
+                  gridTemplateColumns: {
+                    xs: "1fr",
+                    sm: "1fr 1fr 1fr",
+                  },
                 }}
               >
-                <Typography textTransform="uppercase" variant="h4">
-                  Date of Birth
-                </Typography>
-                <Typography
-                  textTransform="uppercase"
-                  variant="h5"
-                  fontWeight={600}
-                >
-                  {getUserDetails?.dateOfBirth
-                    ? format(
-                        new Date(getUserDetails?.dateOfBirth),
-                        " MMMM dd, yyyy"
-                      )
-                    : "-"}
-                </Typography>
+                <Box mt="10px" display="flex" flexDirection="row">
+                  <Typography>Email : </Typography>
+                  <Typography ml="10px" fontWeight="bold">
+                    {val?.email}
+                  </Typography>
+                </Box>
+                <Box mt="10px" display="flex" flexDirection="row">
+                  <Typography>Telephone : </Typography>
+                  <Typography
+                    ml="10px"
+                    textTransform="capitalize"
+                    fontWeight="bold"
+                  >
+                    {val?.telephone}
+                  </Typography>
+                </Box>
+                <Box mt="10px" display="flex" flexDirection="row">
+                  <Typography>Mobile Number : </Typography>
+                  <Typography
+                    ml="10px"
+                    textTransform="capitalize"
+                    fontWeight="bold"
+                  >
+                    {val?.mobile && "09" + val?.mobile}
+                  </Typography>
+                </Box>
               </Box>
+              <Divider sx={{ mt: "20px" }} />
+            </Box>
+            <Box padding="10px 10px 10px 10px">
+              <Typography variant="h4">Emergency Information</Typography>
               <Box
+                mt="10px"
+                display="grid"
                 sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  mt: 3,
-                  gap: 1,
+                  gridTemplateColumns: {
+                    xs: "1fr",
+                    sm: "1fr 1fr 1fr",
+                  },
                 }}
               >
-                <Typography textTransform="uppercase" variant="h4">
-                  Gender
-                </Typography>
-                <Typography
-                  variant="h5"
-                  fontWeight={600}
-                  textTransform="uppercase"
-                >
-                  {getUserDetails?.gender || "-"}
-                </Typography>
+                <Box mt="10px" display="flex" flexDirection="row">
+                  <Typography>Contact Name : </Typography>
+                  <Typography
+                    ml="10px"
+                    textTransform="capitalize"
+                    fontWeight="bold"
+                  >
+                    {val?.emergencyContactName}
+                  </Typography>
+                </Box>
+
+                <Box mt="10px" display="flex" flexDirection="row">
+                  <Typography>Contact Relationship :</Typography>
+                  <Typography
+                    ml="10px"
+                    textTransform="capitalize"
+                    fontWeight="bold"
+                  >
+                    {val?.emergencyContactRelationship}
+                  </Typography>
+                </Box>
+                <Box mt="10px" display="flex" flexDirection="row">
+                  <Typography>Contact Number :</Typography>
+                  <Typography
+                    ml="10px"
+                    textTransform="capitalize"
+                    fontWeight="bold"
+                  >
+                    {val?.emergencyContactNumber &&
+                      "09" + val?.emergencyContactNumber}{" "}
+                  </Typography>
+                </Box>
               </Box>
             </Box>
-          </Paper>
-        </Box>
+          </Box>
+        </Paper>
       </Box>
     </Box>
   );
