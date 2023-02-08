@@ -180,8 +180,8 @@ const ActivateUser = () => {
             Account Activation
           </Typography>
           <Typography variant="h5" textAlign="center">
-            One more step to use the student portal is to complete the
-            registration by activating your account
+            One more step to use the RHU Baliwag Inventory System is to complete
+            the registration by activating your account
           </Typography>
 
           <Typography variant="h5" textAlign="center" mt={4}>

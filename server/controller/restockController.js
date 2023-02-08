@@ -1,25 +1,48 @@
 const Restock = require("../model/Restock");
+const Inventory = require("../model/Inventory");
 const restockController = {
   createDoc: async (req, res) => {
     let emptyFields = [];
-    const { stockID, genericName, brandName, quantity, supplier, restockedBy } =
-      req.body;
+    const { lotNum, quantity, supplier, restockedBy, deliveryDate } = req.body;
     try {
-      if (!stockID) emptyFields.push("Stock ID");
-      if (!genericName) emptyFields.push("Generic Name");
-      if (!brandName) emptyFields.push("Brand Name");
+      if (!lotNum) emptyFields.push("Stock ID");
       if (!quantity) emptyFields.push("Quantity");
       if (!supplier) emptyFields.push("Supplier");
+      if (!deliveryDate) emptyFields.push("Delivery Date");
       if (!restockedBy) emptyFields.push("Restocked By");
+      if (emptyFields.length > 0)
+        return res
+          .status(400)
+          .json({ message: "Please fill in all the fields", emptyFields });
 
       const restockObj = {
-        stockID,
-        genericName,
-        brandName,
+        lotNum,
         quantity,
         supplier,
         restockedBy,
+        deliveryDate,
       };
+      const findDoc = await Inventory.findOne({ lotNum }).exec();
+      if (!findDoc)
+        return res
+          .status(204)
+          .json({ message: `Item [${lotNum}] does not exists!` });
+      const createRestock = await Restock.create(restockObj);
+      const updateInventory = await Inventory.findOneAndUpdate(
+        { lotNum },
+        {
+          $inc: {
+            quantity: quantity,
+          },
+          supplier,
+        },
+        { new: true }
+      );
+      console.log(
+        "🚀 ~ file: restockController.js:36 ~ createDoc: ~ updateInventory",
+        updateInventory
+      );
+      res.status(201).json(createRestock);
     } catch (error) {
       console.log(
         "🚀 ~ file: restockController.js:15 ~ createDoc: ~ error",
@@ -30,7 +53,31 @@ const restockController = {
   },
   getAllDoc: async (req, res) => {
     try {
-      const doc = await Restock.find().sort({ createdAt: -1 }).lean();
+      const doc = await Restock.aggregate([
+        {
+          $lookup: {
+            from: "inventories",
+            localField: "lotNum",
+            foreignField: "lotNum",
+            as: "details",
+          },
+        },
+        {
+          $unwind: {
+            path: "$details",
+          },
+        },
+        {
+          $set: {
+            genericName: {
+              $toString: "$details.genericName",
+            },
+            brandName: {
+              $toString: "$details.brandName",
+            },
+          },
+        },
+      ]);
       if (!doc) return res.status(204).json({ message: "No Records Found!" });
       res.status(200).json(doc);
     } catch (error) {

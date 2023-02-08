@@ -34,6 +34,11 @@ import Paper_Active from "../../../components/global/Paper_Active";
 import Paper_Icon from "../../../components/global/Paper_Icon";
 import useAuth from "../../../hooks/useAuth";
 
+import { darken, lighten } from "@mui/material/styles";
+
+const getHoverBackgroundColor = (color, mode) =>
+  mode === "dark" ? darken(color, 0.5) : lighten(color, 0.5);
+
 function CustomToolbar() {
   return (
     <GridToolbarContainer>
@@ -143,15 +148,17 @@ const Inventory = () => {
     try {
       setLoadingDialog({ isOpen: true });
       const response = await axiosPrivate.delete(
-        `/api/user/delete/${val.username}`
+        `/api/inventory/delete/${val.lotNum}`
       );
       const json = await response.data;
       if (response.status === 200) {
         console.log(response.data.message);
-        userDispatch({ type: "DELETE_USER", payload: json });
+        stockDispatch({ type: "DELETE_STOCK", payload: json });
         setSuccessDialog({
           isOpen: true,
-          message: `User ${val?.username} has been Deleted!`,
+          message: `Item ${
+            val.lotNum + " - " + val?.genericName
+          } has been Deleted!`,
         });
       }
       setLoadingDialog({ isOpen: false });
@@ -212,18 +219,18 @@ const Inventory = () => {
       setLoadingDialog({ isOpen: true });
 
       const response = await axiosPrivate.patch(
-        `/api/user/status/${val?.username}`,
+        `/api/inventory/update/status/${val?.lotNum}`,
         JSON.stringify({ status: newStatus })
       );
       if (response.status === 200) {
-        const response2 = await axiosPrivate.get("/api/users");
+        const response2 = await axiosPrivate.get("/api/inventory");
         if (response2?.status === 200) {
           const json = await response2.data;
 
-          userDispatch({ type: "SET_USERS", payload: json });
+          stockDispatch({ type: "SET_STOCKS", payload: json });
           setSuccessDialog({
             isOpen: true,
-            message: `User ${val.username} has been archived!`,
+            message: `Item ${val.lotNum} has been archived!`,
           });
         }
       }
@@ -272,49 +279,29 @@ const Inventory = () => {
 
   const columns = [
     {
-      field: "stockID",
-      headerName: "Stock ID",
+      field: "lotNum",
+      headerName: "Lot Number",
       width: 200,
       align: "center",
       headerAlign: "center",
       renderCell: (params) => {
         return (
-          <Box display="flex" gap={2} width="60%">
-            <Link
-              to={`/admin/user/profile/${params?.value}`}
-              style={{
-                alignItems: "center",
-                textDecoration: "none",
-              }}
-            >
-              <Paper
-                sx={{
-                  padding: "2px 20px",
-                  borderRadius: "5px",
-                  display: "flex",
-                  justifyContent: "center",
-                  backgroundColor: colors.whiteOnly[500],
-                  alignItems: "center",
-                }}
-              >
-                <Typography
-                  fontWeight="bold"
-                  sx={{ color: colors.blackOnly[500] }}
-                >
-                  {params?.value}
-                </Typography>
-              </Paper>
-            </Link>
-          </Box>
+          <Typography textTransform="uppercase" fontWeight={600}>
+            {params.value}
+          </Typography>
         );
       },
     },
 
-    { field: "genericName", headerName: "Generic Name", width: 150 },
-    { field: "brandName", headerName: "Brand Name", width: 150 },
+    { field: "genericName", headerName: "Generic Name", width: 200 },
+    {
+      field: "brandName",
+      headerName: "Brand Name",
+      width: 200,
+      valueFormatter: (params) => (params?.value ? params?.value : "-"),
+    },
     { field: "access", headerName: "Access", width: 150 },
-    { field: "usage", headerName: "Usage", width: 150 },
-    { field: "usage", headerName: "Usage", width: 150 },
+    { field: "classification", headerName: "Classification", width: 150 },
     { field: "quantity", headerName: "Quantity", width: 150 },
     { field: "supplier", headerName: "Supplier", width: 150 },
     { field: "createdBy", headerName: "Created By", width: 150 },
@@ -351,7 +338,9 @@ const Inventory = () => {
                     onConfirm: () => {
                       setConfirmDialog({
                         isOpen: true,
-                        title: `Are you sure to change status of user ${params?.row?.username}? `,
+                        title: `Are you sure to change status of item ${
+                          params?.row?.lotNum + " - " + params?.row?.genericName
+                        }? `,
                         onConfirm: () => {
                           toggleStatus({ val: params?.row });
                         },
@@ -402,7 +391,9 @@ const Inventory = () => {
       onConfirm: () => {
         setConfirmDialog({
           isOpen: true,
-          title: `Are you sure to delete user ${params?.row?.username}`,
+          title: `Are you sure to delete item ${
+            params?.row?.lotNum + " - " + params?.row?.genericName
+          }`,
           message: `This action is irreversible!`,
           onConfirm: () => {
             handleDelete({ val: params.row });
@@ -477,32 +468,6 @@ const Inventory = () => {
               alignItems: "center",
             }}
           >
-            {" "}
-            <Paper
-              elevation={3}
-              sx={{
-                display: "none",
-                width: { xs: "100%", sm: "320px" },
-                height: "50px",
-                minWidth: "250px",
-                alignItems: "center",
-                justifyContent: "center",
-                p: { xs: "0 20px", sm: "0 20px" },
-                mr: { xs: "0", sm: " 10px" },
-              }}
-            >
-              <InputBase
-                sx={{ ml: 1, flex: 1 }}
-                placeholder="Search User"
-                onChange={(e) => {
-                  setSearch(e.target.value.toLowerCase());
-                }}
-              />
-              <Divider sx={{ height: 30, m: 1 }} orientation="vertical" />
-              <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
-                <Search />
-              </IconButton>
-            </Paper>
             {auth.userType === "admin" && (
               <Button
                 type="button"
@@ -519,7 +484,7 @@ const Inventory = () => {
                 }}
               >
                 <Typography variant="h6" fontWeight="500">
-                  Add Stock
+                  Add Item
                 </Typography>
               </Button>
             )}
@@ -535,9 +500,30 @@ const Inventory = () => {
           mt: 2,
         }}
       >
-        <Box sx={{ height: "100%", width: "100%" }}>
+        <Box
+          sx={{
+            height: "100%",
+            width: "100%",
+            "& .super-app-theme--Low": {
+              bgcolor: "#F68181",
+              "&:hover": {
+                bgcolor: (theme) =>
+                  getHoverBackgroundColor(
+                    theme.palette.warning.main,
+                    theme.palette.mode
+                  ),
+              },
+            },
+          }}
+        >
           <DataGrid
-            rows={stocks ? stocks && stocks : []}
+            rows={
+              stocks && stocks
+                ? stocks.filter((filter) => {
+                    return filter.status === true;
+                  })
+                : []
+            }
             getRowId={(row) => row?._id}
             columns={columns}
             pageSize={page}
@@ -555,7 +541,6 @@ const Inventory = () => {
             initialState={{
               columns: {
                 columnVisibilityModel: {
-                  stockID: false,
                   createdAt: false,
                   updatedAt: false,
                   _id: false,
@@ -568,6 +553,9 @@ const Inventory = () => {
             components={{
               Toolbar: CustomToolbar,
             }}
+            getRowClassName={(params) =>
+              `super-app-theme--${params.row.quantity > 20 ? "High" : "Low"}`
+            }
           />
         </Box>
       </Paper>

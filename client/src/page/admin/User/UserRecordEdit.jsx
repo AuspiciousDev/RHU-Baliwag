@@ -27,7 +27,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DesktopDatePicker } from "@mui/x-date-pickers";
 import { useEffect } from "react";
-const StudentEdit = () => {
+const UserRecordEdit = () => {
   const { username } = useParams();
   const isLetters = (str) => /^[A-Za-z\s]*$/.test(str);
   const isNumber = (str) => /^[0-9]*$/.test(str);
@@ -122,10 +122,7 @@ const StudentEdit = () => {
         }
         setLoadingDialog({ isOpen: false });
       } catch (error) {
-        console.log(
-          "🚀 ~ file: Student.jsx:103 ~ getUsersDetails ~ error",
-          error
-        );
+        
         setLoadingDialog({ isOpen: false });
 
         if (!error?.response) {
@@ -338,7 +335,6 @@ const StudentEdit = () => {
                   setUserType(e.target.value);
                 }}
               >
-                {/* <MenuItem value={"registrar"}>Registrar</MenuItem> */}
                 <MenuItem value={"admin"}>Admin</MenuItem>
                 <MenuItem value={"distributor"}>Distributor</MenuItem>
               </Select>
@@ -696,4 +692,4 @@ const StudentEdit = () => {
   );
 };
 
-export default StudentEdit;
+export default UserRecordEdit;

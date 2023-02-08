@@ -12,6 +12,7 @@ import {
   TableCell,
   TableBody,
   TablePagination,
+  Avatar,
 } from "@mui/material";
 import { format } from "date-fns-tz";
 import React from "react";
@@ -32,6 +33,7 @@ import { Link } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
 import { useUsersContext } from "../../../hooks/useUserContext";
 import { useInventoriesContext } from "../../../hooks/useInventoryContext";
+import { useLoginsContext } from "../../../hooks/useLoginContext";
 const ADMIN_Dashboard = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -39,7 +41,7 @@ const ADMIN_Dashboard = () => {
   const { auth } = useAuth();
   const { users, userDispatch } = useUsersContext();
   const { stocks, stockDispatch } = useInventoriesContext();
-
+  const { logins, loginDispatch } = useLoginsContext();
   const [getStudCount, setStudCount] = useState(0);
   const [getSecCount, setSecCount] = useState(0);
   const [activeYear, setActiveYear] = useState([]);
@@ -87,6 +89,7 @@ const ADMIN_Dashboard = () => {
         setLoadingDialog({ isOpen: true });
         const apiUsers = await axiosPrivate.get("/api/user");
         const apiStocks = await axiosPrivate.get("/api/inventory");
+        const apiLogins = await axiosPrivate.get("/api/loginHistory");
         if (apiUsers.status === 200) {
           const json = await apiUsers.data;
           console.log(json);
@@ -96,6 +99,14 @@ const ADMIN_Dashboard = () => {
           const json = await apiStocks.data;
           console.log(json);
           stockDispatch({ type: "SET_STOCKS", payload: json });
+        }
+        if (apiLogins.status === 200) {
+          const json = await apiLogins.data;
+          console.log(
+            "🚀 ~ file: Dashboard.jsx:105 ~ getOverviewDetails ~ json",
+            json
+          );
+          loginDispatch({ type: "SET_LOGINS", payload: json });
         }
         setLoadingDialog({ isOpen: false });
       } catch (error) {
@@ -150,7 +161,7 @@ const ADMIN_Dashboard = () => {
         <TableCell align="left" sx={{ textTransform: "uppercase" }}>
           <Box display="flex" gap={2} width="60%">
             <Link
-              to={`/registrar/student/${val?.LRN}`}
+              to={`/admin/student/${val?.LRN}`}
               style={{
                 alignItems: "center",
                 textDecoration: "none",
@@ -313,11 +324,12 @@ const ADMIN_Dashboard = () => {
         <Paper_Totals
           to={"user"}
           value={
-            users
-              ? users.filter((filter) => {
-                  return filter.status === true;
-                }).length
-              : "0"
+            // users
+            //   ? users.filter((filter) => {
+            //       return filter.status === true;
+            //     }).length
+            //   : "0"
+            users ? users.length : "0"
           }
           icon={<Person2Outlined />}
           description="Total Number of Users"
@@ -418,7 +430,7 @@ const ADMIN_Dashboard = () => {
               >
                 Recent Logins
               </Typography>
-              {/* <Box
+              <Box
                 sx={{
                   width: "100%",
                   height: "100%",
@@ -474,7 +486,7 @@ const ADMIN_Dashboard = () => {
                       </Link>
                     </Paper>
                   ))}
-              </Box> */}
+              </Box>
             </Box>
           </Paper>
         </Box>

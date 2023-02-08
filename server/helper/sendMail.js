@@ -488,12 +488,6 @@ const sendEmailReset = (to, url, text, name) => {
       clientSecret: G_CLIENT_SECRET,
       refreshToken: G_REFRESH_TOKEN,
       accessToken,
-      // host: "smtp.hostinger.com",
-      // port: 465,
-      // secure: true, // upgrade later with STARTTLS
-      // auth: {
-      //   user: "aus.studentportal@aus-portal.online",
-      //   pass: "P@$$WoRD12",
     },
   });
 

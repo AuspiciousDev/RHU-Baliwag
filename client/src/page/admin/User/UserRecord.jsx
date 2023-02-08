@@ -296,7 +296,7 @@ const UserRecord = () => {
               sx={{ display: "flex", flexDirection: "column" }}
               padding="10px 10px 0 10px"
             >
-              <Typography variant="h4">Student Profile</Typography>
+              <Typography variant="h4">User Profile</Typography>
               <Box
                 mt="10px"
                 display="grid"

@@ -31,6 +31,9 @@ import Inventory from "./page/admin/Inventory/Inventory";
 import Archive from "./page/admin/Archive/Archive";
 import Restock from "./page/admin/Restock/Restock";
 import Transaction from "./page/admin/Transaction/Transaction";
+import InventoryCreate from "./page/admin/Inventory/InventoryCreate";
+import RestockCreate from "./page/admin/Restock/RestockCreate";
+import Request from "./page/admin/Request/Request";
 
 const USER_TYPE = {
   ADMIN: "admin",
@@ -61,10 +64,15 @@ function App() {
               <Route element={<RequireAuth allowedRoles={[USER_TYPE.ADMIN]} />}>
                 <Route path="/admin" element={<ADMIN_Layout />}>
                   <Route index element={<Dashboard />} />
-                  <Route path="request" element={<Inventory />} />
+                  <Route path="request" element={<Request />} />
                   <Route path="transaction" element={<Transaction />} />
                   <Route path="inventory" element={<Inventory />} />
+                  <Route
+                    path="inventory/create"
+                    element={<InventoryCreate />}
+                  />
                   <Route path="restock" element={<Restock />} />
+                  <Route path="restock/create" element={<RestockCreate />} />
                   <Route path="user" element={<User />} />
                   <Route path="user/create" element={<UserCreate />} />
                   <Route

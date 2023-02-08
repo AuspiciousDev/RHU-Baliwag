@@ -3,17 +3,11 @@ const Schema = mongoose.Schema;
 
 const schema = new Schema(
   {
-    stockID: {
+    lotNum: {
       type: String,
       required: true,
     },
-    genericName: {
-      type: String,
-      required: true,
-    },
-    brandName: {
-      type: String,
-    },
+
     quantity: {
       type: Number,
       required: true,
@@ -23,6 +17,10 @@ const schema = new Schema(
       required: true,
     },
     restockedBy: {
+      type: String,
+      required: true,
+    },
+    deliveryDate: {
       type: String,
       required: true,
     },

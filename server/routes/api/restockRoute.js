@@ -7,5 +7,5 @@ router.get("/search/:_id", restockController.getDocByID);
 router.post("/create", restockController.createDoc);
 router.delete("/delete/:_id", restockController.deleteDocByID);
 
-// router.patch("/update/:stockID", restockController.updateDocByID);
+// router.patch("/update/:lotNum", restockController.updateDocByID);
 module.exports = router;

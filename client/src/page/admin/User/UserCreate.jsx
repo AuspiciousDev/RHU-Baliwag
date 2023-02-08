@@ -248,7 +248,6 @@ const UserCreate = () => {
                     setUserType(e.target.value);
                   }}
                 >
-                  {/* <MenuItem value={"registrar"}>Registrar</MenuItem> */}
                   <MenuItem value={"admin"}>Admin</MenuItem>
                   <MenuItem value={"distributor"}>Distributor</MenuItem>
                 </Select>

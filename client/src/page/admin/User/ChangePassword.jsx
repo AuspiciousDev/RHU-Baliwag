@@ -335,7 +335,7 @@ const ChangePassword = () => {
                   color="secondary"
                   onClick={(e) => {
                     clearFields();
-                    navigate("/registrar");
+                    navigate("/admin");
                   }}
                 >
                   <Typography variant="h4">Cancel</Typography>
