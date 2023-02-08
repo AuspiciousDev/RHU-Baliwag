@@ -53,6 +53,8 @@ app.use("/api/logout", require("./routes/logout"));
 app.use("/api/inventory", require("./routes/api/inventoryRoute"));
 app.use("/api/restock", require("./routes/api/restockRoute"));
 app.use("/api/user", require("./routes/api/userRoute"));
+app.use("/api/transaction", require("./routes/api/transactionRoute"));
+app.use("/api/inventory", require("./routes/api/inventoryRoute"));
 app.use("/api/loginHistory", require("./routes/api/loginHistoryRoute"));
 app.use(errorHandler);
 

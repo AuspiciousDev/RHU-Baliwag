@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { tokens } from "../../../theme";
+
 import ConfirmDialogue from "../../../global/ConfirmDialogue";
 import SuccessDialogue from "../../../global/SuccessDialogue";
 import ErrorDialogue from "../../../global/ErrorDialogue";
@@ -21,6 +21,7 @@ import {
   useTheme,
   Avatar,
 } from "@mui/material";
+import { tokens } from "../../../theme";
 import {
   Delete,
   CheckCircle,
@@ -223,9 +224,11 @@ const User = () => {
           userDispatch({ type: "SET_USERS", payload: json });
           setSuccessDialog({
             isOpen: true,
-            message: `Employee ${val.username} ${(newStatus === true
-              ? "has been activated!"
-              : "has been deactivated!")}`,
+            message: `Employee ${val.username} ${
+              newStatus === true
+                ? "has been activated!"
+                : "has been deactivated!"
+            }`,
           });
         }
       }
@@ -523,32 +526,6 @@ const User = () => {
               alignItems: "center",
             }}
           >
-            {" "}
-            <Paper
-              elevation={3}
-              sx={{
-                display: "none",
-                width: { xs: "100%", sm: "320px" },
-                height: "50px",
-                minWidth: "250px",
-                alignItems: "center",
-                justifyContent: "center",
-                p: { xs: "0 20px", sm: "0 20px" },
-                mr: { xs: "0", sm: " 10px" },
-              }}
-            >
-              <InputBase
-                sx={{ ml: 1, flex: 1 }}
-                placeholder="Search User"
-                onChange={(e) => {
-                  setSearch(e.target.value.toLowerCase());
-                }}
-              />
-              <Divider sx={{ height: 30, m: 1 }} orientation="vertical" />
-              <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
-                <Search />
-              </IconButton>
-            </Paper>
             {auth.userType === "admin" && (
               <Button
                 type="button"

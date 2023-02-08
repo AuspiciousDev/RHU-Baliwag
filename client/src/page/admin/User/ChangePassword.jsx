@@ -80,7 +80,7 @@ const ChangePassword = () => {
     try {
       if (!oldPasswordError && !passwordError && !confPasswordError) {
         const response = await axiosPrivate.post(
-          "/auth/change-password",
+          "/api/auth/change-password",
           JSON.stringify(data)
         );
 
