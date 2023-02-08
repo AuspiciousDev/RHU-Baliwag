@@ -3,11 +3,12 @@ const Schema = mongoose.Schema;
 
 const schema = new Schema(
   {
-    empID: {
+    imgURL: String,
+    username: {
       type: Number,
       required: true,
     },
-    empType: {
+    userType: {
       type: String,
       required: true,
     },
@@ -43,7 +44,6 @@ const schema = new Schema(
     },
     placeOfBirth: {
       type: String,
-      required: true,
     },
     gender: {
       type: String,
@@ -51,49 +51,40 @@ const schema = new Schema(
     },
     civilStatus: {
       type: String,
-      required: true,
     },
     nationality: {
       type: String,
-      required: true,
     },
     religion: {
       type: String,
-      default: "-",
     },
     address: {
       type: String,
-      required: true,
     },
     city: {
       type: String,
-      required: true,
     },
     province: {
       type: String,
-      required: true,
     },
     mobile: {
       type: Number,
-      required: true,
     },
     telephone: {
       type: String,
     },
     emergencyContactName: {
       type: String,
-      required: true,
     },
     emergencyContactNumber: {
       type: String,
-      required: true,
     },
     emergencyContactRelationship: {
       type: String,
-      required: true,
     },
+    refreshToken: String,
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Employee", schema);
+module.exports = mongoose.model("User", schema);

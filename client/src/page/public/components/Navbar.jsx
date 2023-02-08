@@ -29,12 +29,17 @@ const Navbar = () => {
         },
       }}
     >
-      <Box sx={{ alignItems: "center", gap: 2 }}>
-        <img src={logo} alt="" style={{ width: "50px" }} />
-        <Typography variant="h3" textTransform="uppercase">
-          Baliwag RHU
-        </Typography>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+        <Link to="/" style={{ textDecoration: "none" }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+            <img src={logo} alt="" style={{ width: "50px" }} />
+            <Typography variant="h3" textTransform="uppercase" color="black">
+              Baliwag RHU
+            </Typography>
+          </Box>
+        </Link>
       </Box>
+
       <Box sx={{ justifyContent: "center", alignItems: "center", gap: 6 }}>
         <PaperLinks title="Request" to="request" />
         <Divider orientation="vertical" sx={{ height: "35px" }} />
@@ -43,7 +48,7 @@ const Navbar = () => {
         <PaperLinks title="Status" to="status" />
       </Box>
       <Box sx={{ justifyContent: "flex-end", alignItems: "center", gap: 3 }}>
-        <Link>
+        <Link to="/login">
           <Avatar sx={{ width: "50px", height: "50px", bgcolor: "#24c988" }} />
         </Link>
       </Box>

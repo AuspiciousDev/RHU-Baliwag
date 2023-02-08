@@ -48,7 +48,7 @@ export const tokens = (mode) => ({
           500: "#ffffff",
         },
         redDark: {
-          500: "#400000",
+          500: "#880808",
         },
         greenOnly: {
           500: "#016171",
@@ -99,7 +99,7 @@ export const tokens = (mode) => ({
           500: "#ffffff",
         },
         redDark: {
-          500: "#400000",
+          500: "#880808",
         },
         greenOnly: {
           500: "#016171",
@@ -154,7 +154,7 @@ export const themeSettings = (mode) => {
       colors: colors.black[950],
       h1: {
         fontFamily: ["Poppins", "sans-serif"].join(","),
-        fontSize: 40,
+        fontSize: 44,
       },
       h2: {
         fontFamily: ["Poppins", "sans-serif"].join(","),
