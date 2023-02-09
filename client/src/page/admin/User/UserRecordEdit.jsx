@@ -54,15 +54,11 @@ const UserRecordEdit = () => {
   const [email, setEmail] = useState("");
   const [mobile, setMobile] = useState("");
   const [telephone, setTelephone] = useState("");
-  const [fatherName, setFatherName] = useState("");
-  const [fatherContact, setFatherContact] = useState("");
-  const [motherName, setMotherName] = useState("");
-  const [motherContact, setMotherContact] = useState("");
+
   const [emergencyName, setEmergencyName] = useState("");
   const [emergencyRelationship, setEmergencyRelationship] = useState("");
   const [emergencyNumber, setEmergencyNumber] = useState("");
 
-  const [LRNError, setLRNError] = useState(false);
   const [firstNameError, setFirstNameError] = useState(false);
   const [lastNameError, setLastNameError] = useState(false);
   const [dateOfBirthError, setDateOfBirthError] = useState(false);
@@ -116,13 +112,12 @@ const UserRecordEdit = () => {
           setFatherContact(json?.fatherContact || "");
           setMotherContact(json?.motherContact || "");
           setMotherName(json?.motherName || "");
-          setEmergencyName(json?.emergencyContactName);
-          setEmergencyRelationship(json?.emergencyContactNumber);
-          setEmergencyNumber(json?.emergencyContactRelationship);
+          setEmergencyName(json?.emergencyContactName || "");
+          setEmergencyRelationship(json?.emergencyContactNumber || "");
+          setEmergencyNumber(json?.emergencyContactRelationship || "");
         }
         setLoadingDialog({ isOpen: false });
       } catch (error) {
-        
         setLoadingDialog({ isOpen: false });
 
         if (!error?.response) {
@@ -216,7 +211,6 @@ const UserRecordEdit = () => {
         navigate("/login", { state: { from: location }, replace: true });
         console.log();
       } else if (error.response.status === 409) {
-        setLRNError(true);
         console.log(errMessage);
       } else {
         console.log(error);

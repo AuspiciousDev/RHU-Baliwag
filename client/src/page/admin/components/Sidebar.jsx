@@ -111,11 +111,11 @@ const Sidebar = () => {
         },
 
         "& .pro-inner-item:hover": {
-          backgroundColor: `${colors.primary[500]}!important`,
+          backgroundColor: `${colors.secondary[500]}!important`,
           color: `${colors.whiteOnly[500]} !important`,
         },
         "& .pro-menu-item.active": {
-          backgroundColor: `${colors.primary[500]}!important`,
+          backgroundColor: `${colors.secondary[500]}!important`,
           color: `${colors.whiteOnly[500]} !important`,
         },
       }}

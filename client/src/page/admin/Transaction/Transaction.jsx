@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ConfirmDialogue from "../../../global/ConfirmDialogue";
 import SuccessDialogue from "../../../global/SuccessDialogue";
 import ErrorDialogue from "../../../global/ErrorDialogue";
@@ -26,15 +26,28 @@ import {
 } from "@mui/icons-material";
 import { tokens } from "../../../theme";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
+import { DataGrid, GridToolbar, GridToolbarContainer } from "@mui/x-data-grid";
+import { useTransactionsContext } from "../../../hooks/useTransactionContext";
+import { format } from "date-fns-tz";
+import Paper_Icon from "../../../components/global/Paper_Icon";
+
+function CustomToolbar() {
+  return (
+    <GridToolbarContainer>
+      <GridToolbar />
+    </GridToolbarContainer>
+  );
+}
 const Transaction = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
   const axiosPrivate = useAxiosPrivate();
   const { auth } = useAuth();
-
+  const { transactions, transactionDispatch } = useTransactionsContext();
+  const [page, setPage] = React.useState(15);
   const [confirmDialog, setConfirmDialog] = useState({
     isOpen: false,
     title: "",
@@ -61,6 +74,272 @@ const Transaction = () => {
     message: "",
   });
 
+  useEffect(() => {
+    const getUsersDetails = async () => {
+      try {
+        setLoadingDialog({ isOpen: true });
+
+        const response = await axiosPrivate.get("/api/transaction");
+        if (response.status === 200) {
+          const json = await response.data;
+          console.log(json);
+          transactionDispatch({ type: "SET_TRANSACTIONS", payload: json });
+        }
+        setLoadingDialog({ isOpen: false });
+      } catch (error) {
+        console.log("🚀 ~ file: User.jsx:90 ~ getUsersDetails ~ error", error);
+        setLoadingDialog({ isOpen: false });
+        if (!error?.response) {
+          setErrorDialog({
+            isOpen: true,
+            message: `No server response`,
+          });
+        } else if (error.response.status === 400) {
+          setErrorDialog({
+            isOpen: true,
+            message: `${error.response.data.message}`,
+          });
+          console.log(error.response.data.message);
+        } else if (error.response.status === 404) {
+          setErrorDialog({
+            isOpen: true,
+            message: `${error.response.data.message}`,
+          });
+          console.log(error.response.data.message);
+        } else if (error.response.status === 500) {
+          setErrorDialog({
+            isOpen: true,
+            message: `${error.response.data.message}`,
+          });
+          console.log(error.response.data.message);
+        } else {
+          setErrorDialog({
+            isOpen: true,
+            message: `${error}`,
+          });
+          console.log(error);
+        }
+      }
+    };
+    getUsersDetails();
+  }, [transactionDispatch]);
+
+  const columns = [
+    {
+      field: "transID",
+      headerName: "Transaction ID",
+      width: 300,
+      align: "center",
+      headerAlign: "center",
+      renderCell: (params) => {
+        return (
+          <Box display="flex" gap={2}>
+            <Link
+              to={`/admin/transaction/details/${params?.value}`}
+              style={{
+                alignItems: "center",
+                textDecoration: "none",
+              }}
+            >
+              <Paper
+                sx={{
+                  padding: "2px 20px",
+                  borderRadius: "5px",
+                  display: "flex",
+                  justifyContent: "center",
+                  backgroundColor: colors.whiteOnly[500],
+                  alignItems: "center",
+                }}
+              >
+                <Typography sx={{ color: colors.blackOnly[500] }}>
+                  {params?.value}
+                </Typography>
+              </Paper>
+            </Link>
+          </Box>
+        );
+      },
+    },
+    {
+      field: "reqID",
+      headerName: "Request ID",
+      width: 300,
+      align: "center",
+      headerAlign: "center",
+      renderCell: (params) => {
+        return (
+          <Box display="flex" gap={2}>
+            <Link
+              to={`/admin/request/details/${params?.value}`}
+              style={{
+                alignItems: "center",
+                textDecoration: "none",
+              }}
+            >
+              <Paper
+                sx={{
+                  padding: "2px 20px",
+                  borderRadius: "5px",
+                  display: "flex",
+                  justifyContent: "center",
+                  backgroundColor: colors.whiteOnly[500],
+                  alignItems: "center",
+                }}
+              >
+                <Typography sx={{ color: colors.blackOnly[500] }}>
+                  {params?.value}
+                </Typography>
+              </Paper>
+            </Link>
+          </Box>
+        );
+      },
+    },
+    {
+      field: "transactor",
+      headerName: "Transactor",
+      width: 200,
+      align: "center",
+      headerAlign: "center",
+      renderCell: (params) => {
+        return (
+          <Box display="flex" gap={2}>
+            <Link
+              to={`/admin/user/profile/${params?.value}`}
+              style={{
+                alignItems: "center",
+                textDecoration: "none",
+              }}
+            >
+              <Paper
+                sx={{
+                  padding: "2px 20px",
+                  borderRadius: "5px",
+                  display: "flex",
+                  justifyContent: "center",
+                  backgroundColor: colors.whiteOnly[500],
+                  alignItems: "center",
+                }}
+              >
+                <Typography sx={{ color: colors.blackOnly[500] }}>
+                  {params?.value}
+                </Typography>
+              </Paper>
+            </Link>
+          </Box>
+        );
+      },
+    },
+
+    {
+      field: "createdAt",
+      headerName: "Transaction Date",
+      width: 240,
+      align: "center",
+      headerAlign: "center",
+      valueFormatter: (params) =>
+        format(new Date(params?.value), "hh:mm a - MMMM dd, yyyy"),
+    },
+    {
+      field: "_id",
+      headerName: "Action",
+      width: 175,
+      sortable: false,
+      align: "center",
+      headerAlign: "center",
+      renderCell: (params) => {
+        return (
+          <>
+            {auth.userType === "admin" && (
+              <ButtonBase
+                onClick={(event) => {
+                  handleCellClick(event, params);
+                }}
+              >
+                <Paper_Icon icon={<DeleteOutline />} color={`red`} />
+              </ButtonBase>
+            )}
+          </>
+        );
+      },
+    },
+  ];
+  const handleCellClick = (event, params) => {
+    event.stopPropagation();
+    setValidateDialog({
+      isOpen: true,
+      onConfirm: () => {
+        setConfirmDialog({
+          isOpen: true,
+          title: `Are you sure to delete transaction ${params?.row?.transID}`,
+          message: `This action is irreversible!`,
+          onConfirm: () => {
+            handleDelete({ val: params.row });
+          },
+        });
+      },
+    });
+  };
+  const handleDelete = async ({ val }) => {
+    setConfirmDialog({
+      ...confirmDialog,
+      isOpen: false,
+    });
+    try {
+      setLoadingDialog({ isOpen: true });
+      const response = await axiosPrivate.delete(
+        `/api/transaction/delete/${val.transID}`
+      );
+      const json = await response.data;
+      if (response.status === 200) {
+        console.log(response.data.message);
+        transactionDispatch({ type: "DELETE_TRANSACTION", payload: json });
+        setSuccessDialog({
+          isOpen: true,
+          message: `Transaction ${val.transID} has been Deleted!`,
+        });
+      }
+      setLoadingDialog({ isOpen: false });
+    } catch (error) {
+      setLoadingDialog({ isOpen: false });
+      if (!error?.response) {
+        setErrorDialog({
+          isOpen: true,
+          message: `No server response`,
+        });
+      } else if (error.response.status === 400) {
+        setErrorDialog({
+          isOpen: true,
+          message: `${error.response.data.message}`,
+        });
+        console.log(error.response.data.message);
+      } else if (error.response.status === 404) {
+        setErrorDialog({
+          isOpen: true,
+          message: `${error.response.data.message}`,
+        });
+        console.log(error.response.data.message);
+      } else if (error.response.status === 403) {
+        setErrorDialog({
+          isOpen: true,
+          message: `${error.response.data.message}`,
+        });
+        navigate("/login", { state: { from: location }, replace: true });
+      } else if (error.response.status === 500) {
+        setErrorDialog({
+          isOpen: true,
+          message: `${error.response.data.message}`,
+        });
+        console.log(error.response.data.message);
+      } else {
+        setErrorDialog({
+          isOpen: true,
+          message: `${error}`,
+        });
+        console.log(error);
+      }
+    }
+  };
   return (
     <Box className="container-layout_body_contents">
       <ConfirmDialogue
@@ -115,9 +394,53 @@ const Transaction = () => {
                 textTransform: "uppercase",
               }}
             >
-              Requests
+              Transactions
             </Typography>
           </Box>
+        </Box>
+      </Paper>
+      <Paper
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          width: "100%",
+          height: "100%",
+          mt: 2,
+        }}
+      >
+        <Box
+          sx={{
+            height: "100%",
+            width: "100%",
+          }}
+        >
+          <DataGrid
+            rows={transactions ? transactions && transactions : []}
+            getRowId={(row) => row?._id}
+            columns={columns}
+            pageSize={page}
+            onPageSizeChange={(newPageSize) => setPage(newPageSize)}
+            rowsPerPageOptions={[15, 50]}
+            pagination
+            sx={{
+              "& .MuiDataGrid-cell": {
+                textTransform: "capitalize",
+              },
+              "& .MuiDataGrid-columnHeaderTitle": {
+                fontWeight: "bold",
+              },
+            }}
+            initialState={{
+              columns: {
+                columnVisibilityModel: {
+                  _id: false,
+                },
+              },
+            }}
+            components={{
+              Toolbar: CustomToolbar,
+            }}
+          />
         </Box>
       </Paper>
     </Box>

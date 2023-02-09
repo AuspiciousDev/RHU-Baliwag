@@ -29,7 +29,7 @@ const inventoryController = {
       createdBy,
     } = req.body;
     try {
-      if (!lotNum) emptyFields.push("Stock ID");
+      if (!lotNum) emptyFields.push("Lot Number");
       if (!genericName) emptyFields.push("Generic Name");
       if (!access) emptyFields.push("Access");
       if (!ACCESS_LIST.includes(access)) emptyFields.push("Invalid Access");

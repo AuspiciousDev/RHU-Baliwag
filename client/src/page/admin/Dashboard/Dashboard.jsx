@@ -23,6 +23,9 @@ import {
   DvrOutlined,
   MoveToInboxOutlined,
   DescriptionOutlined,
+  CheckCircle,
+  Cancel,
+  AccessTime,
 } from "@mui/icons-material";
 
 import LoadingDialogue from "../../../global/LoadingDialogue";
@@ -34,6 +37,10 @@ import useAuth from "../../../hooks/useAuth";
 import { useUsersContext } from "../../../hooks/useUserContext";
 import { useInventoriesContext } from "../../../hooks/useInventoryContext";
 import { useLoginsContext } from "../../../hooks/useLoginContext";
+import { useRequestsContext } from "../../../hooks/useRequestContext";
+import Paper_Status from "../../../components/global/Paper_Status";
+import { useTransactionsContext } from "../../../hooks/useTransactionContext";
+
 const ADMIN_Dashboard = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -42,6 +49,9 @@ const ADMIN_Dashboard = () => {
   const { users, userDispatch } = useUsersContext();
   const { stocks, stockDispatch } = useInventoriesContext();
   const { logins, loginDispatch } = useLoginsContext();
+  const { requests, requestDispatch } = useRequestsContext();
+  const { transactions, transactionDispatch } = useTransactionsContext();
+
   const [getStudCount, setStudCount] = useState(0);
   const [getSecCount, setSecCount] = useState(0);
   const [activeYear, setActiveYear] = useState([]);
@@ -90,6 +100,9 @@ const ADMIN_Dashboard = () => {
         const apiUsers = await axiosPrivate.get("/api/user");
         const apiStocks = await axiosPrivate.get("/api/inventory");
         const apiLogins = await axiosPrivate.get("/api/loginHistory");
+        const apiRequests = await axiosPrivate.get("/api/request");
+        const apiTransaction = await axiosPrivate.get("/api/transaction");
+
         if (apiUsers.status === 200) {
           const json = await apiUsers.data;
           console.log(json);
@@ -108,6 +121,17 @@ const ADMIN_Dashboard = () => {
           );
           loginDispatch({ type: "SET_LOGINS", payload: json });
         }
+        if (apiRequests.status === 200) {
+          const json = await apiRequests.data;
+          console.log(json);
+          requestDispatch({ type: "SET_REQUESTS", payload: json });
+        }
+        if (apiTransaction.status === 200) {
+          const json = await apiTransaction.data;
+          console.log(json);
+          transactionDispatch({ type: "SET_TRANSACTIONS", payload: json });
+        }
+
         setLoadingDialog({ isOpen: false });
       } catch (error) {
         console.log(
@@ -157,11 +181,11 @@ const ADMIN_Dashboard = () => {
 
   const tableDetails = ({ val }) => {
     return (
-      <TableRow key={val.enrollmentID}>
+      <TableRow key={val.reqID}>
         <TableCell align="left" sx={{ textTransform: "uppercase" }}>
           <Box display="flex" gap={2} width="60%">
             <Link
-              to={`/admin/student/${val?.LRN}`}
+              to={`/admin/request/details/${val?.reqID}`}
               style={{
                 alignItems: "center",
                 textDecoration: "none",
@@ -181,46 +205,31 @@ const ADMIN_Dashboard = () => {
                   fontWeight="bold"
                   sx={{ color: colors.blackOnly[500] }}
                 >
-                  {val?.LRN}
+                  {val?.reqID}
                 </Typography>
               </Paper>
             </Link>
           </Box>
         </TableCell>
-        <TableCell sx={{ textTransform: "capitalize" }}>
-          {/* {students &&
-            students
-              .filter((stud) => {
-                return stud.LRN === val.LRN;
-              })
-              .map((stud) => {
-                return stud?.middleName
-                  ? stud.firstName + " " + stud.middleName + " " + stud.lastName
-                  : stud.firstName + " " + stud.lastName;
-              })} */}
-        </TableCell>
+
         <TableCell align="left">
-          {levels &&
-            levels
-              .filter((lev) => {
-                return lev.levelID === val.levelID.toLowerCase();
-              })
-              .map((val) => {
-                return val.levelNum;
-              })}
+          {val?.middleName
+            ? val.firstName + " " + val.middleName + " " + val.lastName
+            : val.firstName + " " + val.lastName}
         </TableCell>
-        <TableCell align="left" sx={{ textTransform: "capitalize" }}>
-          {/* {sections &&
-            sections
-              .filter((lev) => {
-                return lev.sectionID === val.sectionID.toLowerCase();
-              })
-              .map((sec) => {
-                return sec.sectionName;
-              })} */}
-        </TableCell>
+        <TableCell align="left"> {val?.mobile}</TableCell>
+
         <TableCell align="left" sx={{ textTransform: "capitalize" }}>
           {format(new Date(val.createdAt), "MMMM dd, yyyy")}
+        </TableCell>
+        <TableCell align="left">
+          {val?.status === "accepted" ? (
+            <Paper_Status icon={<CheckCircle />} title={"Accepted"} />
+          ) : val?.status === "denied" ? (
+            <Paper_Status icon={<Cancel />} title={"Denied"} />
+          ) : (
+            <Paper_Status icon={<AccessTime />} title={"pending"} />
+          )}
         </TableCell>
       </TableRow>
     );
@@ -297,48 +306,25 @@ const ADMIN_Dashboard = () => {
         />
         <Paper_Totals
           to={"request"}
-          value={
-            // enrollments
-            //   ? enrollments.filter((filter) => {
-            //       return filter.schoolYearID === activeYear.schoolYearID;
-            //     }).length
-            //   : "0"
-            "0"
-          }
+          value={requests ? requests.length : "0"}
           icon={<MoveToInboxOutlined />}
           description="Total Number of Requests"
         />
         <Paper_Totals
           to={"transaction"}
-          value={
-            // sections
-            //   ? sections.filter((filter) => {
-            //       return filter.status === true;
-            //     }).length
-            //   : "0"
-            "0"
-          }
+          value={transactions ? transactions.length : "0"}
           icon={<DvrOutlined />}
           description="Total Number of Transactions"
         />
         <Paper_Totals
           to={"user"}
-          value={
-            // users
-            //   ? users.filter((filter) => {
-            //       return filter.status === true;
-            //     }).length
-            //   : "0"
-            users ? users.length : "0"
-          }
+          value={users ? users.length : "0"}
           icon={<Person2Outlined />}
           description="Total Number of Users"
         />
       </Box>
       <Box height="100%">
-        {/* <Typography variant="h4">Recent Students</Typography>
-          <Typography>Showing 10 entries</Typography> */}
-
+       
         <Box
           sx={{
             height: "100%",
@@ -370,15 +356,10 @@ const ADMIN_Dashboard = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {/* {activeYear &&
-                    enrollments &&
-                    enrollments
-                      .filter((filter) => {
-                        return filter?.schoolYearID === activeYear.schoolYearID;
-                      })
-                      .map((val) => {
-                        return val && tableDetails({ val });
-                      })} */}
+                  {requests &&
+                    requests.map((val) => {
+                      return val && tableDetails({ val });
+                    })}
                 </TableBody>
               </Table>
             </TableContainer>

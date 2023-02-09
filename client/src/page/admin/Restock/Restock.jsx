@@ -5,7 +5,7 @@ import SuccessDialogue from "../../../global/SuccessDialogue";
 import ErrorDialogue from "../../../global/ErrorDialogue";
 import ValidateDialogue from "../../../global/ValidateDialogue";
 import LoadingDialogue from "../../../global/LoadingDialogue";
-import { useIRestocksContext } from "../../../hooks/useRestockContext";
+import { useRestocksContext } from "../../../hooks/useRestockContext";
 import { format } from "date-fns-tz";
 import { DataGrid, GridToolbar, GridToolbarContainer } from "@mui/x-data-grid";
 import { Link, useNavigate, useLocation } from "react-router-dom";
@@ -61,7 +61,7 @@ const Restock = () => {
   const navigate = useNavigate();
   const axiosPrivate = useAxiosPrivate();
   const { auth } = useAuth();
-  const { restocks, restockDispatch } = useIRestocksContext();
+  const { restocks, restockDispatch } = useRestocksContext();
 
   const [confirmDialog, setConfirmDialog] = useState({
     isOpen: false,

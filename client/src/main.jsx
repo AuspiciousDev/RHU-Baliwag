@@ -8,6 +8,7 @@ import { InventoryContextProvider } from "./context/InventoryContext";
 import { RequestContextProvider } from "./context/RequestContext";
 import { LoginsContextProvider } from "./context/LoginContext";
 import { RestockContextProvider } from "./context/RestockContext";
+import { TransactionContextProvider } from "./context/TransactionContext";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
@@ -17,7 +18,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           <RequestContextProvider>
             <LoginsContextProvider>
               <RestockContextProvider>
-                <App />
+                <TransactionContextProvider>
+                  <App />
+                </TransactionContextProvider>
               </RestockContextProvider>
             </LoginsContextProvider>
           </RequestContextProvider>
