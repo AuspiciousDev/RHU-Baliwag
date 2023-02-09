@@ -92,6 +92,7 @@ const UserRecordEdit = () => {
         const response = await axiosPrivate.get(`/api/user/search/${username}`);
         if (response.status === 200) {
           const json = await response.data;
+          console.log("🚀 ~ file: UserRecordEdit.jsx:95 ~ getUsersDetails ~ json", json)
           setUserType(json?.userType);
           setFirstName(json?.firstName);
           setMiddleName(json?.middleName || "");
@@ -108,16 +109,13 @@ const UserRecordEdit = () => {
           setEmail(json?.email);
           setMobile(json?.mobile);
           setTelephone(json?.telephone || "");
-          setFatherName(json?.fatherName || "");
-          setFatherContact(json?.fatherContact || "");
-          setMotherContact(json?.motherContact || "");
-          setMotherName(json?.motherName || "");
           setEmergencyName(json?.emergencyContactName || "");
           setEmergencyRelationship(json?.emergencyContactNumber || "");
           setEmergencyNumber(json?.emergencyContactRelationship || "");
         }
         setLoadingDialog({ isOpen: false });
       } catch (error) {
+        console.log("🚀 ~ file: UserRecordEdit.jsx:122 ~ getUsersDetails ~ error", error)
         setLoadingDialog({ isOpen: false });
 
         if (!error?.response) {
@@ -234,10 +232,7 @@ const UserRecordEdit = () => {
     setEmail("");
     setMobile("");
     setTelephone("");
-    setFatherName("");
-    setFatherContact("");
-    setMotherContact("");
-    setMotherName("");
+
     setEmergencyName("");
     setEmergencyRelationship("");
     setEmergencyNumber("");

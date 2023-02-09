@@ -40,11 +40,11 @@ const userController = {
 
       const duplicateID = await User.findOne({ username }).exec();
       if (duplicateID)
-        return res.status(409).json({ message: "Duplicate User ID" });
+        return res.status(409).json({ message: "Username Already Exists!" });
 
       const duplicateEmail = await User.findOne({ email }).exec();
       if (duplicateEmail)
-        return res.status(409).json({ message: "Duplicate User User" });
+        return res.status(409).json({ message: "Email Already Exists!" });
 
       const genPassword = generateCredential.password(10);
       const docObject = {

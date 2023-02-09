@@ -49,10 +49,8 @@ const UserCreate = () => {
   const [gender, setGender] = useState("");
   const [userType, setUserType] = useState("");
 
-  const [empIDError, setEmpIDError] = useState(false);
+  const [usernameError, setUsernameError] = useState(false);
   const [emailError, setEmailError] = useState(false);
-  const [firstNameError, setFirstNameError] = useState(false);
-  const [lastNameError, setLastNameError] = useState(false);
   const [dateOfBirthError, setDateOfBirthError] = useState(false);
   const [genderError, setGenderError] = useState(false);
 
@@ -124,7 +122,9 @@ const UserCreate = () => {
       } else if (error.response.status === 400) {
         console.log(errMessage);
       } else if (error.response.status === 409) {
-        setEmailError(true);
+        if (errMessage.includes("Username")) setUsernameError(true);
+        if (errMessage.includes("Email")) setEmailError(true);
+
         console.log(errMessage);
       } else {
         console.log(error);
@@ -213,6 +213,7 @@ const UserCreate = () => {
                 variant="outlined"
                 label="Employee ID"
                 value={empID}
+                error={usernameError}
                 placeholder="10 Digit Employee ID"
                 inputProps={{ maxLength: 10 }}
                 onChange={(e) => {
@@ -220,7 +221,7 @@ const UserCreate = () => {
                     setEmpID(e.target.value);
                   }
                 }}
-                helperText={emailError && "User Email already exists!"}
+                helperText={usernameError && "Username/email already exists!"}
               />
               <TextField
                 required
@@ -235,7 +236,7 @@ const UserCreate = () => {
                   setEmail(e.target.value);
                   setEmailError(false);
                 }}
-                helperText={emailError && "User Email already exists!"}
+                helperText={emailError && "Username/email already exists!"}
               />
               <FormControl required fullWidth>
                 <InputLabel id="demo-simple-select-label">User Type</InputLabel>

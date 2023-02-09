@@ -41,11 +41,11 @@ const Navbar = () => {
       </Box>
 
       <Box sx={{ justifyContent: "center", alignItems: "center", gap: 6 }}>
+        <PaperLinks title="Home" to="/" />
+        <Divider orientation="vertical" sx={{ height: "35px" }} />
         <PaperLinks title="Request" to="request" />
         <Divider orientation="vertical" sx={{ height: "35px" }} />
         <PaperLinks title="Inventory" to="inventory" />
-        <Divider orientation="vertical" sx={{ height: "35px" }} />
-        <PaperLinks title="Status" to="status" />
       </Box>
       <Box sx={{ justifyContent: "flex-end", alignItems: "center", gap: 3 }}>
         <Link to="/login">
