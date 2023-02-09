@@ -47,9 +47,10 @@ app.use(express.static(path.resolve(__dirname, "public")));
 app.use("/api/auth", require("./routes/authRoute"));
 app.use("/api/refresh", require("./routes/refresh"));
 app.use("/api/logout", require("./routes/logout"));
-
+app.use("/api/public/inventory", require("./routes/publicAPI/pInventoryRoute"));
+app.use("/api/public/request", require("./routes/publicAPI/pRequestRoute"));
 // ! Require JWT Token to access data
-// app.use(verifyJWT);
+app.use(verifyJWT);
 app.use("/api/inventory", require("./routes/api/inventoryRoute"));
 app.use("/api/restock", require("./routes/api/restockRoute"));
 app.use("/api/user", require("./routes/api/userRoute"));

@@ -1,5 +1,7 @@
 import { useState } from "react";
 import {
+  Avatar,
+  ButtonBase,
   Box,
   useTheme,
   Paper,
@@ -27,6 +29,11 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DesktopDatePicker } from "@mui/x-date-pickers";
 import { useEffect } from "react";
+
+import { storage } from "../../public/firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { v4 } from "uuid";
+import { ModeEditOutline } from "@mui/icons-material";
 const UserRecordEdit = () => {
   const { username } = useParams();
   const isLetters = (str) => /^[A-Za-z\s]*$/.test(str);
@@ -38,6 +45,7 @@ const UserRecordEdit = () => {
   const axiosPrivate = useAxiosPrivate();
   const { users, userDispatch } = useUsersContext();
 
+  const [imgURL, setImgURL] = useState("");
   const [firstName, setFirstName] = useState("");
   const [userType, setUserType] = useState("");
   const [middleName, setMiddleName] = useState("");
@@ -88,26 +96,29 @@ const UserRecordEdit = () => {
     const getUsersDetails = async () => {
       try {
         setLoadingDialog({ isOpen: true });
-
         const response = await axiosPrivate.get(`/api/user/search/${username}`);
         if (response.status === 200) {
           const json = await response.data;
-          console.log("🚀 ~ file: UserRecordEdit.jsx:95 ~ getUsersDetails ~ json", json)
-          setUserType(json?.userType);
-          setFirstName(json?.firstName);
+          console.log(
+            "🚀 ~ file: UserRecordEdit.jsx:95 ~ getUsersDetails ~ json",
+            json
+          );
+          setImgURL(json?.imgURL || "");
+          setUserType(json?.userType || "");
+          setFirstName(json?.firstName || "");
           setMiddleName(json?.middleName || "");
-          setLastName(json?.lastName);
-          setDateOfBirth(json?.dateOfBirth);
-          setGender(json?.gender);
-          setPlaceOfBirth(json?.placeOfBirth);
+          setLastName(json?.lastName || "");
+          setDateOfBirth(json?.dateOfBirth || null);
+          setGender(json?.gender || "");
+          setPlaceOfBirth(json?.placeOfBirth || "");
           setCivilStatus(json?.civilStatus || "");
-          setNationality(json?.nationality);
+          setNationality(json?.nationality || "");
           setReligion(json?.religion || "");
-          setAddress(json?.address);
-          setCity(json?.city);
-          setProvince(json?.province);
-          setEmail(json?.email);
-          setMobile(json?.mobile);
+          setAddress(json?.address || "");
+          setCity(json?.city || "");
+          setProvince(json?.province || "");
+          setEmail(json?.email || "");
+          setMobile(json?.mobile || "");
           setTelephone(json?.telephone || "");
           setEmergencyName(json?.emergencyContactName || "");
           setEmergencyRelationship(json?.emergencyContactNumber || "");
@@ -115,7 +126,10 @@ const UserRecordEdit = () => {
         }
         setLoadingDialog({ isOpen: false });
       } catch (error) {
-        console.log("🚀 ~ file: UserRecordEdit.jsx:122 ~ getUsersDetails ~ error", error)
+        console.log(
+          "🚀 ~ file: UserRecordEdit.jsx:122 ~ getUsersDetails ~ error",
+          error
+        );
         setLoadingDialog({ isOpen: false });
 
         if (!error?.response) {
@@ -216,26 +230,98 @@ const UserRecordEdit = () => {
       }
     }
   };
-  const clearFields = () => {
-    setFirstName("");
-    setMiddleName("");
-    setLastName("");
-    setDateOfBirth(null);
-    setGender("");
-    setPlaceOfBirth("");
-    setCivilStatus("");
-    setNationality("");
-    setReligion("");
-    setAddress("");
-    setCity("");
-    setProvince("");
-    setEmail("");
-    setMobile("");
-    setTelephone("");
+  const [imageUpload, setImageUpload] = useState(null);
+  const [imgFile, setImgFile] = useState(null);
+  const [changeIMG, setChangeIMG] = useState(false);
 
-    setEmergencyName("");
-    setEmergencyRelationship("");
-    setEmergencyNumber("");
+  const uploadImage = async () => {
+    setLoadingDialog({
+      isOpen: true,
+    });
+
+    if (imageUpload == null) {
+      return (
+        setLoadingDialog({
+          isOpen: false,
+        }),
+        setErrorDialog({
+          isOpen: true,
+          message: `Please choose an image.`,
+        })
+      );
+    }
+    try {
+      const imageRef = ref(storage, `ADP/users/${imageUpload.name + v4()}`);
+      await uploadBytes(imageRef, imageUpload).then((snapshot) => {
+        getDownloadURL(snapshot.ref).then(async (downloadURL) => {
+          console.log("Download link to your file: ", downloadURL);
+          await imageToDB(downloadURL);
+          await setImageUpload(null);
+        });
+      });
+      setLoadingDialog({
+        isOpen: false,
+      });
+    } catch (error) {
+      console.log("🚀 ~ file: Profile.jsx:106 ~ uploadImage ~ error", error);
+      setLoadingDialog({
+        isOpen: false,
+      });
+      setErrorDialog({
+        isOpen: true,
+        message: `${error}`,
+      });
+    }
+  };
+  const imageToDB = async (downloadURL) => {
+    setLoadingDialog({
+      isOpen: true,
+    });
+    const object = {
+      username: username,
+      imgURL: downloadURL,
+    };
+    console.log(object);
+    try {
+      const response = await axiosPrivate.patch(
+        `/api/user/update/img/${username}`,
+        JSON.stringify(object)
+      );
+      if (response.status === 200) {
+        const json = await response.data;
+        console.log("response;", json);
+        setSuccessDialog({
+          isOpen: true,
+          message: "Image Profile has been updated!",
+        });
+      }
+      setChangeIMG((e) => !e);
+      setLoadingDialog({
+        isOpen: false,
+      });
+    } catch (error) {
+      setLoadingDialog({
+        isOpen: false,
+      });
+      if (!error.response) {
+        console.log("no server response");
+      } else if (error.response.status === 204) {
+        setErrorDialog({
+          isOpen: true,
+          message: `${error.response.data.message}`,
+        });
+        navigate(-1);
+        console.log(error.response.data.message);
+      } else if (error.response.status === 400) {
+        console.log(error.response.data.message);
+      } else {
+        setErrorDialog({
+          isOpen: true,
+          message: `${error}`,
+        });
+        console.log(error);
+      }
+    }
   };
   return (
     <Box className="container-layout_body_contents">
@@ -277,7 +363,7 @@ const UserRecordEdit = () => {
               variant="h2"
               fontWeight="bold"
               sx={{
-                borderLeft: `5px solid ${colors.primary[900]}`,
+                borderLeft: `5px solid ${colors.secondary[500]}`,
                 paddingLeft: 2,
                 textTransform: "uppercase",
               }}
@@ -287,6 +373,90 @@ const UserRecordEdit = () => {
           </Box>
         </Box>
       </Paper>
+      <Box
+        sx={{
+          m: 1,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "column",
+          gap: 1,
+        }}
+      >
+        <Paper
+          sx={{
+            width: "100px",
+            height: "100px",
+            maxHeight: "250px",
+            maxWidth: "250px",
+            position: "relative",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            borderRadius: "125px",
+            p: 1,
+          }}
+        >
+          <Avatar
+            alt="profile-user"
+            sx={{ width: "100%", height: "100%" }}
+            src={imgFile ? imgFile : imgURL}
+            style={{
+              objectFit: "contain",
+            }}
+          />
+
+          <Paper
+            sx={{
+              bottom: 0,
+              right: 0,
+              display: "flex",
+              width: "30px",
+              height: "30px",
+              position: "absolute",
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: "25px",
+            }}
+          >
+            <ButtonBase
+              onClick={() => {
+                setChangeIMG((e) => !e);
+              }}
+            >
+              <ModeEditOutline />
+            </ButtonBase>
+          </Paper>
+        </Paper>
+        {changeIMG && (
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <input
+              accept="image/*"
+              id="profilePhoto"
+              type="file"
+              className="hidden"
+              onChange={(e) => {
+                setImageUpload(e.target.files[0]);
+                setImgFile(URL.createObjectURL(e.target.files[0]));
+              }}
+            />
+            <Button
+              variant="contained"
+              type="button"
+              size="small"
+              onClick={uploadImage}
+            >
+              Upload
+            </Button>
+          </Box>
+        )}
+      </Box>
       <Paper elevation={2} sx={{ p: "20px", mt: 2 }}>
         <form onSubmit={handleSubmit} style={{ width: "100%" }}>
           {/* <Typography variant="h5">Registration</Typography> */}
@@ -455,7 +625,7 @@ const UserRecordEdit = () => {
                   setCivilStatus(e.target.value);
                 }}
               >
-                <MenuItem value={"Single"}>Single</MenuItem>
+                <MenuItem value={"single"}>Single</MenuItem>
                 <MenuItem value={"married"}>Married</MenuItem>
                 <MenuItem value={"widowed"}>Widowed</MenuItem>
                 <MenuItem value={"divorced"}>Divorced</MenuItem>

@@ -13,6 +13,9 @@ import NotFound404 from "./page/public/NotFound404";
 import Home from "./page/public/Home";
 import Login from "./page/public/Login";
 import ForgotPassword from "./page/public/ForgotPassword";
+
+import InventoryPublic from "./page/admin/Inventory/InventoryPublic";
+import RequestCreatePublic from "./page/admin/Request/RequestCreatePublic";
 // ! PRIVATE ROUTES
 
 import PersistLogin from "./page/components/PersistLogin";
@@ -37,6 +40,7 @@ import Request from "./page/admin/Request/Request";
 import RequestCreate from "./page/admin/Request/RequestCreate";
 import RequestDetails from "./page/admin/Request/RequestDetails";
 import TransactionsDetails from "./page/admin/Transaction/TransactionDetails";
+import InventoryEdit from "./page/admin/Inventory/InventoryEdit";
 
 const USER_TYPE = {
   ADMIN: "admin",
@@ -57,11 +61,14 @@ function App() {
               element={<Activate />}
             />
             <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/public/inventory" element={<InventoryPublic />} />
+            <Route path="/public/request" element={<RequestCreatePublic />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
             {/* <Route path="/register" element={""} />
               <Route path="unauthorized" element={""} />
-             
-              <Route path="auth/reset-password/:resetToken" element={""} />
               */}
+            <Route path="auth/reset-password/:resetToken" element={""} />
+
             <Route path="*" element={<NotFound404 />} />
             <Route element={<PersistLogin />}>
               <Route element={<RequireAuth allowedRoles={[USER_TYPE.ADMIN]} />}>
@@ -79,6 +86,10 @@ function App() {
                     element={<TransactionsDetails />}
                   />
                   <Route path="inventory" element={<Inventory />} />
+                  <Route
+                    path="inventory/edit/:lotNum"
+                    element={<InventoryEdit />}
+                  />
                   <Route
                     path="inventory/create"
                     element={<InventoryCreate />}

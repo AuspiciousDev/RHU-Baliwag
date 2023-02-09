@@ -227,5 +227,51 @@ const userController = {
       res.status(500).json({ message: error.message });
     }
   },
+  updateEmployeeIMG: async (req, res) => {
+    try {
+      if (!req?.params?.username) {
+        return res.status(400).json({ message: "Username  is required!" });
+      }
+      const username = req.params.username;
+      const { imgURL } = req.body;
+      console.log(imgURL);
+      if (!imgURL) {
+        return console.log("wala iamge");
+      }
+      if (!imgURL) {
+        return res.status(400).json({ message: "Image URL is required!" });
+      }
+      const response = await User.findOne({
+        username,
+      }).exec();
+
+      if (!response) {
+        return res.status(204).json({ message: "User doesn't exists!" });
+      }
+
+      const empObject = {
+        username,
+        imgURL,
+      };
+      const update = await User.findOneAndUpdate(
+        { username },
+        {
+          $set: { imgURL: empObject.imgURL },
+        }
+      );
+      console.log(update);
+      if (!update) {
+        return res.status(400).json({ error: "No User" });
+      }
+      //const result = await response.save();
+      res.json(update);
+    } catch (error) {
+      console.log(
+        "🚀 ~ file: UserController.js:341 ~ updateEmployeeIMG: ~ error",
+        error
+      );
+      return res.status(500).json({ message: error.message });
+    }
+  },
 };
 module.exports = userController;

@@ -36,6 +36,8 @@ import Paper_Icon from "../../../components/global/Paper_Icon";
 import useAuth from "../../../hooks/useAuth";
 
 import { darken, lighten } from "@mui/material/styles";
+import Navbar from "../../public/components/Navbar";
+import axios from "../../../api/axios";
 
 const getHoverBackgroundColor = (color, mode) =>
   mode === "dark" ? darken(color, 0.5) : lighten(color, 0.5);
@@ -56,7 +58,7 @@ function CustomToolbar() {
   );
 }
 
-const Inventory = () => {
+const InventoryPublic = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
@@ -96,7 +98,7 @@ const Inventory = () => {
       try {
         setLoadingDialog({ isOpen: true });
 
-        const response = await axiosPrivate.get("/api/inventory");
+        const response = await axios.get("/api/public/inventory");
         if (response.status === 200) {
           const json = await response.data;
           console.log(json);
@@ -141,148 +143,11 @@ const Inventory = () => {
     getUsersDetails();
   }, [stockDispatch]);
 
-  const handleDelete = async ({ val }) => {
-    setConfirmDialog({
-      ...confirmDialog,
-      isOpen: false,
-    });
-    try {
-      setLoadingDialog({ isOpen: true });
-      const response = await axiosPrivate.delete(
-        `/api/inventory/delete/${val.lotNum}`
-      );
-      const json = await response.data;
-      if (response.status === 200) {
-        console.log(response.data.message);
-        stockDispatch({ type: "DELETE_STOCK", payload: json });
-        setSuccessDialog({
-          isOpen: true,
-          message: `Item ${
-            val.lotNum + " - " + val?.genericName
-          } has been Deleted!`,
-        });
-      }
-      setLoadingDialog({ isOpen: false });
-    } catch (error) {
-      setLoadingDialog({ isOpen: false });
-      if (!error?.response) {
-        setErrorDialog({
-          isOpen: true,
-          message: `No server response`,
-        });
-      } else if (error.response.status === 400) {
-        setErrorDialog({
-          isOpen: true,
-          message: `${error.response.data.message}`,
-        });
-        console.log(error.response.data.message);
-      } else if (error.response.status === 404) {
-        setErrorDialog({
-          isOpen: true,
-          message: `${error.response.data.message}`,
-        });
-        console.log(error.response.data.message);
-      } else if (error.response.status === 403) {
-        setErrorDialog({
-          isOpen: true,
-          message: `${error.response.data.message}`,
-        });
-        navigate("/login", { state: { from: location }, replace: true });
-      } else if (error.response.status === 500) {
-        setErrorDialog({
-          isOpen: true,
-          message: `${error.response.data.message}`,
-        });
-        console.log(error.response.data.message);
-      } else {
-        setErrorDialog({
-          isOpen: true,
-          message: `${error}`,
-        });
-        console.log(error);
-      }
-    }
-  };
-  const toggleStatus = async ({ val }) => {
-    setConfirmDialog({
-      ...confirmDialog,
-      isOpen: false,
-    });
-    let newStatus = val.status;
-    val.status === true
-      ? (newStatus = false)
-      : val.status === false
-      ? (newStatus = true)
-      : (newStatus = false);
-    if (val.status === true) newStatus = false;
-
-    try {
-      setLoadingDialog({ isOpen: true });
-
-      const response = await axiosPrivate.patch(
-        `/api/inventory/update/status/${val?.lotNum}`,
-        JSON.stringify({ status: newStatus })
-      );
-      if (response.status === 200) {
-        const response2 = await axiosPrivate.get("/api/inventory");
-        if (response2?.status === 200) {
-          const json = await response2.data;
-
-          stockDispatch({ type: "SET_STOCKS", payload: json });
-          setSuccessDialog({
-            isOpen: true,
-            message: `Item ${val.lotNum} has been archived!`,
-          });
-        }
-      }
-      setLoadingDialog({ isOpen: false });
-    } catch (error) {
-      console.log("🚀 ~ file: User.jsx:169 ~ toggleStatus ~ error", error);
-      setLoadingDialog({ isOpen: false });
-      if (!error?.response) {
-        setErrorDialog({
-          isOpen: true,
-          message: `No server response`,
-        });
-      } else if (error.response.status === 400) {
-        setErrorDialog({
-          isOpen: true,
-          message: `${error.response.data.message}`,
-        });
-        console.log(error.response.data.message);
-      } else if (error.response.status === 404) {
-        setErrorDialog({
-          isOpen: true,
-          message: `${error.response.data.message}`,
-        });
-        console.log(error.response.data.message);
-      } else if (error.response.status === 403) {
-        setErrorDialog({
-          isOpen: true,
-          message: `${error.response.data.message}`,
-        });
-        navigate("/login", { state: { from: location }, replace: true });
-      } else if (error.response.status === 500) {
-        setErrorDialog({
-          isOpen: true,
-          message: `${error.response.data.message}`,
-        });
-        console.log(error.response.data.message);
-      } else {
-        setErrorDialog({
-          isOpen: true,
-          message: `${error}`,
-        });
-        console.log(error);
-      }
-    }
-  };
-
   const columns = [
     {
       field: "lotNum",
       headerName: "Lot Number",
-      width: 200,
+      width: 250,
       align: "center",
       headerAlign: "center",
       renderCell: (params) => {
@@ -301,47 +166,9 @@ const Inventory = () => {
       width: 200,
       valueFormatter: (params) => (params?.value ? params?.value : "-"),
     },
-    { field: "access", headerName: "Access", width: 150 },
-    { field: "classification", headerName: "Classification", width: 150 },
+    { field: "classification", headerName: "Classification", width: 200 },
     { field: "quantity", headerName: "Quantity", width: 150 },
-    { field: "supplier", headerName: "Supplier", width: 150 },
-    {
-      field: "createdBy",
-      headerName: "Created By",
-      width: 200,
-      align: "center",
-      headerAlign: "center",
-      renderCell: (params) => {
-        return (
-          <Box display="flex" gap={2}>
-            <Link
-              to={`/admin/user/profile/${params?.value}`}
-              style={{
-                alignItems: "center",
-                textDecoration: "none",
-              }}
-            >
-              <Paper
-                sx={{
-                  padding: "2px 10px",
-                  borderRadius: "5px",
-                  display: "flex",
-                  justifyContent: "center",
-                  backgroundColor: colors.whiteOnly[500],
-                  alignItems: "center",
-                }}
-              >
-                <Typography
-                  sx={{ fontSize: "11pt", color: colors.blackOnly[500] }}
-                >
-                  {params?.value}
-                </Typography>
-              </Paper>
-            </Link>
-          </Box>
-        );
-      },
-    },
+
     {
       field: "createdAt",
       headerName: "Date Created",
@@ -356,100 +183,19 @@ const Inventory = () => {
       valueFormatter: (params) =>
         format(new Date(params?.value), "hh:mm a - MMMM dd, yyyy"),
     },
-    {
-      field: "status",
-      headerName: "Status",
-      width: 175,
-      sortable: false,
-      align: "center",
-      headerAlign: "center",
-      renderCell: (params) => {
-        return (
-          <>
-            {auth.userType === "admin" && (
-              <ButtonBase
-                onClick={() => {
-                  setValidateDialog({
-                    isOpen: true,
-                    onConfirm: () => {
-                      setConfirmDialog({
-                        isOpen: true,
-                        title: `Are you sure to change status of item ${
-                          params?.row?.lotNum + " - " + params?.row?.genericName
-                        }? `,
-                        onConfirm: () => {
-                          toggleStatus({ val: params?.row });
-                        },
-                      });
-                    },
-                  });
-                }}
-              >
-                {params?.value === true ? (
-                  <Paper_Active icon={<CheckCircle />} title={"active"} />
-                ) : (
-                  <Paper_Active icon={<Cancel />} title={"inactive"} />
-                )}
-              </ButtonBase>
-            )}
-          </>
-        );
-      },
-    },
-    {
-      field: "_id",
-      headerName: "Action",
-      width: 175,
-      sortable: false,
-      align: "center",
-      headerAlign: "center",
-      renderCell: (params) => {
-        return (
-          <Box sx={{ display: "flex", gap: 2 }}>
-            <Link
-              to={`/admin/inventory/edit/${params.row.lotNum}`}
-              style={{ textDecoration: "none" }}
-            >
-              <Paper_Icon
-                color={`${colors.primary[500]}`}
-                icon={<EditOutlined />}
-              />
-            </Link>
-            {auth.userType === "admin" && (
-              <ButtonBase
-                onClick={(event) => {
-                  handleCellClick(event, params);
-                }}
-              >
-                <Paper_Icon icon={<DeleteOutline />} color={`red`} />
-              </ButtonBase>
-            )}
-          </Box>
-        );
-      },
-    },
   ];
-  const handleCellClick = (event, params) => {
-    event.stopPropagation();
-    setValidateDialog({
-      isOpen: true,
-      onConfirm: () => {
-        setConfirmDialog({
-          isOpen: true,
-          title: `Are you sure to delete item ${
-            params?.row?.lotNum + " - " + params?.row?.genericName
-          }`,
-          message: `This action is irreversible!`,
-          onConfirm: () => {
-            handleDelete({ val: params.row });
-          },
-        });
-      },
-    });
-  };
 
   return (
-    <Box className="container-layout_body_contents">
+    <Box
+      className="container-page"
+      sx={{
+        flexDirection: "column",
+        paddingLeft: 5,
+        paddingRight: 5,
+        background:
+          "linear-gradient(180deg, rgba(124,223,184,0.5) 0%, rgba(255,255,255,1) 25%)",
+      }}
+    >
       <ConfirmDialogue
         confirmDialog={confirmDialog}
         setConfirmDialog={setConfirmDialog}
@@ -470,6 +216,7 @@ const Inventory = () => {
         loadingDialog={loadingDialog}
         setLoadingDialog={setLoadingDialog}
       />
+      <Navbar />
 
       <Paper
         elevation={2}
@@ -502,7 +249,7 @@ const Inventory = () => {
                 textTransform: "uppercase",
               }}
             >
-              Inventory
+              Public Inventory
             </Typography>
           </Box>
           <Box
@@ -608,4 +355,4 @@ const Inventory = () => {
   );
 };
 
-export default Inventory;
+export default InventoryPublic;

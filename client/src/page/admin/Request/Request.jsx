@@ -104,7 +104,7 @@ const Request = () => {
             >
               <Paper
                 sx={{
-                  padding: "2px 20px",
+                  padding: "2px 10px",
                   borderRadius: "5px",
                   display: "flex",
                   justifyContent: "center",
@@ -112,7 +112,9 @@ const Request = () => {
                   alignItems: "center",
                 }}
               >
-                <Typography sx={{ color: colors.blackOnly[500] }}>
+                <Typography
+                  sx={{ fontSize: "11pt", color: colors.blackOnly[500] }}
+                >
                   {params?.value}
                 </Typography>
               </Paper>
@@ -173,7 +175,9 @@ const Request = () => {
         return (
           <>
             <ButtonBase
-              disabled={params?.row === "denied"}
+              disabled={
+                params?.value === "denied" || params?.value === "accepted"
+              }
               onClick={() => {
                 setValidateDialog({
                   isOpen: true,
@@ -206,29 +210,6 @@ const Request = () => {
                 <Paper_Status icon={<AccessTime />} title={"pending"} />
               )}
             </ButtonBase>
-          </>
-        );
-      },
-    },
-    {
-      field: "_id",
-      headerName: "Action",
-      width: 175,
-      sortable: false,
-      align: "center",
-      headerAlign: "center",
-      renderCell: (params) => {
-        return (
-          <>
-            {auth.userType === "admin" && (
-              <ButtonBase
-                onClick={(event) => {
-                  handleCellClick(event, params);
-                }}
-              >
-                <Paper_Icon icon={<DeleteOutline />} color={`red`} />
-              </ButtonBase>
-            )}
           </>
         );
       },
@@ -309,7 +290,33 @@ const Request = () => {
             `/api/request/update/status/${val?.reqID}`,
             JSON.stringify({ status })
           );
-          toggleStatus;
+          if (response.status === 200) {
+            const response = await axiosPrivate.get("/api/request");
+            if (response.status === 200) {
+              const json = await response.data;
+              console.log(json);
+              requestDispatch({ type: "SET_REQUESTS", payload: json });
+              setSuccessDialog({
+                isOpen: true,
+                message: `Request ${val.reqID} ${
+                  status === "accepted"
+                    ? "has been accepted!"
+                    : "has been denied!"
+                }`,
+              });
+            }
+          }
+        }
+      } else {
+        const apiTransact = await axiosPrivate.post(
+          "/api/transaction/create",
+          JSON.stringify(data)
+        );
+        if (apiTransact.status === 201) {
+          const response = await axiosPrivate.patch(
+            `/api/request/update/status/${val?.reqID}`,
+            JSON.stringify({ status })
+          );
           if (response.status === 200) {
             const response = await axiosPrivate.get("/api/request");
             if (response.status === 200) {
@@ -424,7 +431,7 @@ const Request = () => {
               variant="h2"
               fontWeight="bold"
               sx={{
-                borderLeft: `5px solid ${colors.primary[900]}`,
+                borderLeft: `5px solid ${colors.secondary[500]}`,
                 paddingLeft: 2,
                 textTransform: "uppercase",
               }}

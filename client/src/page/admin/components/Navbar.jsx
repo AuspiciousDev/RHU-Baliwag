@@ -148,7 +148,7 @@ const Navbar = () => {
                 transform: "rotate(360deg)",
               },
             },
-            color: colors.primary[900],
+            color: colors.secondary[500],
           },
         }}
         onClick={handleClick}

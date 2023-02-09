@@ -143,7 +143,7 @@ const Transaction = () => {
             >
               <Paper
                 sx={{
-                  padding: "2px 20px",
+                  padding: "2px 10px",
                   borderRadius: "5px",
                   display: "flex",
                   justifyContent: "center",
@@ -151,7 +151,9 @@ const Transaction = () => {
                   alignItems: "center",
                 }}
               >
-                <Typography sx={{ color: colors.blackOnly[500] }}>
+                <Typography
+                  sx={{ fontSize: "11pt", color: colors.blackOnly[500] }}
+                >
                   {params?.value}
                 </Typography>
               </Paper>
@@ -178,7 +180,7 @@ const Transaction = () => {
             >
               <Paper
                 sx={{
-                  padding: "2px 20px",
+                  padding: "2px 10px",
                   borderRadius: "5px",
                   display: "flex",
                   justifyContent: "center",
@@ -186,7 +188,9 @@ const Transaction = () => {
                   alignItems: "center",
                 }}
               >
-                <Typography sx={{ color: colors.blackOnly[500] }}>
+                <Typography
+                  sx={{ fontSize: "11pt", color: colors.blackOnly[500] }}
+                >
                   {params?.value}
                 </Typography>
               </Paper>
@@ -213,7 +217,7 @@ const Transaction = () => {
             >
               <Paper
                 sx={{
-                  padding: "2px 20px",
+                  padding: "2px 10px",
                   borderRadius: "5px",
                   display: "flex",
                   justifyContent: "center",
@@ -221,7 +225,9 @@ const Transaction = () => {
                   alignItems: "center",
                 }}
               >
-                <Typography sx={{ color: colors.blackOnly[500] }}>
+                <Typography
+                  sx={{ fontSize: "11pt", color: colors.blackOnly[500] }}
+                >
                   {params?.value}
                 </Typography>
               </Paper>
@@ -389,7 +395,7 @@ const Transaction = () => {
               variant="h2"
               fontWeight="bold"
               sx={{
-                borderLeft: `5px solid ${colors.primary[900]}`,
+              borderLeft: `5px solid ${colors.secondary[500]}`,
                 paddingLeft: 2,
                 textTransform: "uppercase",
               }}

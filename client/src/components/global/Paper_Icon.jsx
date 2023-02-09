@@ -9,7 +9,7 @@ const Paper_Icon = (props) => {
   return (
     <Paper
       sx={{
-        padding: "0.5em 1em",
+        padding: "2px 10px",
         borderRadius: "20px",
         display: "flex",
         justifyContent: "center",

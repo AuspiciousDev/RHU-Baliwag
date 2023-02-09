@@ -12,7 +12,7 @@ const Paper_Active = (props) => {
         <Paper
           sx={{
             display: "flex",
-            padding: "5px 10px",
+            padding: "2px 10px",
             backgroundColor: colors.secondary[500],
             color: colors.whiteOnly[500],
             borderRadius: "20px",
@@ -30,7 +30,7 @@ const Paper_Active = (props) => {
         <Paper
           sx={{
             display: "flex",
-            padding: "5px 10px",
+            padding: "2px 10px",
             backgroundColor: colors.redDark[500],
             color: colors.whiteOnly[500],
             borderRadius: "20px",

@@ -34,7 +34,7 @@ const Navbar = () => {
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
             <img src={logo} alt="" style={{ width: "50px" }} />
             <Typography variant="h3" textTransform="uppercase" color="black">
-              Baliwag RHU
+              RHU Baliwag Inventory System
             </Typography>
           </Box>
         </Link>
@@ -43,9 +43,9 @@ const Navbar = () => {
       <Box sx={{ justifyContent: "center", alignItems: "center", gap: 6 }}>
         <PaperLinks title="Home" to="/" />
         <Divider orientation="vertical" sx={{ height: "35px" }} />
-        <PaperLinks title="Request" to="request" />
+        <PaperLinks title="Request" to="/public/request" />
         <Divider orientation="vertical" sx={{ height: "35px" }} />
-        <PaperLinks title="Inventory" to="inventory" />
+        <PaperLinks title="Inventory" to="/public/inventory" />
       </Box>
       <Box sx={{ justifyContent: "flex-end", alignItems: "center", gap: 3 }}>
         <Link to="/login">

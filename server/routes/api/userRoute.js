@@ -8,5 +8,5 @@ router.post("/create", userController.createDoc);
 router.patch("/update/:username", userController.updateDocByID);
 router.patch("/status/:username", userController.toggleDocStatus);
 router.delete("/delete/:username", userController.deleteDocByID);
-
+router.patch("/update/img/:username", userController.updateEmployeeIMG);
 module.exports = router;

@@ -175,7 +175,7 @@ const Restock = () => {
     { field: "restockedBy", headerName: "Restocked By", width: 150 },
     {
       field: "deliveryDate",
-      headerName: "Delivery Date",
+      headerName: "Restock Date",
       width: 240,
       valueFormatter: (params) =>
         format(new Date(params?.value), "hh:mm a - MMMM dd, yyyy"),
@@ -246,7 +246,7 @@ const Restock = () => {
               variant="h2"
               fontWeight="bold"
               sx={{
-                borderLeft: `5px solid ${colors.primary[900]}`,
+                borderLeft: `5px solid ${colors.secondary[500]}`,
                 paddingLeft: 2,
                 textTransform: "uppercase",
               }}

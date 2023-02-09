@@ -9,13 +9,7 @@ import {
   Box,
   Button,
   ButtonBase,
-  Checkbox,
-  FormControl,
-  FormControlLabel,
-  InputLabel,
-  MenuItem,
   Paper,
-  Select,
   Table,
   TableBody,
   TableCell,
@@ -36,17 +30,17 @@ import {
   DeleteOutline,
 } from "@mui/icons-material";
 import { tokens } from "../../../theme";
-import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import axios from "../../../api/axios";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
 import { useInventoriesContext } from "../../../hooks/useInventoryContext";
-const RequestCreate = () => {
+import Navbar from "../../public/components/Navbar";
+const RequestCreatePublic = () => {
   const isLetters = (str) => /^[A-Za-z\s]*$/.test(str);
   const isNumber = (str) => /^[0-9]*$/.test(str);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
-  const axiosPrivate = useAxiosPrivate();
   const { auth } = useAuth();
   const { stocks, stockDispatch } = useInventoriesContext();
 
@@ -101,7 +95,7 @@ const RequestCreate = () => {
       try {
         setLoadingDialog({ isOpen: true });
 
-        const response = await axiosPrivate.get("/api/inventory");
+        const response = await axios.get("/api/public/inventory");
         if (response.status === 200) {
           const json = await response.data;
           console.log(json);
@@ -162,8 +156,8 @@ const RequestCreate = () => {
     };
 
     try {
-      const response = await axiosPrivate.post(
-        "/api/request/create",
+      const response = await axios.post(
+        "/api/public/request/create",
         JSON.stringify(data)
       );
       if (response?.status === 201) {
@@ -274,7 +268,16 @@ const RequestCreate = () => {
     setItems(newItems);
   };
   return (
-    <Box className="container-layout_body_contents">
+    <Box
+      className="container-page"
+      sx={{
+        flexDirection: "column",
+        paddingLeft: 5,
+        paddingRight: 5,
+        background:
+          "linear-gradient(180deg, rgba(124,223,184,0.5) 0%, rgba(255,255,255,1) 25%)",
+      }}
+    >
       <ConfirmDialogue
         confirmDialog={confirmDialog}
         setConfirmDialog={setConfirmDialog}
@@ -295,7 +298,7 @@ const RequestCreate = () => {
         loadingDialog={loadingDialog}
         setLoadingDialog={setLoadingDialog}
       />
-
+      <Navbar />
       <Paper
         elevation={2}
         sx={{
@@ -707,4 +710,4 @@ const RequestCreate = () => {
   );
 };
 
-export default RequestCreate;
+export default RequestCreatePublic;

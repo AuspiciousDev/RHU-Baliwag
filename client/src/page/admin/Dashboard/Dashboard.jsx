@@ -275,7 +275,7 @@ const ADMIN_Dashboard = () => {
               variant="h2"
               fontWeight="bold"
               sx={{
-                borderLeft: `5px solid ${colors.primary[900]}`,
+                borderLeft: `5px solid ${colors.secondary[500]}`,
                 paddingLeft: 2,
               }}
             >
