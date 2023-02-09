@@ -62,7 +62,6 @@ const InventoryPublic = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
-  const axiosPrivate = useAxiosPrivate();
   const { auth } = useAuth();
   const { stocks, stockDispatch } = useInventoriesContext();
 

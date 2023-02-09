@@ -90,7 +90,7 @@ const ForgotPassword = () => {
         setLoadingDialog({ isOpen: true });
 
         const forgotPass = await axios.post(
-          "auth/forgot-password",
+          "/api/auth/forgot-password",
           JSON.stringify({ email }),
           {
             headers: { "Content-Type": "application/json" },

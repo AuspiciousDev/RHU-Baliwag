@@ -4,7 +4,8 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const createToken = require("../helper/createToken");
 const sendMail = require("../helper/sendMail");
-
+const isEmail = (str) =>
+  /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(str);
 const authController = {
   handleLogin: async (req, res) => {
     try {

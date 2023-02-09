@@ -30,10 +30,11 @@ import {
   DeleteOutline,
 } from "@mui/icons-material";
 import { tokens } from "../../../theme";
-import axios from "../../../api/axios";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
 import { useInventoriesContext } from "../../../hooks/useInventoryContext";
+import axios from "../../../api/axios";
+
 import Navbar from "../../public/components/Navbar";
 const RequestCreatePublic = () => {
   const isLetters = (str) => /^[A-Za-z\s]*$/.test(str);
@@ -95,7 +96,10 @@ const RequestCreatePublic = () => {
       try {
         setLoadingDialog({ isOpen: true });
 
-        const response = await axios.get("/api/public/inventory");
+        const response = await axios.get("/api/public/inventory", {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        });
         if (response.status === 200) {
           const json = await response.data;
           console.log(json);
@@ -330,7 +334,7 @@ const RequestCreatePublic = () => {
                 textTransform: "uppercase",
               }}
             >
-              Request &#62; Create
+              Public Request
             </Typography>
           </Box>
         </Box>

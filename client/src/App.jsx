@@ -41,6 +41,7 @@ import RequestCreate from "./page/admin/Request/RequestCreate";
 import RequestDetails from "./page/admin/Request/RequestDetails";
 import TransactionsDetails from "./page/admin/Transaction/TransactionDetails";
 import InventoryEdit from "./page/admin/Inventory/InventoryEdit";
+import ResetPassword from "./page/public/ResetPassword";
 
 const USER_TYPE = {
   ADMIN: "admin",
@@ -67,7 +68,10 @@ function App() {
             {/* <Route path="/register" element={""} />
               <Route path="unauthorized" element={""} />
               */}
-            <Route path="auth/reset-password/:resetToken" element={""} />
+            <Route
+              path="auth/reset-password/:resetToken"
+              element={<ResetPassword />}
+            />
 
             <Route path="*" element={<NotFound404 />} />
             <Route element={<PersistLogin />}>
