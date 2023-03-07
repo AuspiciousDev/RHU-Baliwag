@@ -3,10 +3,9 @@ const Schema = mongoose.Schema;
 
 const schema = new Schema(
   {
-    medicineID: {
+    medID: {
       type: String,
       required: true,
-      lowercase: true,
     },
     genericName: {
       type: String,
@@ -21,10 +20,7 @@ const schema = new Schema(
       type: String,
       required: true,
     },
-    usage: {
-      type: String,
-      required: true,
-    },
+
     quantity: {
       type: Number,
       required: true,

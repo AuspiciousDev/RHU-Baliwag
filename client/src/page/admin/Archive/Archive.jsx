@@ -220,7 +220,7 @@ const Archive = () => {
       setLoadingDialog({ isOpen: true });
 
       const response = await axiosPrivate.patch(
-        `/api/inventory/update/status/${val?.lotNum}`,
+        `/api/inventory/update/status/${val?.medID}`,
         JSON.stringify({ status: newStatus })
       );
       if (response.status === 200) {
@@ -231,7 +231,11 @@ const Archive = () => {
           stockDispatch({ type: "SET_STOCKS", payload: json });
           setSuccessDialog({
             isOpen: true,
-            message: `Item ${val.lotNum} has been archived!`,
+            message: `Item ${val.medID} ${
+              newStatus === true
+                ? "has been un-archived!"
+                : "has been archived!"
+            }`,
           });
         }
       }
@@ -280,6 +284,20 @@ const Archive = () => {
 
   const columns = [
     {
+      field: "medID",
+      headerName: "Medicine ID",
+      width: 200,
+      align: "center",
+      headerAlign: "center",
+      renderCell: (params) => {
+        return (
+          <Typography textTransform="uppercase" fontWeight={600}>
+            {params.value}
+          </Typography>
+        );
+      },
+    },
+    {
       field: "lotNum",
       headerName: "Lot Number",
       width: 200,
@@ -294,32 +312,114 @@ const Archive = () => {
       },
     },
 
-    { field: "genericName", headerName: "Generic Name", width: 200 },
+    {
+      field: "genericName",
+      headerName: "Generic Name",
+      align: "center",
+      headerAlign: "center",
+      width: 200,
+    },
     {
       field: "brandName",
       headerName: "Brand Name",
+      align: "center",
+      headerAlign: "center",
       width: 200,
       valueFormatter: (params) => (params?.value ? params?.value : "-"),
     },
-    { field: "access", headerName: "Access", width: 150 },
-    { field: "classification", headerName: "Classification", width: 150 },
-    { field: "quantity", headerName: "Quantity", width: 150 },
-    { field: "supplier", headerName: "Supplier", width: 150 },
-    { field: "createdBy", headerName: "Created By", width: 150 },
-
+    {
+      field: "access",
+      headerName: "Access",
+      align: "center",
+      headerAlign: "center",
+      width: 150,
+    },
+    {
+      field: "quantity",
+      headerName: "Quantity",
+      align: "center",
+      headerAlign: "center",
+      width: 150,
+    },
+    {
+      field: "supplier",
+      headerName: "Supplier",
+      align: "center",
+      headerAlign: "center",
+      width: 150,
+    },
+    {
+      field: "createdBy",
+      headerName: "Created By",
+      width: 150,
+      align: "center",
+      headerAlign: "center",
+      renderCell: (params) => {
+        return (
+          <Box display="flex" gap={2}>
+            <Link
+              to={`/admin/user/profile/${params?.value}`}
+              style={{
+                alignItems: "center",
+                textDecoration: "none",
+              }}
+            >
+              <Paper
+                sx={{
+                  padding: "2px 10px",
+                  borderRadius: "5px",
+                  display: "flex",
+                  justifyContent: "center",
+                  backgroundColor: colors.whiteOnly[500],
+                  alignItems: "center",
+                }}
+              >
+                <Typography
+                  sx={{ fontSize: "11pt", color: colors.blackOnly[500] }}
+                >
+                  {params?.value}
+                </Typography>
+              </Paper>
+            </Link>
+          </Box>
+        );
+      },
+    },
+    {
+      field: "manufactureDate",
+      headerName: "Manufacture Date",
+      align: "center",
+      headerAlign: "center",
+      width: 180,
+      valueFormatter: (params) =>
+        format(new Date(params?.value), "MMMM dd, yyyy"),
+    },
+    {
+      field: "expiryDate",
+      headerName: "Expiration Date",
+      align: "center",
+      headerAlign: "center",
+      width: 180,
+      valueFormatter: (params) =>
+        format(new Date(params?.value), "MMMM dd, yyyy"),
+    },
     {
       field: "createdAt",
       headerName: "Date Created",
-      width: 240,
+      align: "center",
+      headerAlign: "center",
+      width: 180,
       valueFormatter: (params) =>
-        format(new Date(params?.value), "hh:mm a - MMMM dd, yyyy"),
+        format(new Date(params?.value), "MMMM dd, yyyy"),
     },
     {
       field: "updatedAt",
       headerName: "Date Modified",
-      width: 240,
+      align: "center",
+      headerAlign: "center",
+      width: 180,
       valueFormatter: (params) =>
-        format(new Date(params?.value), "hh:mm a - MMMM dd, yyyy"),
+        format(new Date(params?.value), "MMMM dd, yyyy"),
     },
     {
       field: "status",
@@ -340,7 +440,7 @@ const Archive = () => {
                       setConfirmDialog({
                         isOpen: true,
                         title: `Are you sure to change status of item ${
-                          params?.row?.lotNum + " - " + params?.row?.genericName
+                          params?.row?.medID + " - " + params?.row?.genericName
                         }? `,
                         onConfirm: () => {
                           toggleStatus({ val: params?.row });
@@ -393,7 +493,7 @@ const Archive = () => {
         setConfirmDialog({
           isOpen: true,
           title: `Are you sure to delete item ${
-            params?.row?.lotNum + " - " + params?.row?.genericName
+            params?.row?.medID + " - " + params?.row?.genericName
           }`,
           message: `This action is irreversible!`,
           onConfirm: () => {
@@ -542,6 +642,7 @@ const Archive = () => {
             initialState={{
               columns: {
                 columnVisibilityModel: {
+                  lotNum: false,
                   createdAt: false,
                   updatedAt: false,
                   _id: false,

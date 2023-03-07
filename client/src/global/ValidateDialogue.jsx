@@ -235,17 +235,18 @@ const ValidateDialogue = (props) => {
                     gap: 2,
                   }}
                 >
+                  <Button fullWidth variant="contained" onClick={handleClose2}>
+                    Cancel
+                  </Button>
                   <Button
                     fullWidth
                     disabled={!password || passwordError}
                     color="secondary"
                     variant="contained"
                     type="submit"
+                    sx={{ color: "white" }}
                   >
                     Confirm
-                  </Button>
-                  <Button fullWidth variant="contained" onClick={handleClose2}>
-                    Cancel
                   </Button>
                 </DialogActions>
               </Box>

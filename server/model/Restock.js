@@ -9,10 +9,7 @@ const schema = new Schema(
       required: true,
       auto: true,
     },
-    medicineID: {
-      type: String,
-      required: true,
-    },
+
     lotNum: {
       type: String,
       required: true,

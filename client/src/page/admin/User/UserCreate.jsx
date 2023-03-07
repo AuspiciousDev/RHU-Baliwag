@@ -26,7 +26,6 @@ import { useUsersContext } from "../../../hooks/useUserContext";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DesktopDatePicker } from "@mui/x-date-pickers";
-import { Email } from "@mui/icons-material";
 const UserCreate = () => {
   const isLetters = (str) => /^[A-Za-z\s]*$/.test(str);
   const isNumber = (str) => /^[0-9]*$/.test(str);

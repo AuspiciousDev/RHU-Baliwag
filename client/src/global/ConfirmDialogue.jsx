@@ -62,6 +62,7 @@ const ConfirmDialogue = (props) => {
           color="secondary"
           variant="contained"
           onClick={confirmDialog.onConfirm}
+          sx={{ color: "white" }}
         >
           Confirm
         </Button>

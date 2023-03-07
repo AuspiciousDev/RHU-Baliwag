@@ -149,7 +149,7 @@ const Inventory = () => {
     try {
       setLoadingDialog({ isOpen: true });
       const response = await axiosPrivate.delete(
-        `/api/inventory/delete/${val.lotNum}`
+        `/api/inventory/delete/${val.medID}`
       );
       const json = await response.data;
       if (response.status === 200) {
@@ -158,7 +158,7 @@ const Inventory = () => {
         setSuccessDialog({
           isOpen: true,
           message: `Item ${
-            val.lotNum + " - " + val?.genericName
+            val.medID + " - " + val?.genericName
           } has been Deleted!`,
         });
       }
@@ -220,7 +220,7 @@ const Inventory = () => {
       setLoadingDialog({ isOpen: true });
 
       const response = await axiosPrivate.patch(
-        `/api/inventory/update/status/${val?.lotNum}`,
+        `/api/inventory/update/status/${val?.medID}`,
         JSON.stringify({ status: newStatus })
       );
       if (response.status === 200) {
@@ -231,7 +231,7 @@ const Inventory = () => {
           stockDispatch({ type: "SET_STOCKS", payload: json });
           setSuccessDialog({
             isOpen: true,
-            message: `Item ${val.lotNum} has been archived!`,
+            message: `Item ${val.medID} has been archived!`,
           });
         }
       }
@@ -280,6 +280,21 @@ const Inventory = () => {
 
   const columns = [
     {
+      field: "medID",
+      headerName: "Medicine ID",
+      width: 200,
+      align: "center",
+      headerAlign: "center",
+      renderCell: (params) => {
+        return (
+          <Typography textTransform="uppercase" fontWeight={600}>
+            {params.value}
+          </Typography>
+        );
+      },
+    },
+
+    {
       field: "lotNum",
       headerName: "Lot Number",
       width: 200,
@@ -294,17 +309,42 @@ const Inventory = () => {
       },
     },
 
-    { field: "genericName", headerName: "Generic Name", width: 200 },
+    {
+      field: "genericName",
+      headerName: "Generic Name",
+      align: "center",
+      headerAlign: "center",
+      width: 200,
+    },
     {
       field: "brandName",
       headerName: "Brand Name",
       width: 200,
+      align: "center",
+      headerAlign: "center",
       valueFormatter: (params) => (params?.value ? params?.value : "-"),
     },
-    { field: "access", headerName: "Access", width: 150 },
-    { field: "classification", headerName: "Classification", width: 150 },
-    { field: "quantity", headerName: "Quantity", width: 150 },
-    { field: "supplier", headerName: "Supplier", width: 150 },
+    {
+      field: "access",
+      headerName: "Access",
+      align: "center",
+      headerAlign: "center",
+      width: 150,
+    },
+    {
+      field: "quantity",
+      headerName: "Quantity",
+      align: "center",
+      headerAlign: "center",
+      width: 150,
+    },
+    {
+      field: "supplier",
+      headerName: "Supplier",
+      align: "center",
+      headerAlign: "center",
+      width: 150,
+    },
     {
       field: "createdBy",
       headerName: "Created By",
@@ -343,18 +383,40 @@ const Inventory = () => {
       },
     },
     {
+      field: "manufactureDate",
+      headerName: "Manufacture Date",
+      align: "center",
+      headerAlign: "center",
+      width: 180,
+      valueFormatter: (params) =>
+        format(new Date(params?.value), "MMMM dd, yyyy"),
+    },
+    {
+      field: "expiryDate",
+      headerName: "Expiration Date",
+      align: "center",
+      headerAlign: "center",
+      width: 180,
+      valueFormatter: (params) =>
+        format(new Date(params?.value), "MMMM dd, yyyy"),
+    },
+    {
       field: "createdAt",
       headerName: "Date Created",
-      width: 240,
+      align: "center",
+      headerAlign: "center",
+      width: 180,
       valueFormatter: (params) =>
-        format(new Date(params?.value), "hh:mm a - MMMM dd, yyyy"),
+        format(new Date(params?.value), "MMMM dd, yyyy"),
     },
     {
       field: "updatedAt",
       headerName: "Date Modified",
-      width: 240,
+      align: "center",
+      headerAlign: "center",
+      width: 180,
       valueFormatter: (params) =>
-        format(new Date(params?.value), "hh:mm a - MMMM dd, yyyy"),
+        format(new Date(params?.value), "MMMM dd, yyyy"),
     },
     {
       field: "status",
@@ -407,7 +469,7 @@ const Inventory = () => {
         return (
           <Box sx={{ display: "flex", gap: 2 }}>
             <Link
-              to={`/admin/inventory/edit/${params.row.lotNum}`}
+              to={`/admin/inventory/edit/${params.row.medID}`}
               style={{ textDecoration: "none" }}
             >
               <Paper_Icon
@@ -586,6 +648,7 @@ const Inventory = () => {
             initialState={{
               columns: {
                 columnVisibilityModel: {
+                  lotNum: false,
                   createdAt: false,
                   updatedAt: false,
                   _id: false,

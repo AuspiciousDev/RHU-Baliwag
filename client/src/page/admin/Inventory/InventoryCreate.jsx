@@ -5,19 +5,13 @@ import SuccessDialogue from "../../../global/SuccessDialogue";
 import ErrorDialogue from "../../../global/ErrorDialogue";
 import ValidateDialogue from "../../../global/ValidateDialogue";
 import LoadingDialogue from "../../../global/LoadingDialogue";
-import { useInventoriesContext } from "../../../hooks/useInventoryContext";
-import { format } from "date-fns-tz";
-import { DataGrid, GridToolbar, GridToolbarContainer } from "@mui/x-data-grid";
-import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
   Box,
   useTheme,
   Paper,
-  Divider,
   Typography,
   Button,
   TextField,
-  InputAdornment,
   FormControl,
   InputLabel,
   Select,
@@ -36,25 +30,28 @@ const InventoryCreate = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  const [medID, setMedID] = useState("");
   const [lotNum, setLotNum] = useState("");
   const [genericName, setGenericName] = useState("");
   const [brandName, setBrandName] = useState("");
   const [access, setAccess] = useState("");
-  const [classification, setClassification] = useState("");
   const [quantity, setQuantity] = useState("");
   const [supplier, setSupplier] = useState("");
-  const [dateOfBirth, setDateOfBirth] = useState(null);
-  const [lotNumError, setLotNumError] = useState(false);
-  const [dateOfBirthError, setDateOfBirthError] = useState(false);
+  const [manufactureDate, setManufactureDate] = useState(null);
+  const [expiryDate, setExpiryDate] = useState(null);
 
-  const handleDate = (newValue) => {
-    if (getAge(newValue) >= 18) {
-      setDateOfBirth(newValue);
-      setDateOfBirthError(false);
-    } else {
-      setDateOfBirth(newValue);
-      setDateOfBirthError(true);
-    }
+  const [medIDError, setMedIDError] = useState(false);
+  const [lotNumError, setLotNumError] = useState(false);
+  const [manufactureDateError, setManufactureDateError] = useState(false);
+  const [expiryDateError, setExpiryDateError] = useState(false);
+
+  const handleManufactureDate = (newValue) => {
+    setManufactureDate(newValue);
+    setManufactureDateError(false);
+  };
+  const handleExpiryDate = (newValue) => {
+    setExpiryDate(newValue);
+    setExpiryDateError(false);
   };
 
   const [confirmDialog, setConfirmDialog] = useState({
@@ -84,18 +81,21 @@ const InventoryCreate = () => {
   });
 
   const clearFields = () => {
+    setMedID("");
     setLotNum("");
     setGenericName("");
     setBrandName("");
     setAccess("");
     setQuantity("");
     setSupplier("");
-    setClassification("");
+    setManufactureDate(null);
+    setExpiryDate(null);
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoadingDialog({ isOpen: true });
     const doc = {
+      medID,
       lotNum,
       genericName,
       brandName,
@@ -103,7 +103,8 @@ const InventoryCreate = () => {
       quantity,
       createdBy: auth.username,
       supplier,
-      classification,
+      manufactureDate,
+      expiryDate,
     };
 
     try {
@@ -117,16 +118,12 @@ const InventoryCreate = () => {
         console.log("response;", json);
         setSuccessDialog({
           isOpen: true,
-          message: `Stock ${lotNum + " - " + genericName} has been Created!`,
+          message: `Stock ${lotNum + " - " + genericName} has been created!`,
         });
         clearFields();
       }
       setLoadingDialog({ isOpen: false });
     } catch (error) {
-      console.log(
-        "🚀 ~ file: UserCreate.jsx:105 ~ handleSubmit ~ error",
-        error
-      );
       setLoadingDialog({ isOpen: false });
       const errMessage = error.response.data.message;
       if (!error?.response) {
@@ -134,7 +131,7 @@ const InventoryCreate = () => {
       } else if (error.response.status === 400) {
         console.log(errMessage);
       } else if (error.response.status === 409) {
-        setLotNumError(true);
+        setMedIDError(true);
         console.log(errMessage);
       } else {
         console.log(error);
@@ -221,14 +218,16 @@ const InventoryCreate = () => {
                 autoComplete="off"
                 variant="outlined"
                 label="Medicine ID"
-                value={lotNum}
-                placeholder="Medicine Lot Number"
+                value={medID}
+                placeholder="Medicine ID"
                 onChange={(e) => {
-                  setLotNum(e.target.value);
-                  setLotNumError(false);
+                  if (isNumber(e.target.value)) {
+                    setMedID(e.target.value);
+                    setMedIDError(false);
+                  }
                 }}
-                error={lotNumError}
-                helperText={lotNumError && "Stock ID already exists!"}
+                error={medIDError}
+                helperText={medIDError && "Stock ID already exists!"}
                 inputProps={{ style: { textTransform: "uppercase" } }}
               />
               <TextField
@@ -246,7 +245,6 @@ const InventoryCreate = () => {
                 helperText={lotNumError && "Stock ID already exists!"}
                 inputProps={{ style: { textTransform: "uppercase" } }}
               />
-              <Box></Box>
               <TextField
                 required
                 autoComplete="off"
@@ -257,7 +255,6 @@ const InventoryCreate = () => {
                 onChange={(e) => {
                   setGenericName(e.target.value);
                 }}
-                inputProps={{ style: { textTransform: "capitalize" } }}
               />
               <TextField
                 autoComplete="off"
@@ -268,21 +265,7 @@ const InventoryCreate = () => {
                 onChange={(e) => {
                   setBrandName(e.target.value);
                 }}
-                inputProps={{ style: { textTransform: "capitalize" } }}
               />
-              <Box></Box>
-              <TextField
-                autoComplete="off"
-                variant="outlined"
-                label="Usage"
-                placeholder="eg. Biogesic, Medicol, Solmux"
-                value={brandName}
-                onChange={(e) => {
-                  setBrandName(e.target.value);
-                }}
-                inputProps={{ style: { textTransform: "capitalize" } }}
-              />
-
               <FormControl required fullWidth>
                 <InputLabel id="demo-simple-select-label">Access</InputLabel>
                 <Select
@@ -308,7 +291,7 @@ const InventoryCreate = () => {
                 onChange={(e) => {
                   setQuantity(e.target.value);
                 }}
-              />
+              />{" "}
               <TextField
                 required
                 type="text"
@@ -319,21 +302,20 @@ const InventoryCreate = () => {
                 onChange={(e) => {
                   setSupplier(e.target.value);
                 }}
-                inputProps={{ style: { textTransform: "capitalize" } }}
               />
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DesktopDatePicker
                   label="Manufactured Date"
                   inputFormat="MM/DD/YYYY"
-                  value={dateOfBirth}
-                  onChange={handleDate}
+                  value={manufactureDate}
+                  onChange={handleManufactureDate}
                   renderInput={(params) => (
                     <TextField
                       required
                       disabled
                       {...params}
-                      error={dateOfBirthError}
-                      helperText={dateOfBirthError ? "Invalid Age" : ""}
+                      autoComplete="off"
+                      error={manufactureDateError}
                     />
                   )}
                 />
@@ -342,15 +324,15 @@ const InventoryCreate = () => {
                 <DesktopDatePicker
                   label="Expiration Date"
                   inputFormat="MM/DD/YYYY"
-                  value={dateOfBirth}
-                  onChange={handleDate}
+                  value={expiryDate}
+                  onChange={handleExpiryDate}
                   renderInput={(params) => (
                     <TextField
                       required
                       disabled
                       {...params}
-                      error={dateOfBirthError}
-                      helperText={dateOfBirthError ? "Invalid Age" : ""}
+                      autoComplete="off"
+                      error={expiryDateError}
                     />
                   )}
                 />

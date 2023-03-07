@@ -95,7 +95,7 @@ function App() {
                   />
                   <Route path="inventory" element={<Inventory />} />
                   <Route
-                    path="inventory/edit/:lotNum"
+                    path="inventory/edit/:medID"
                     element={<InventoryEdit />}
                   />
                   <Route
@@ -119,6 +119,7 @@ function App() {
                     element={<ChangePassword />}
                   />
 
+                  <Route path="archive" element={<Archive />} />
                   <Route path="admin" element={<Admin />} />
                   <Route path="admin/create" element={<AdminCreate />} />
                   <Route
