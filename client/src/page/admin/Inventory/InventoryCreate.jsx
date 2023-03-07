@@ -27,6 +27,9 @@ import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { tokens } from "../../../theme";
 import useAuth from "../../../hooks/useAuth";
 import { axiosPrivate } from "../../../api/axios";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DesktopDatePicker } from "@mui/x-date-pickers";
 const InventoryCreate = () => {
   const isNumber = (str) => /^[0-9]*$/.test(str);
   const { auth } = useAuth();
@@ -39,11 +42,20 @@ const InventoryCreate = () => {
   const [access, setAccess] = useState("");
   const [classification, setClassification] = useState("");
   const [quantity, setQuantity] = useState("");
-  const [walkInQTY, setwalkInQTY] = useState("");
-  const [onlineQTY, setOnlineQTY] = useState("");
   const [supplier, setSupplier] = useState("");
-
+  const [dateOfBirth, setDateOfBirth] = useState(null);
   const [lotNumError, setLotNumError] = useState(false);
+  const [dateOfBirthError, setDateOfBirthError] = useState(false);
+
+  const handleDate = (newValue) => {
+    if (getAge(newValue) >= 18) {
+      setDateOfBirth(newValue);
+      setDateOfBirthError(false);
+    } else {
+      setDateOfBirth(newValue);
+      setDateOfBirthError(true);
+    }
+  };
 
   const [confirmDialog, setConfirmDialog] = useState({
     isOpen: false,
@@ -179,7 +191,7 @@ const InventoryCreate = () => {
               variant="h2"
               fontWeight="bold"
               sx={{
-              borderLeft: `5px solid ${colors.secondary[500]}`,
+                borderLeft: `5px solid ${colors.secondary[500]}`,
                 paddingLeft: 2,
                 textTransform: "uppercase",
               }}
@@ -208,6 +220,21 @@ const InventoryCreate = () => {
                 required
                 autoComplete="off"
                 variant="outlined"
+                label="Medicine ID"
+                value={lotNum}
+                placeholder="Medicine Lot Number"
+                onChange={(e) => {
+                  setLotNum(e.target.value);
+                  setLotNumError(false);
+                }}
+                error={lotNumError}
+                helperText={lotNumError && "Stock ID already exists!"}
+                inputProps={{ style: { textTransform: "uppercase" } }}
+              />
+              <TextField
+                required
+                autoComplete="off"
+                variant="outlined"
                 label="Lot Number"
                 value={lotNum}
                 placeholder="Medicine Lot Number"
@@ -219,6 +246,7 @@ const InventoryCreate = () => {
                 helperText={lotNumError && "Stock ID already exists!"}
                 inputProps={{ style: { textTransform: "uppercase" } }}
               />
+              <Box></Box>
               <TextField
                 required
                 autoComplete="off"
@@ -242,18 +270,19 @@ const InventoryCreate = () => {
                 }}
                 inputProps={{ style: { textTransform: "capitalize" } }}
               />
+              <Box></Box>
               <TextField
-                required
                 autoComplete="off"
                 variant="outlined"
-                label="Classification"
-                value={classification}
-                placeholder="e.g. Analgesic, Antibiotic, Vitamins "
+                label="Usage"
+                placeholder="eg. Biogesic, Medicol, Solmux"
+                value={brandName}
                 onChange={(e) => {
-                  setClassification(e.target.value);
+                  setBrandName(e.target.value);
                 }}
                 inputProps={{ style: { textTransform: "capitalize" } }}
               />
+
               <FormControl required fullWidth>
                 <InputLabel id="demo-simple-select-label">Access</InputLabel>
                 <Select
@@ -292,6 +321,40 @@ const InventoryCreate = () => {
                 }}
                 inputProps={{ style: { textTransform: "capitalize" } }}
               />
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DesktopDatePicker
+                  label="Manufactured Date"
+                  inputFormat="MM/DD/YYYY"
+                  value={dateOfBirth}
+                  onChange={handleDate}
+                  renderInput={(params) => (
+                    <TextField
+                      required
+                      disabled
+                      {...params}
+                      error={dateOfBirthError}
+                      helperText={dateOfBirthError ? "Invalid Age" : ""}
+                    />
+                  )}
+                />
+              </LocalizationProvider>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DesktopDatePicker
+                  label="Expiration Date"
+                  inputFormat="MM/DD/YYYY"
+                  value={dateOfBirth}
+                  onChange={handleDate}
+                  renderInput={(params) => (
+                    <TextField
+                      required
+                      disabled
+                      {...params}
+                      error={dateOfBirthError}
+                      helperText={dateOfBirthError ? "Invalid Age" : ""}
+                    />
+                  )}
+                />
+              </LocalizationProvider>
             </Box>
           </Box>
 
@@ -302,15 +365,6 @@ const InventoryCreate = () => {
             gap={2}
           >
             <Button
-              type="submit"
-              disabled={lotNumError}
-              variant="contained"
-              color="secondary"
-              sx={{ width: "250px", height: "50px" }}
-            >
-              <Typography variant="h5">submit</Typography>
-            </Button>
-            <Button
               type="button"
               variant="contained"
               sx={{ width: "250px", height: "50px" }}
@@ -319,6 +373,17 @@ const InventoryCreate = () => {
               }}
             >
               <Typography variant="h5">clear</Typography>
+            </Button>
+            <Button
+              type="submit"
+              disabled={lotNumError}
+              variant="contained"
+              color="secondary"
+              sx={{ width: "250px", height: "50px" }}
+            >
+              <Typography variant="h5" sx={{ color: "white" }}>
+                submit
+              </Typography>
             </Button>
           </Box>
         </form>

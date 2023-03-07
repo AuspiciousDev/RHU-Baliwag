@@ -52,18 +52,18 @@ const ConfirmDialogue = (props) => {
       >
         <Button
           fullWidth
+          variant="contained"
+          onClick={() => setConfirmDialog({ ...confirmDialog, isOpen: false })}
+        >
+          Cancel
+        </Button>
+        <Button
+          fullWidth
           color="secondary"
           variant="contained"
           onClick={confirmDialog.onConfirm}
         >
           Confirm
-        </Button>
-        <Button
-          fullWidth
-          variant="contained"
-          onClick={() => setConfirmDialog({ ...confirmDialog, isOpen: false })}
-        >
-          Cancel
         </Button>
       </DialogActions>
     </Dialog>

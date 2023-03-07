@@ -27,7 +27,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DesktopDatePicker } from "@mui/x-date-pickers";
 import { Email } from "@mui/icons-material";
-const UserCreate = () => {
+const AdminCreate = () => {
   const isLetters = (str) => /^[A-Za-z\s]*$/.test(str);
   const isNumber = (str) => /^[0-9]*$/.test(str);
   const getAge = (birthDate) =>
@@ -45,14 +45,9 @@ const UserCreate = () => {
   const [middleName, setMiddleName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
-  const [mobile, setMobile] = useState("");
-  const [telephone, setTelephone] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState(null);
   const [gender, setGender] = useState("");
-  const [userType, setUserType] = useState("user");
-  const [address, setAddress] = useState("");
-  const [city, setCity] = useState("");
-  const [province, setProvince] = useState("");
+  const [userType, setUserType] = useState("admin");
 
   const [usernameError, setUsernameError] = useState(false);
   const [emailError, setEmailError] = useState(false);
@@ -97,9 +92,6 @@ const UserCreate = () => {
       email,
       gender,
       userType,
-      address,
-      city,
-      province,
     };
 
     try {
@@ -148,11 +140,6 @@ const UserCreate = () => {
     setLastName("");
     setDateOfBirth(null);
     setGender("");
-    setMobile("");
-    setTelephone("");
-    setAddress("");
-    setCity("");
-    setProvince("");
   };
   return (
     <Box className="container-layout_body_contents">
@@ -199,7 +186,7 @@ const UserCreate = () => {
                 textTransform: "uppercase",
               }}
             >
-              USER &#62; Create
+              admin &#62; Create
             </Typography>
           </Box>
         </Box>
@@ -207,10 +194,55 @@ const UserCreate = () => {
       <Paper elevation={2} sx={{ p: "20px", mt: 2 }}>
         <form onSubmit={handleSubmit} style={{ width: "100%" }}>
           {/* <Typography variant="h5">Registration</Typography> */}
-          <Typography variant="h5" sx={{ margin: "0 0 10px 0" }}>
-            User Information
+          <Box marginBottom="20px">
+            <Typography variant="h5" sx={{ margin: "0 0 10px 0" }}>
+              Employee Information
+            </Typography>
+            <Box
+              sx={{
+                display: "grid",
+                width: "100%",
+                gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr 1fr " },
+                gap: "20px",
+              }}
+            >
+              <TextField
+                required
+                autoComplete="off"
+                variant="outlined"
+                label="Employee ID"
+                value={empID}
+                error={usernameError}
+                placeholder="10 Digit Employee ID"
+                inputProps={{ maxLength: 10 }}
+                onChange={(e) => {
+                  if (isNumber(e.target.value) || "") {
+                    setEmpID(e.target.value);
+                  }
+                }}
+                helperText={usernameError && "Username/email already exists!"}
+              />
+              <TextField
+                required
+                type="email"
+                autoComplete="off"
+                variant="outlined"
+                label="Email"
+                placeholder="Active email address"
+                error={emailError}
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setEmailError(false);
+                }}
+                helperText={emailError && "Username/email already exists!"}
+              />
+            </Box>
+          </Box>
+          <Typography variant="h5" sx={{ margin: "15px 0 10px 0" }}>
+            Personal Information
           </Typography>
-          <Box sx={{ mb: "20px" }}>
+          <Box marginBottom="40px">
             <Box
               sx={{
                 display: "grid",
@@ -274,7 +306,7 @@ const UserCreate = () => {
               />
             </Box>
 
-            <Box>
+            <Box sx={{ mb: "40px" }}>
               <Box
                 sx={{
                   display: "grid",
@@ -319,126 +351,11 @@ const UserCreate = () => {
                   </Select>
                 </FormControl>
               </Box>
+
+              <Box marginTop="20px"></Box>
             </Box>
           </Box>
-          <Box sx={{ mb: "20px" }}>
-            <Typography variant="h5" sx={{ margin: "0 0 10px 0" }}>
-              Contact Information
-            </Typography>
-            <Box
-              sx={{
-                display: "grid",
-                width: "100%",
-                gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr 1fr " },
-                gap: "20px",
-              }}
-            >
-              <TextField
-                required
-                type="email"
-                autoComplete="off"
-                variant="outlined"
-                label="Email"
-                placeholder="Active and valid email address"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                }}
-              />
-              <TextField
-                required
-                autoComplete="off"
-                variant="outlined"
-                label="Mobile Number"
-                value={mobile}
-                placeholder="9 Digit Mobile Number"
-                inputProps={{ maxLength: 9 }}
-                onChange={(e) => {
-                  if (isNumber(e.target.value) || "") {
-                    setMobile(e.target.value);
-                  }
-                }}
-                InputProps={{
-                  startAdornment: (
-                    <>
-                      <Typography>09</Typography>
-                      <Divider
-                        sx={{ height: 28, m: 0.5 }}
-                        orientation="vertical"
-                      />
-                    </>
-                  ),
-                }}
-              />
-              <TextField
-                autoComplete="off"
-                variant="outlined"
-                label="Telephone Number"
-                value={telephone}
-                placeholder="10 Digit Telephone Number"
-                inputProps={{ maxLength: 10 }}
-                onChange={(e) => {
-                  if (isNumber(e.target.value) || "") {
-                    setTelephone(e.target.value);
-                  }
-                }}
-              />
-            </Box>
-          </Box>
-          <Box sx={{ mb: "40px" }}>
-            <Typography variant="h5" sx={{ margin: "0 0 10px 0" }}>
-              Address Information
-            </Typography>
-            <Box
-              sx={{
-                display: "grid",
-                width: "100%",
-                gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr 1fr " },
-                gap: "20px",
-              }}
-            >
-              <TextField
-                required
-                autoComplete="off"
-                variant="outlined"
-                label="Address"
-                placeholder="House number, block no., street name, zone ..."
-                value={address}
-                onChange={(e) => {
-                  setAddress(e.target.value);
-                }}
-                inputProps={{ style: { textTransform: "capitalize" } }}
-              />
-              <TextField
-                required
-                autoComplete="off"
-                variant="outlined"
-                label="City"
-                placeholder="City/Municipality"
-                value={city}
-                onChange={(e) => {
-                  if (isLetters(e.target.value)) {
-                    setCity(e.target.value);
-                  }
-                }}
-                inputProps={{ style: { textTransform: "capitalize" } }}
-              />
-              <TextField
-                required
-                autoComplete="off"
-                variant="outlined"
-                label="Province"
-                placeholder="Bulacan, Pamgpanga, Metro Manila"
-                value={province}
-                onChange={(e) => {
-                  if (isLetters(e.target.value)) {
-                    setProvince(e.target.value);
-                  }
-                }}
-                inputProps={{ style: { textTransform: "capitalize" } }}
-              />
-            </Box>
-          </Box>
+
           <Box
             display="flex"
             sx={{ justifyContent: { xs: "center", sm: "end" } }}
@@ -473,4 +390,4 @@ const UserCreate = () => {
   );
 };
 
-export default UserCreate;
+export default AdminCreate;

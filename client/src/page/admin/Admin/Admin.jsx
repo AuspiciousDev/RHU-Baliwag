@@ -51,7 +51,7 @@ function CustomToolbar() {
   );
 }
 
-const User = () => {
+const Admin = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
@@ -304,7 +304,7 @@ const User = () => {
     },
     {
       field: "username",
-      headerName: "Username",
+      headerName: "Employee ID",
       width: 200,
       align: "center",
       headerAlign: "center",
@@ -317,7 +317,7 @@ const User = () => {
             sx={{ justifyContent: "center" }}
           >
             <Link
-              to={`/admin/user/profile/${params?.value}`}
+              to={`/admin/admin/profile/${params?.value}`}
               style={{
                 alignItems: "center",
                 textDecoration: "none",
@@ -359,6 +359,13 @@ const User = () => {
         } ${params.row.lastName || ""}`,
     },
     { field: "gender", headerName: "Gender", width: 150 },
+    {
+      field: "userType",
+      headerName: "Type",
+      width: 150,
+      align: "center",
+      headerAlign: "center",
+    },
     {
       field: "email",
       headerName: "Email",
@@ -520,7 +527,7 @@ const User = () => {
                 textTransform: "uppercase",
               }}
             >
-              USERS
+              ADMIN
             </Typography>
           </Box>
           <Box
@@ -547,7 +554,7 @@ const User = () => {
                 }}
               >
                 <Typography variant="h6" fontWeight="500">
-                  Add New User
+                  Add Admin
                 </Typography>
               </Button>
             )}
@@ -569,7 +576,7 @@ const User = () => {
               users
                 ? users &&
                   users.filter((filter) => {
-                    return filter.userType === "user";
+                    return filter.userType === "admin";
                   })
                 : []
             }
@@ -608,4 +615,4 @@ const User = () => {
   );
 };
 
-export default User;
+export default Admin;

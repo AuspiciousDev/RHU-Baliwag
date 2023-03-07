@@ -9,60 +9,21 @@ const schema = new Schema(
       required: true,
       auto: true,
     },
-    items: [
-      {
-        lotNum: {
-          type: String,
-          required: true,
-          lowercase: true,
-        },
-        genericName: {
-          type: String,
-          required: true,
-          lowercase: true,
-        },
-        brandName: {
-          type: String,
-          lowercase: true,
-        },
-        quantity: {
-          type: Number,
-          required: true,
-        },
-      },
-    ],
-
-    firstName: {
-      type: String,
-      required: true,
-      lowercase: true,
-    },
-    middleName: {
-      type: String,
-      lowercase: true,
-    },
-    lastName: {
-      type: String,
-      required: true,
-      lowercase: true,
-    },
-    mobile: {
-      type: Number,
-    },
-    email: {
+    prescriptionIMG_URL: {
       type: String,
       required: true,
     },
-    address: {
+    username: {
+      type: String,
+      required: true,
+    },
+    requestType: {
+      type: String,
+      required: true,
+    },
+    actionBy: {
       type: String,
     },
-    city: {
-      type: String,
-    },
-    province: {
-      type: String,
-    },
-
     status: {
       type: String,
       default: "pending",

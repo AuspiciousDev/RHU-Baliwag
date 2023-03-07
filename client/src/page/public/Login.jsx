@@ -85,8 +85,8 @@ const Login = () => {
           });
           from === "/" && userType === "admin"
             ? navigate("/admin", { replace: true })
-            : from === "/" && userType === "distributor"
-            ? navigate("/distributor", { replace: true })
+            : from === "/" && userType === "user"
+            ? navigate("/user", { replace: true })
             : navigate(from, { replace: true });
         }
         localStorage.setItem("newLogin", true);

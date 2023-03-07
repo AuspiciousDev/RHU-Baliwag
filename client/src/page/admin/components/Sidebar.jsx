@@ -29,10 +29,10 @@ import {
   ArchiveOutlined,
   LogoutOutlined,
   DvrOutlined,
-  DescriptionOutlined,
   MoveToInboxOutlined,
   InventoryOutlined,
   WarehouseOutlined,
+  AdminPanelSettingsOutlined,
 } from "@mui/icons-material";
 import "react-pro-sidebar/dist/css/styles.css";
 import logo from "../../../assets/logo.png";
@@ -312,6 +312,13 @@ const Sidebar = () => {
             selected={selected}
             setSelected={setSelected}
           />
+          <Item
+            title="Admin"
+            to="admin"
+            icon={<AdminPanelSettingsOutlined />}
+            selected={selected}
+            setSelected={setSelected}
+          />
           {!isCollapsed ? (
             <Typography
               variant="h6"
@@ -344,7 +351,7 @@ const Sidebar = () => {
                 variant="contained"
                 type="button"
                 startIcon={<LogoutOutlined />}
-                sx={{ backgroundColor: colors.redDark[500] }}
+                sx={{ backgroundColor: colors.redDark[500], color: "white" }}
                 onClick={() => {
                   signOut();
                 }}

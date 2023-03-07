@@ -42,21 +42,9 @@ const schema = new Schema(
       type: String,
       required: true,
     },
-    placeOfBirth: {
-      type: String,
-    },
     gender: {
       type: String,
       required: true,
-    },
-    civilStatus: {
-      type: String,
-    },
-    nationality: {
-      type: String,
-    },
-    religion: {
-      type: String,
     },
     address: {
       type: String,
@@ -71,16 +59,7 @@ const schema = new Schema(
       type: Number,
     },
     telephone: {
-      type: String,
-    },
-    emergencyContactName: {
-      type: String,
-    },
-    emergencyContactNumber: {
-      type: String,
-    },
-    emergencyContactRelationship: {
-      type: String,
+      type: Number,
     },
     refreshToken: String,
   },

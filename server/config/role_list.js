@@ -1,3 +1,3 @@
-const ROLES_LIST = ["admin", "distributor"];
+const ROLES_LIST = ["admin", "user"];
 
 module.exports = ROLES_LIST;

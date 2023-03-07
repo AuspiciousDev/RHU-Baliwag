@@ -1,6 +1,6 @@
 const crypto = require("crypto");
 const wishPassword =
-  "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz~!@-#$";
+  "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 const wishUsername = "0123456789";
 
 const generateCredentials = {

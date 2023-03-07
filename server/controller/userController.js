@@ -9,6 +9,7 @@ const isNumber = (str) => /^[0-9]*$/.test(str);
 const userController = {
   createDoc: async (req, res) => {
     let emptyFields = [];
+    let genUsername;
     try {
       const {
         username,
@@ -19,11 +20,17 @@ const userController = {
         gender,
         email,
         dateOfBirth,
+        address,
+        city,
+        province,
       } = req.body;
-      if (!username) emptyFields.push("User ID");
-      if (username?.length != 10)
-        emptyFields.push("User ID must be 10 Digits!");
-      if (!isNumber(username)) emptyFields.push("User ID must be a digit");
+      if (!username) {
+        genUsername = generateCredential.username(10);
+      } else {
+        if (username?.length != 10)
+          emptyFields.push("User ID must be 10 Digits!");
+        if (!isNumber(username)) emptyFields.push("User ID must be a digit");
+      }
       if (!userType) emptyFields.push("User Type");
       if (!ROLES_LIST.includes(userType)) emptyFields.push("Invalid User Type");
       if (!email) emptyFields.push("Email");
@@ -48,7 +55,7 @@ const userController = {
 
       const genPassword = generateCredential.password(10);
       const docObject = {
-        username,
+        username: genUsername,
         password: genPassword,
         firstName,
         middleName,
@@ -57,6 +64,9 @@ const userController = {
         email,
         userType,
         dateOfBirth,
+        address,
+        city,
+        province,
       };
       const activationToken = createToken.activation(docObject);
       const url = `${process.env.BASE_URL}/#/auth/activate/${activationToken}`;
@@ -64,7 +74,7 @@ const userController = {
         email,
         url,
         "Verify your account",
-        username,
+        genUsername,
         genPassword,
         userType
       );
@@ -123,24 +133,16 @@ const userController = {
       const {
         username,
         empType,
-        userType,
         firstName,
         middleName,
         lastName,
         dateOfBirth,
-        placeOfBirth,
         gender,
-        civilStatus,
-        nationality,
-        religion,
         address,
         city,
         province,
         mobile,
         telephone,
-        emergencyContactName,
-        emergencyContactNumber,
-        emergencyContactRelationship,
       } = req.body;
 
       const findDoc = await User.findOne({ username }).exec();
@@ -150,24 +152,16 @@ const userController = {
           .json({ message: `User [${username}] does not exists!` });
       const docObject = {
         empType,
-        userType,
         firstName,
         middleName,
         lastName,
-        dateOfBirth,
-        placeOfBirth,
         gender,
-        civilStatus,
-        nationality,
-        religion,
+        dateOfBirth,
         address,
         city,
         province,
         mobile,
         telephone,
-        emergencyContactName,
-        emergencyContactNumber,
-        emergencyContactRelationship,
       };
       console.log(docObject);
       const update = await User.findOneAndUpdate({ username }, docObject);
@@ -184,7 +178,17 @@ const userController = {
     }
   },
   deleteDocByID: async (req, res) => {
+    const username = req.params.username;
+    if (!username)
+      return res.status(400).json({ message: `Username is required` });
     try {
+      const doc = await User.findOne({ username }).exec();
+      if (!doc)
+        return res
+          .status(400)
+          .json({ message: `User [${username}] not found!` });
+      const deleteDoc = await doc.deleteOne({ username });
+      res.json(deleteDoc);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

@@ -42,6 +42,10 @@ import RequestDetails from "./page/admin/Request/RequestDetails";
 import TransactionsDetails from "./page/admin/Transaction/TransactionDetails";
 import InventoryEdit from "./page/admin/Inventory/InventoryEdit";
 import ResetPassword from "./page/public/ResetPassword";
+import Admin from "./page/admin/Admin/Admin";
+import AdminCreate from "./page/admin/Admin/AdminCreate";
+import AdminRecord from "./page/admin/Admin/AdminRecord";
+import AdminRecordEdit from "./page/admin/Admin/AdminRecordEdit";
 
 const USER_TYPE = {
   ADMIN: "admin",
@@ -114,7 +118,17 @@ function App() {
                     path="user/changePassword"
                     element={<ChangePassword />}
                   />
-                  <Route path="archive" element={<Archive />} />
+
+                  <Route path="admin" element={<Admin />} />
+                  <Route path="admin/create" element={<AdminCreate />} />
+                  <Route
+                    path="admin/edit/:username"
+                    element={<AdminRecordEdit />}
+                  />
+                  <Route
+                    path="admin/profile/:username"
+                    element={<AdminRecord />}
+                  />
                 </Route>
               </Route>
             </Route>

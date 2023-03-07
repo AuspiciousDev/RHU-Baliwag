@@ -3,41 +3,49 @@ const Schema = mongoose.Schema;
 
 const schema = new Schema(
   {
-    restockID: {
+    releaseID: {
       type: mongoose.Schema.Types.ObjectId,
       index: true,
       required: true,
       auto: true,
     },
-    medicineID: {
+    reqID: {
       type: String,
       required: true,
     },
-    lotNum: {
+    items: [
+      {
+        medicineID: {
+          type: String,
+          required: true,
+        },
+        quantity: {
+          type: Number,
+          required: true,
+        },
+      },
+    ],
+    qrCodeURL: {
       type: String,
       required: true,
     },
-    quantity: {
-      type: Number,
-      required: true,
-    },
-    supplier: {
+    pickupDate: {
       type: String,
       required: true,
     },
-    restockedBy: {
+    releasedBy: {
       type: String,
       required: true,
     },
-    deliveryDate: {
+    releasedDate: {
       type: String,
       required: true,
     },
     status: {
-      type: Boolean,
-      default: true,
+      type: String,
+      default: "pending",
     },
   },
   { timestamps: true }
 );
-module.exports = mongoose.model("Restock", schema);
+module.exports = mongoose.model("Release", schema);

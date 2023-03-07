@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const schema = new Schema(
   {
-    lotNum: {
+    medicineID: {
       type: String,
       required: true,
       lowercase: true,
@@ -17,11 +17,11 @@ const schema = new Schema(
       type: String,
       lowercase: true,
     },
-    classification: {
-      type: String,
-      lowercase: true,
-    },
     access: {
+      type: String,
+      required: true,
+    },
+    usage: {
       type: String,
       required: true,
     },
@@ -29,13 +29,20 @@ const schema = new Schema(
       type: Number,
       required: true,
     },
-    walkInQTY: {
-      type: Number,
-    },
-    onlineQTY: {
-      type: Number,
-    },
     supplier: {
+      type: String,
+      required: true,
+    },
+    lotNum: {
+      type: String,
+      required: true,
+      lowercase: true,
+    },
+    manufactureDate: {
+      type: String,
+      required: true,
+    },
+    expiryDate: {
       type: String,
       required: true,
     },
