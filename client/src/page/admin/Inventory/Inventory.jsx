@@ -302,7 +302,7 @@ const Inventory = () => {
       headerAlign: "center",
       renderCell: (params) => {
         return (
-          <Typography textTransform="uppercase" fontWeight={600}>
+          <Typography textTransform="uppercase" sx={{ fontSize: "11pt" }}>
             {params.value}
           </Typography>
         );

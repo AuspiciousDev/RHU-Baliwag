@@ -3,9 +3,11 @@ const Inventory = require("../model/Inventory");
 const restockController = {
   createDoc: async (req, res) => {
     let emptyFields = [];
-    const { lotNum, quantity, supplier, restockedBy, deliveryDate } = req.body;
+    const { medID, lotNum, quantity, supplier, restockedBy, deliveryDate } =
+      req.body;
     try {
-      if (!lotNum) emptyFields.push("Stock ID");
+      if (!medID) emptyFields.push("Medicine ID");
+      if (!lotNum) emptyFields.push("Lot Number");
       if (!quantity) emptyFields.push("Quantity");
       if (!supplier) emptyFields.push("Supplier");
       if (!deliveryDate) emptyFields.push("Delivery Date");
@@ -16,20 +18,21 @@ const restockController = {
           .json({ message: "Please fill in all the fields", emptyFields });
 
       const restockObj = {
+        medID,
         lotNum,
         quantity,
         supplier,
         restockedBy,
         deliveryDate,
       };
-      const findDoc = await Inventory.findOne({ lotNum }).exec();
+      const findDoc = await Inventory.findOne({ medID }).exec();
       if (!findDoc)
         return res
           .status(204)
-          .json({ message: `Item [${lotNum}] does not exists!` });
+          .json({ message: `Item [${medID}] does not exists!` });
       const createRestock = await Restock.create(restockObj);
       const updateInventory = await Inventory.findOneAndUpdate(
-        { lotNum },
+        { medID },
         {
           $inc: {
             quantity: quantity,
@@ -57,8 +60,8 @@ const restockController = {
         {
           $lookup: {
             from: "inventories",
-            localField: "lotNum",
-            foreignField: "lotNum",
+            localField: "medID",
+            foreignField: "medID",
             as: "details",
           },
         },

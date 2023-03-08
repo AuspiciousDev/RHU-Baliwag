@@ -31,17 +31,15 @@ const RestockCreate = () => {
 
   const { stocks, stockDispatch } = useInventoriesContext();
 
+  const [medID, setMedID] = useState("");
   const [lotNum, setLotNum] = useState("");
   const [genericName, setGenericName] = useState("");
   const [brandName, setBrandName] = useState("");
-  const [access, setAccess] = useState("");
-  const [classification, setClassification] = useState("");
   const [quantity, setQuantity] = useState("");
-  const [walkInQTY, setwalkInQTY] = useState("");
-  const [onlineQTY, setOnlineQTY] = useState("");
   const [supplier, setSupplier] = useState("");
   const [deliveryDate, setDeliveryDate] = useState(null);
 
+  const [medIDError, setMedIDError] = useState(false);
   const [lotNumError, setLotNumError] = useState(false);
 
   const handleDate = (newValue) => {
@@ -75,6 +73,7 @@ const RestockCreate = () => {
   });
 
   const clearFields = () => {
+    setMedID("");
     setLotNum("");
     setGenericName("");
     setBrandName("");
@@ -136,6 +135,7 @@ const RestockCreate = () => {
     e.preventDefault();
     setLoadingDialog({ isOpen: true });
     const doc = {
+      medID,
       lotNum,
       quantity,
       restockedBy: auth.username,
@@ -154,7 +154,7 @@ const RestockCreate = () => {
         console.log("response;", json);
         setSuccessDialog({
           isOpen: true,
-          message: `Item ${lotNum + " - " + genericName} has been restocked!`,
+          message: `Item ${medID + " - " + genericName} has been restocked!`,
         });
         clearFields();
       }
@@ -229,7 +229,7 @@ const RestockCreate = () => {
               variant="h2"
               fontWeight="bold"
               sx={{
-              borderLeft: `5px solid ${colors.secondary[500]}`,
+                borderLeft: `5px solid ${colors.secondary[500]}`,
                 paddingLeft: 2,
                 textTransform: "uppercase",
               }}
@@ -260,27 +260,25 @@ const RestockCreate = () => {
                 options={
                   stocks
                     ? stocks.map((val) => {
-                        return val?.lotNum;
+                        return val?.medID;
                       })
                     : []
                 }
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    label="Lot Number"
+                    label="Medicine ID"
                     required
-                    error={lotNumError}
+                    error={medIDError}
                   />
                 )}
-                value={lotNum}
+                value={medID}
                 onChange={(event, newValue) => {
-                  console.log(newValue);
-                  setLotNum(newValue);
-                  setLotNumError(false);
-
+                  setMedID(newValue);
+                  setMedIDError(false);
                   stocks
                     .filter((filter) => {
-                      return filter.lotNum === newValue;
+                      return filter.medID === newValue;
                     })
                     .map((val) => {
                       return (
@@ -291,7 +289,21 @@ const RestockCreate = () => {
                     });
                 }}
               />
-
+              <TextField
+                required
+                autoComplete="off"
+                variant="outlined"
+                label="Lot Number"
+                value={lotNum}
+                placeholder="Medicine Lot Number"
+                onChange={(e) => {
+                  setLotNum(e.target.value);
+                  setLotNumError(false);
+                }}
+                error={lotNumError}
+                inputProps={{ style: { textTransform: "uppercase" } }}
+              />
+              <Box></Box>
               <TextField
                 required
                 autoComplete="off"
@@ -359,15 +371,6 @@ const RestockCreate = () => {
             gap={2}
           >
             <Button
-              type="submit"
-              disabled={lotNumError}
-              variant="contained"
-              color="secondary"
-              sx={{ width: "250px", height: "50px" }}
-            >
-              <Typography variant="h5">submit</Typography>
-            </Button>
-            <Button
               type="button"
               variant="contained"
               sx={{ width: "250px", height: "50px" }}
@@ -376,6 +379,17 @@ const RestockCreate = () => {
               }}
             >
               <Typography variant="h5">clear</Typography>
+            </Button>
+            <Button
+              type="submit"
+              disabled={lotNumError}
+              variant="contained"
+              color="secondary"
+              sx={{ width: "250px", height: "50px" }}
+            >
+              <Typography variant="h5" sx={{ color: "white" }}>
+                submit
+              </Typography>
             </Button>
           </Box>
         </form>

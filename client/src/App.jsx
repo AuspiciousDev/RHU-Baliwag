@@ -37,6 +37,9 @@ import Transaction from "./page/admin/Transaction/Transaction";
 import InventoryCreate from "./page/admin/Inventory/InventoryCreate";
 import RestockCreate from "./page/admin/Restock/RestockCreate";
 import Request from "./page/admin/Request/Request";
+//! New
+import RequestCreatee from "./page/admin/Request/RequestCreatee";
+//! New
 import RequestCreate from "./page/admin/Request/RequestCreate";
 import RequestDetails from "./page/admin/Request/RequestDetails";
 import TransactionsDetails from "./page/admin/Transaction/TransactionDetails";

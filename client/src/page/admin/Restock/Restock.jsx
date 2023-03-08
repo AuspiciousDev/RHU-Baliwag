@@ -149,8 +149,8 @@ const Restock = () => {
       headerAlign: "center",
     },
     {
-      field: "lotNum",
-      headerName: "Lot Number",
+      field: "medID",
+      headerName: "Medicine ID",
       width: 200,
       align: "center",
       headerAlign: "center",
@@ -162,38 +162,105 @@ const Restock = () => {
         );
       },
     },
+    {
+      field: "lotNum",
+      headerName: "Lot Number",
+      width: 200,
+      align: "center",
+      headerAlign: "center",
+      renderCell: (params) => {
+        return (
+          <Typography textTransform="uppercase" sx={{ fontSize: "11pt" }}>
+            {params.value}
+          </Typography>
+        );
+      },
+    },
 
-    { field: "genericName", headerName: "Generic Name", width: 200 },
+    {
+      field: "genericName",
+      headerName: "Generic Name",
+      width: 200,
+      align: "center",
+      headerAlign: "center",
+    },
     {
       field: "brandName",
       headerName: "Brand Name",
+      align: "center",
+      headerAlign: "center",
       width: 200,
       valueFormatter: (params) => (params?.value ? params?.value : "-"),
     },
-    { field: "quantity", headerName: "Quantity", width: 150 },
-    { field: "supplier", headerName: "Supplier", width: 150 },
-    { field: "restockedBy", headerName: "Restocked By", width: 150 },
+    {
+      field: "quantity",
+      headerName: "Quantity",
+      align: "center",
+      headerAlign: "center",
+      width: 150,
+    },
+    {
+      field: "supplier",
+      headerName: "Supplier",
+      align: "center",
+      headerAlign: "center",
+      width: 150,
+    },
+    {
+      field: "restockedBy",
+      headerName: "Restocked By",
+      align: "center",
+      headerAlign: "center",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <Box display="flex" gap={2}>
+            <Link
+              to={`/admin/user/profile/${params?.value}`}
+              style={{
+                alignItems: "center",
+                textDecoration: "none",
+              }}
+            >
+              <Paper
+                sx={{
+                  padding: "2px 10px",
+                  borderRadius: "5px",
+                  display: "flex",
+                  justifyContent: "center",
+                  backgroundColor: colors.whiteOnly[500],
+                  alignItems: "center",
+                }}
+              >
+                <Typography
+                  sx={{ fontSize: "11pt", color: colors.blackOnly[500] }}
+                >
+                  {params?.value}
+                </Typography>
+              </Paper>
+            </Link>
+          </Box>
+        );
+      },
+    },
     {
       field: "deliveryDate",
       headerName: "Restock Date",
-      width: 240,
+      align: "center",
+      headerAlign: "center",
+      width: 180,
       valueFormatter: (params) =>
-        format(new Date(params?.value), "hh:mm a - MMMM dd, yyyy"),
+        format(new Date(params?.value), "MMMM dd, yyyy"),
     },
 
     {
       field: "createdAt",
       headerName: "Date Created",
-      width: 240,
+      align: "center",
+      headerAlign: "center",
+      width: 180,
       valueFormatter: (params) =>
-        format(new Date(params?.value), "hh:mm a - MMMM dd, yyyy"),
-    },
-    {
-      field: "updatedAt",
-      headerName: "Date Modified",
-      width: 240,
-      valueFormatter: (params) =>
-        format(new Date(params?.value), "hh:mm a - MMMM dd, yyyy"),
+        format(new Date(params?.value), "MMMM dd, yyyy"),
     },
   ];
 
@@ -319,6 +386,7 @@ const Restock = () => {
             initialState={{
               columns: {
                 columnVisibilityModel: {
+                  lotNum: false,
                   createdAt: false,
                   updatedAt: false,
                   _id: false,

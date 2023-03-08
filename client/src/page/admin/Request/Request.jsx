@@ -463,7 +463,7 @@ const Request = () => {
                 }}
               >
                 <Typography variant="h6" fontWeight="500">
-                  Request Item
+                  Create a request
                 </Typography>
               </Button>
             )}

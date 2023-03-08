@@ -145,7 +145,53 @@ const InventoryEdit = () => {
     };
     getUsersDetails();
   }, [stockDispatch]);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoadingDialog({ isOpen: true });
+    const doc = {
+      medID,
+      lotNum,
+      genericName,
+      brandName,
+      access,
+      quantity,
+      supplier,
+      manufactureDate,
+      expiryDate,
+    };
 
+    try {
+      const response = await axiosPrivate.patch(
+        `/api/inventory/update/${medID}`,
+        JSON.stringify(doc)
+      );
+
+      if (response.status === 200) {
+        const json = await response.data;
+        console.log("response;", json);
+        setSuccessDialog({
+          isOpen: true,
+          message: `Stock ${medID + " - " + genericName} has been updated!!`,
+        });
+        clearFields();
+      }
+      setLoadingDialog({ isOpen: false });
+    } catch (error) {
+      setLoadingDialog({ isOpen: false });
+      const errMessage = error.response.data.message;
+      if (!error?.response) {
+        console.log("no server response");
+      } else if (error.response.status === 400) {
+        console.log(errMessage);
+      } else if (error.response.status === 409) {
+        setMedIDError(true);
+        console.log(errMessage);
+      } else {
+        console.log(error);
+        console.log(error.response);
+      }
+    }
+  };
   return (
     <Box className="container-layout_body_contents">
       <ConfirmDialogue
@@ -205,7 +251,7 @@ const InventoryEdit = () => {
         </Box>
       </Paper>
       <Paper elevation={2} sx={{ p: "20px", mt: 2 }}>
-        <form onSubmit={""} style={{ width: "100%" }}>
+        <form onSubmit={handleSubmit} style={{ width: "100%" }}>
           {/* <Typography variant="h5">Registration</Typography> */}
           <Box marginBottom="20px">
             <Typography variant="h5" sx={{ margin: "0 0 10px 0" }}>

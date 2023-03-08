@@ -351,6 +351,8 @@ const User = () => {
       headerName: "Name",
       // description: "This column has a value getter and is not sortable.",
       // sortable: false,
+      align: "center",
+      headerAlign: "center",
       width: 220,
 
       valueGetter: (params) =>
@@ -358,11 +360,19 @@ const User = () => {
           (params.row.middleName && params.row.middleName.charAt(0) + ".") || ""
         } ${params.row.lastName || ""}`,
     },
-    { field: "gender", headerName: "Gender", width: 150 },
+    {
+      field: "gender",
+      headerName: "Gender",
+      width: 150,
+      align: "center",
+      headerAlign: "center",
+    },
     {
       field: "email",
       headerName: "Email",
       width: 250,
+      align: "center",
+      headerAlign: "center",
       renderCell: (params) => {
         return (
           <Typography
@@ -376,16 +386,20 @@ const User = () => {
     {
       field: "createdAt",
       headerName: "Date Created",
-      width: 240,
+      align: "center",
+      headerAlign: "center",
+      width: 180,
       valueFormatter: (params) =>
-        format(new Date(params?.value), "hh:mm a - MMMM dd, yyyy"),
+        format(new Date(params?.value), "MMMM dd, yyyy"),
     },
     {
       field: "updatedAt",
       headerName: "Date Modified",
-      width: 240,
+      align: "center",
+      headerAlign: "center",
+      width: 180,
       valueFormatter: (params) =>
-        format(new Date(params?.value), "hh:mm a - MMMM dd, yyyy"),
+        format(new Date(params?.value), "MMMM dd, yyyy"),
     },
     {
       field: "status",

@@ -118,7 +118,7 @@ const InventoryCreate = () => {
         console.log("response;", json);
         setSuccessDialog({
           isOpen: true,
-          message: `Stock ${lotNum + " - " + genericName} has been created!`,
+          message: `Stock ${medID + " - " + genericName} has been created!`,
         });
         clearFields();
       }
