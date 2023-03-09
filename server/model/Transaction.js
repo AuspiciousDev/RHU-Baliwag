@@ -35,6 +35,10 @@ const schema = new Schema(
         },
       },
     ],
+    username: {
+      type: String,
+      required: false,
+    },
     transactor: {
       type: String,
       required: false,

@@ -96,7 +96,7 @@ const Request = () => {
         return (
           <Box display="flex" gap={2}>
             <Link
-              to={`/admin/request/details/${params?.value}`}
+              to={`/user/request/details/${params?.value}`}
               style={{
                 alignItems: "center",
                 textDecoration: "none",
@@ -138,7 +138,7 @@ const Request = () => {
             sx={{ justifyContent: "center" }}
           >
             <Link
-              to={`/admin/user/profile/${params?.value}`}
+              to={`/user/user/profile/${params?.value}`}
               style={{
                 alignItems: "center",
                 textDecoration: "none",
@@ -190,7 +190,7 @@ const Request = () => {
       renderCell: (params) => {
         return (
           <Typography sx={{ textTransform: "uppercase", fontSize: "0.9rem" }}>
-            {params?.value ? "YES" : "-"}
+            {(params?.value && "yes") || "none"}
           </Typography>
         );
       },
@@ -499,26 +499,24 @@ const Request = () => {
               alignItems: "center",
             }}
           >
-            {auth.userType === "admin" && (
-              <Button
-                type="button"
-                startIcon={<Add />}
-                onClick={() => {
-                  navigate("create");
-                }}
-                variant="contained"
-                sx={{
-                  width: { xs: "100%", sm: "200px" },
-                  height: "50px",
-                  marginLeft: { xs: "0", sm: "20px" },
-                  marginTop: { xs: "20px", sm: "0" },
-                }}
-              >
-                <Typography variant="h6" fontWeight="500">
-                  Walk in
-                </Typography>
-              </Button>
-            )}
+            <Button
+              type="button"
+              startIcon={<Add />}
+              onClick={() => {
+                navigate("create");
+              }}
+              variant="contained"
+              sx={{
+                width: { xs: "100%", sm: "200px" },
+                height: "50px",
+                marginLeft: { xs: "0", sm: "20px" },
+                marginTop: { xs: "20px", sm: "0" },
+              }}
+            >
+              <Typography variant="h6" fontWeight="500">
+                Create Request
+              </Typography>
+            </Button>
           </Box>
         </Box>
       </Paper>
@@ -538,7 +536,13 @@ const Request = () => {
           }}
         >
           <DataGrid
-            rows={requests ? requests : []}
+            rows={
+              requests
+                ? requests.filter((filter) => {
+                    return filter.username === auth.username;
+                  })
+                : []
+            }
             getRowId={(row) => row?._id}
             columns={columns}
             pageSize={page}

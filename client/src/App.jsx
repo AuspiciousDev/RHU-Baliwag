@@ -52,9 +52,20 @@ import AdminRecord from "./page/admin/Admin/AdminRecord";
 import AdminRecordEdit from "./page/admin/Admin/AdminRecordEdit";
 import WalkIn from "./page/admin/Walk-in/WalkIn";
 
+//!USER
+import USER_Layout from "./page/user/Layout/USER_Layout";
+import UserDashboard from "./page/user/Dashboard/UserDashboard";
+import UserRequest from "./page/user/Request/UserRequest";
+import UserRequestCreate from "./page/user/Request/UserRequestCreate";
+import UserRequestDetails from "./page/user/Request/UserRequestDetails";
+import UserTransaction from "./page/user/Releasing/UserTransaction";
+import UserTransactionDetails from "./page/user/Releasing/UserTransactionDetails";
+import UUserRecordEdit from "./page/user/User/UUserRecordEdit";
+import UUserRecord from "./page/user/User/UUserRecord";
+
 const USER_TYPE = {
   ADMIN: "admin",
-  DISTRIBUTOR: "distributor",
+  USER: "user",
 };
 function App() {
   const [theme, colorMode] = useMode();
@@ -138,6 +149,37 @@ function App() {
                   <Route
                     path="admin/profile/:username"
                     element={<AdminRecord />}
+                  />
+                </Route>
+              </Route>
+              <Route element={<RequireAuth allowedRoles={[USER_TYPE.USER]} />}>
+                <Route path="/user" element={<USER_Layout />}>
+                  <Route index element={<UserDashboard />} />
+                  <Route path="request" element={<UserRequest />} />
+                  <Route
+                    path="request/create"
+                    element={<UserRequestCreate />}
+                  />
+                  <Route
+                    path="request/details/:reqID"
+                    element={<UserRequestDetails />}
+                  />
+                  <Route path="transaction" element={<UserTransaction />} />
+                  <Route
+                    path="transaction/details/:transID"
+                    element={<UserTransactionDetails />}
+                  />
+                  <Route
+                    path="profile/:username"
+                    element={<UUserRecord />}
+                  />
+                  <Route
+                    path="edit/:username"
+                    element={<UUserRecordEdit />}
+                  />
+                  <Route
+                    path="changePassword"
+                    element={<ChangePassword />}
                   />
                 </Route>
               </Route>

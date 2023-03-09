@@ -17,14 +17,54 @@ const transactionController = {
       res.status(500).json({ message: error.message });
     }
   },
+  getAllDocInfo: async (req, res) => {
+    try {
+      const doc = await Transaction.aggregate([
+        {
+          $lookup: {
+            from: "requests",
+            localField: "reqID",
+            foreignField: "reqID",
+            as: "details",
+          },
+        },
+        {
+          $unwind: {
+            path: "$details",
+          },
+        },
+        {
+          $set: {
+            username: {
+              $toString: "$details.username",
+            },
+          },
+        },
+      ]);
+      console.log(
+        "🚀 ~ file: transactionController.js:44 ~ getAllDocInfo: ~ doc:",
+        doc
+      );
+      if (doc.length <= 0)
+        return res.status(204).json({ message: "No Records Found!" });
+      res.status(200).json(doc);
+    } catch (error) {
+      console.log(
+        "🚀 ~ file: requestController.js:10 ~ getAllDoc: ~ error",
+        error
+      );
+      res.status(500).json({ message: error.message });
+    }
+  },
   createDoc: async (req, res) => {
     let emptyFields = [];
     try {
-      const { reqID, items, releasingDate } = req.body;
+      const { username, reqID, items, releasingDate } = req.body;
       console.log(
         "🚀 ~ file: transactionController.js:23 ~ createDoc: ~ req.body",
         req.body
       );
+      if (!username) emptyFields.push("Username");
       if (!reqID) emptyFields.push("Request ID");
       if (!items) emptyFields.push("Items");
       if (emptyFields.length > 0)
@@ -37,6 +77,7 @@ const transactionController = {
         return res.status(409).json({ message: "Request does not exists!" });
 
       const docObject = {
+        username,
         reqID,
         items,
         releasingDate,

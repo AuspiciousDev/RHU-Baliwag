@@ -171,7 +171,7 @@ const RequestDetails = () => {
           setFirstName(json?.firstName || "");
           setMiddleName(json?.middleName || "");
           setLastName(json?.lastName || "");
-          setPrescriptionIMG_URL(json?.prescriptionIMG_URL || "");
+          setPrescriptionIMG_URL(json1?.prescriptionIMG_URL || "");
           setEmail(json?.email || "");
           setMobile(json?.mobile || "");
           setAddress(json?.address || "");
@@ -242,7 +242,6 @@ const RequestDetails = () => {
     });
 
     const data = {
-      username,
       reqID,
       transactor: auth.username,
       items,
@@ -521,403 +520,155 @@ const RequestDetails = () => {
           </Box>
         </Box>
       </Paper>
-      <Paper
+      <Box
         sx={{
-          display: "flex",
-          flexDirection: "column",
-          width: "100%",
+          display: "grid",
+          gridTemplateColumns: "1fr 2fr",
           height: "100%",
-          p: 2,
-          mt: 2,
+          gap: "0.75em 0.5em",
+          "& >.MuiTypography-root ": {
+            textTransform: "capitalize",
+            fontSize: "12pt",
+          },
         }}
       >
-        <Box
+        <Paper
           sx={{
-            display: "grid",
-            gridTemplateColumns: " 1fr 1fr",
-            paddingTop: 1,
-            paddingBottom: 1,
+            display: "flex",
+            flexDirection: "column",
+            height: "100%",
+            mt: 2,
+            p: 5,
           }}
         >
           <Box
             sx={{
               display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "0.75em 0.5em",
-              alignItems: "center",
-              justifyContent: "center",
-              "& >.MuiTypography-root ": {
-                textTransform: "capitalize",
-                fontSize: "14pt",
-              },
+              gridTemplateColumns: "1fr",
+              paddingTop: 1,
+              paddingBottom: 1,
             }}
           >
-            <Typography textAlign="end">Request ID : </Typography>
-            <Typography fontWeight={600}>{reqID || "-"}</Typography>
-            <Typography textAlign="end">username : </Typography>
-            <Typography fontWeight={600}>{username}</Typography>
-            <Typography textAlign="end">Name : </Typography>
-            <Typography fontWeight={600}>
-              {middleName
-                ? firstName + " " + middleName.charAt(0) + ". " + lastName
-                : firstName + " " + lastName}
-            </Typography>
-
-            <Typography textAlign="end">Mobile : </Typography>
-            <Typography fontWeight={600}>
-              {mobile ? "09" + mobile : "-"}
-            </Typography>
-            <Typography textAlign="end">Email : </Typography>
-            <Typography
-              fontWeight={600}
-              sx={{ textTransform: "lowercase !important" }}
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "0.75em 0.5em",
+                alignItems: "center",
+                justifyContent: "center",
+                "& >.MuiTypography-root ": {
+                  textTransform: "capitalize",
+                  fontSize: "14pt",
+                },
+              }}
             >
-              {email || "-"}
-            </Typography>
-            <Typography textAlign="end">Prescription : </Typography>
-            <Typography fontWeight={600}>
-              {(prescriptionIMG_URL && "yes") || "none"}
-            </Typography>
-          </Box>
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "0.75em 0.5em",
-              alignItems: "center",
-              justifyContent: "center",
-              "& >.MuiTypography-root ": {
-                textTransform: "capitalize",
-                fontSize: "14pt",
-              },
-            }}
-          >
-            <Typography textAlign="end">Address : </Typography>
-            <Typography fontWeight={600}>{address || "-"}</Typography>
-            <Typography textAlign="end">City : </Typography>
-            <Typography fontWeight={600}>{city || "-"}</Typography>
-            <Typography textAlign="end">Province : </Typography>
-            <Typography fontWeight={600}>{province || "-"}</Typography>
-            <Typography textAlign="end">Action by : </Typography>
-            <Typography fontWeight={600}>{actionBy || "-"}</Typography>
-            <Typography textAlign="end">Request Date : </Typography>{" "}
-            <Typography fontWeight={600}>
-              {createdAt && format(new Date(createdAt), "MMMM dd, yyyy")}
-            </Typography>
-            <Typography textAlign="end">Release Date : </Typography>
-            {releasingDate === null || status === "pending" ? (
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DesktopDatePicker
-                  label="Date of Release"
-                  inputFormat="MM/DD/YYYY"
-                  value={releasingDate}
-                  onChange={handleDate}
-                  renderInput={(params) => (
-                    <TextField
-                      autoComplete="off"
-                      size="small"
-                      disabled
-                      {...params}
-                      error={releasingDateError}
-                    />
-                  )}
-                />
-              </LocalizationProvider>
-            ) : (
+              <Typography textAlign="end">Request ID : </Typography>
+              <Typography fontWeight={600}>{reqID || "-"}</Typography>
+              <Typography textAlign="end">username : </Typography>
+              <Typography fontWeight={600}>{username}</Typography>
+              <Typography textAlign="end">Name : </Typography>
+              <Typography fontWeight={600}>
+                {middleName
+                  ? firstName + " " + middleName.charAt(0) + ". " + lastName
+                  : firstName + " " + lastName}
+              </Typography>
+              <Typography textAlign="end">Mobile : </Typography>
+              <Typography fontWeight={600}>
+                {mobile ? "09" + mobile : "-"}
+              </Typography>
+              <Typography textAlign="end">Email : </Typography>
+              <Typography
+                fontWeight={600}
+                sx={{ textTransform: "lowercase !important" }}
+              >
+                {email || "-"}
+              </Typography>
+              <Typography textAlign="end">Prescription : </Typography>
+              <Typography fontWeight={600} textTransform="uppercase">
+                {(prescriptionIMG_URL && "yes") || "none"}
+              </Typography>
+              <Typography textAlign="end">Address : </Typography>
+              <Typography fontWeight={600}>{address || "-"}</Typography>
+              <Typography textAlign="end">City : </Typography>
+              <Typography fontWeight={600}>{city || "-"}</Typography>
+              <Typography textAlign="end">Province : </Typography>
+              <Typography fontWeight={600}>{province || "-"}</Typography>
+              <Typography textAlign="end">Action by : </Typography>
+              <Typography fontWeight={600}>{actionBy || "-"}</Typography>
+              <Typography textAlign="end">Request Date : </Typography>{" "}
+              <Typography fontWeight={600}>
+                {createdAt && format(new Date(createdAt), "MMMM dd, yyyy")}
+              </Typography>
+              <Typography textAlign="end">Release Date : </Typography>
               <Typography fontWeight={600}>
                 {releasingDate &&
                   format(new Date(releasingDate), "MMMM dd, yyyy")}
               </Typography>
-            )}
-            <Typography textAlign="end">Status : </Typography>
-            <Box>
-              <ButtonBase
-                disabled
-                onClick={() => {
-                  setValidateDialog({
-                    isOpen: true,
-                    onConfirm: () => {
-                      setDecisionDialog({
-                        isOpen: true,
-                        title: `Approve request ${reqID}? `,
-                        onConfirm: () => {
-                          toggleStatus({
-                            val: status,
-                            status: "approved",
-                          });
-                        },
-                        onDeny: () => {
-                          toggleStatus({
-                            val: status,
-                            status: "denied",
-                          });
-                        },
-                      });
-                    },
-                  });
-                }}
-              >
-                {status === "approved" ? (
-                  <Paper_Status icon={<CheckCircle />} title={"Approved"} />
-                ) : status === "denied" ? (
-                  <Paper_Status icon={<Cancel />} title={"Denied"} />
-                ) : (
-                  <Paper_Status icon={<AccessTime />} title={"pending"} />
-                )}
-              </ButtonBase>
-            </Box>
-          </Box>
-        </Box>
-        <Divider sx={{ m: "1em 0" }} />
-        {status === "pending" ? (
-          <Box>
-            <Typography variant="h5" sx={{ margin: "0 0 10px 0" }}>
-              Item Information
-            </Typography>
-
-            <Box
-              sx={{
-                display: "grid",
-                width: "100%",
-                gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr 1fr 1fr " },
-                gap: "20px",
-              }}
-            >
-              <Autocomplete
-                disablePortal
-                id="combo-box-demo"
-                options={
-                  stocks
-                    ? stocks.map((val) => {
-                        return val?.medID;
-                      })
-                    : []
-                }
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    size="small"
-                    label="Medicine ID"
-                    required
-                    error={medIDError}
-                  />
-                )}
-                value={medID}
-                onChange={(event, newValue) => {
-                  setMedID(newValue);
-                  setMedIDError(false);
-                  stocks
-                    .filter((filter) => {
-                      return filter.medID === newValue;
-                    })
-                    .map((val) => {
-                      return (
-                        setGenericName(val?.genericName),
-                        setBrandName(val?.brandName),
-                        setMaxQty(val?.quantity)
-                      );
-                    });
-                }}
-              />
-
-              <TextField
-                size="small"
-                autoComplete="off"
-                variant="outlined"
-                label="Generic Name"
-                placeholder="eg. Paracetamol, Ibuprofen"
-                value={genericName}
-                inputProps={{ style: { textTransform: "capitalize" } }}
-              />
-              <TextField
-                autoComplete="off"
-                size="small"
-                variant="outlined"
-                label="Brand Name"
-                placeholder="eg. Biogesic, Medicol, Solmux"
-                value={brandName}
-                inputProps={{ style: { textTransform: "capitalize" } }}
-              />
-
-              <TextField
-                required
-                size="small"
-                type="number"
-                autoComplete="off"
-                variant="outlined"
-                label="Quantity"
-                value={quantity}
-                onChange={(e) => {
-                  const value = Math.max(
-                    0,
-                    Math.min(maxQty, Number(e.target.value))
-                  );
-                  setQuantity(value);
-                  // setTaskPoints(e.target.value);
-                }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <Typography
-                        variant="subtitle2"
-                        sx={{ color: colors.black[400] }}
-                      >
-                        {quantity} / {maxQty}
-                      </Typography>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  gap: 2,
-                  gridColumn: "4",
-                  justifyContent: "end",
-                  "& > .MuiButtonBase-root": {
-                    width: "200px",
-                    height: "35px",
-                  },
-                }}
-              >
-                <Button
-                  type="button"
-                  variant="contained"
-                  sx={{ width: "250px", height: "50px" }}
+              <Typography textAlign="end">Status : </Typography>
+              <Box>
+                <ButtonBase
+                  disabled
                   onClick={() => {
-                    clearItems();
+                    setValidateDialog({
+                      isOpen: true,
+                      onConfirm: () => {
+                        setDecisionDialog({
+                          isOpen: true,
+                          title: `Approve request ${reqID}? `,
+                          onConfirm: () => {
+                            toggleStatus({
+                              val: status,
+                              status: "approved",
+                            });
+                          },
+                          onDeny: () => {
+                            toggleStatus({
+                              val: status,
+                              status: "denied",
+                            });
+                          },
+                        });
+                      },
+                    });
                   }}
                 >
-                  <Typography variant="h5">clear</Typography>
-                </Button>
-                <Button
-                  type="button"
-                  variant="contained"
-                  color="secondary"
-                  onClick={handleAddItem}
-                  sx={{ width: "250px", height: "50px" }}
-                >
-                  <Typography variant="h5" sx={{ color: "white" }}>
-                    add Item
-                  </Typography>
-                </Button>
-              </Box>
-            </Box>
-            <Box>
-              <Typography
-                variant="h3"
-                textTransform="uppercase"
-                sx={{ margin: "15px 0 10px 0" }}
-              >
-                Item Details
-              </Typography>
-              <Box
-                sx={{
-                  borderTop: `solid 1px ${colors.primary[500]}`,
-                  mt: 2,
-                  height: "200px",
-                }}
-              >
-                <TableContainer>
-                  <Table sx={{ minWidth: "100%" }} size="small">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Medicine ID</TableCell>
-                        <TableCell align="left">Generic Name</TableCell>
-                        <TableCell align="left">Brand Name</TableCell>
-                        <TableCell align="left">Quantity</TableCell>
-                        <TableCell align="left">Action</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {items &&
-                        items.map((val, key) => {
-                          return (
-                            <TableRow
-                              sx={{
-                                "& > td ": {
-                                  textTransform: "capitalize",
-                                },
-                              }}
-                            >
-                              <TableCell>{val?.medID}</TableCell>
-                              <TableCell>{val?.genericName}</TableCell>
-                              <TableCell>{val?.brandName}</TableCell>
-                              <TableCell>{val?.quantity}</TableCell>
-                              <TableCell>
-                                <ButtonBase
-                                  onClick={() => {
-                                    handleRowClick(val);
-                                  }}
-                                >
-                                  <Paper
-                                    sx={{
-                                      padding: "2px 10px",
-                                      borderRadius: "20px",
-                                      display: "flex",
-                                      justifyContent: "center",
-                                      backgroundColor: colors.whiteOnly[500],
-                                      color: colors.blackOnly[500],
-                                      alignItems: "center",
-                                    }}
-                                  >
-                                    <Delete />
-                                    <Typography ml="5px">Remove</Typography>
-                                  </Paper>
-                                </ButtonBase>
-                              </TableCell>
-                            </TableRow>
-                          );
-                        })}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-                <Box
-                  sx={{
-                    mt: 3,
-                    display: items.length > 0 ? "flex" : "none",
-                    flexDirection: "row",
-                    gap: 2,
-                    gridColumn: "2",
-                    justifyContent: "end",
-                    "& > .MuiButtonBase-root": {
-                      width: "200px",
-                      height: "35px",
-                    },
-                  }}
-                >
-                  <Button
-                    type="button"
-                    size="small"
-                    variant="contained"
-                    sx={{ width: "250px", height: "50px" }}
-                    onClick={() => {
-                      clearItems();
-                    }}
-                  >
-                    <Typography variant="h5">clear</Typography>
-                  </Button>
-                  <Button
-                    size="small"
-                    type="button"
-                    variant="contained"
-                    color="secondary"
-                    onClick={handleUpdateItem}
-                    sx={{ width: "250px", height: "50px" }}
-                  >
-                    <Typography variant="h5" sx={{ color: "white" }}>
-                      Approve
-                    </Typography>
-                  </Button>
-                </Box>
+                  {status === "approved" ? (
+                    <Paper_Status icon={<CheckCircle />} title={"Approved"} />
+                  ) : status === "denied" ? (
+                    <Paper_Status icon={<Cancel />} title={"Denied"} />
+                  ) : (
+                    <Paper_Status icon={<AccessTime />} title={"pending"} />
+                  )}
+                </ButtonBase>
               </Box>
             </Box>
           </Box>
-        ) : (
-          <></>
-        )}
-      </Paper>
+        </Paper>
+        <Paper
+          sx={{
+            mt: 2,
+            display: "flex",
+            flexDirection: "column",
+            width: "100%",
+            height: "100%",
+            position: "relative",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            p: 1,
+          }}
+        >
+          <Typography variant="h3">Prescription</Typography>
+          <img
+            src={prescriptionIMG_URL}
+            style={{
+              objectFit: "contain",
+              width: "50%",
+              height: "80%",
+            }}
+          />
+        </Paper>
+      </Box>
     </Box>
   );
 };
