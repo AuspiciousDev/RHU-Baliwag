@@ -171,7 +171,7 @@ const RequestDetails = () => {
           setFirstName(json?.firstName || "");
           setMiddleName(json?.middleName || "");
           setLastName(json?.lastName || "");
-          setPrescriptionIMG_URL(json?.prescriptionIMG_URL || "");
+          setPrescriptionIMG_URL(json1?.prescriptionIMG_URL || "");
           setEmail(json?.email || "");
           setMobile(json?.mobile || "");
           setAddress(json?.address || "");
@@ -575,9 +575,18 @@ const RequestDetails = () => {
               {email || "-"}
             </Typography>
             <Typography textAlign="end">Prescription : </Typography>
-            <Typography fontWeight={600}>
-              {(prescriptionIMG_URL && "yes") || "none"}
-            </Typography>
+            {prescriptionIMG_URL ? (
+              <Link
+                to={`/admin/request/prescription/${reqID}`}
+                style={{ textDecoration: "none" }}
+              >
+                <Typography fontWeight={600}>Link</Typography>
+              </Link>
+            ) : (
+              <Typography fontWeight={600}>
+                {(prescriptionIMG_URL && "yes") || "none"}
+              </Typography>
+            )}
           </Box>
           <Box
             sx={{

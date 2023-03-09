@@ -143,20 +143,20 @@ const InventoryPublic = () => {
   }, [stockDispatch]);
 
   const columns = [
-    {
-      field: "lotNum",
-      headerName: "Lot Number",
-      width: 250,
-      align: "center",
-      headerAlign: "center",
-      renderCell: (params) => {
-        return (
-          <Typography textTransform="uppercase" fontWeight={600}>
-            {params.value}
-          </Typography>
-        );
-      },
-    },
+    // {
+    //   field: "medID",
+    //   headerName: "Lot Number",
+    //   width: 250,
+    //   align: "center",
+    //   headerAlign: "center",
+    //   renderCell: (params) => {
+    //     return (
+    //       <Typography textTransform="uppercase" fontWeight={600}>
+    //         {params.value}
+    //       </Typography>
+    //     );
+    //   },
+    // },
 
     { field: "genericName", headerName: "Generic Name", width: 200 },
     {
@@ -165,23 +165,22 @@ const InventoryPublic = () => {
       width: 200,
       valueFormatter: (params) => (params?.value ? params?.value : "-"),
     },
-    { field: "classification", headerName: "Classification", width: 200 },
     { field: "quantity", headerName: "Quantity", width: 150 },
 
-    {
-      field: "createdAt",
-      headerName: "Date Created",
-      width: 240,
-      valueFormatter: (params) =>
-        format(new Date(params?.value), "hh:mm a - MMMM dd, yyyy"),
-    },
-    {
-      field: "updatedAt",
-      headerName: "Date Modified",
-      width: 240,
-      valueFormatter: (params) =>
-        format(new Date(params?.value), "hh:mm a - MMMM dd, yyyy"),
-    },
+    // {
+    //   field: "createdAt",
+    //   headerName: "Date Created",
+    //   width: 240,
+    //   valueFormatter: (params) =>
+    //     format(new Date(params?.value), "hh:mm a - MMMM dd, yyyy"),
+    // },
+    // {
+    //   field: "updatedAt",
+    //   headerName: "Date Modified",
+    //   width: 240,
+    //   valueFormatter: (params) =>
+    //     format(new Date(params?.value), "hh:mm a - MMMM dd, yyyy"),
+    // },
   ];
 
   return (

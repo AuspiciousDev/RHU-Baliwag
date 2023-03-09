@@ -43,9 +43,10 @@ const Navbar = () => {
       <Box sx={{ justifyContent: "center", alignItems: "center", gap: 6 }}>
         <PaperLinks title="Home" to="/" />
         <Divider orientation="vertical" sx={{ height: "35px" }} />
-        <PaperLinks title="Request" to="/public/request" />
-        <Divider orientation="vertical" sx={{ height: "35px" }} />
         <PaperLinks title="Inventory" to="/public/inventory" />
+        <Divider orientation="vertical" sx={{ height: "35px" }} />
+         <PaperLinks title="Signup" to="/register" />
+        {/* <PaperLinks title="Request" to="/public/request" /> */}
       </Box>
       <Box sx={{ justifyContent: "flex-end", alignItems: "center", gap: 3 }}>
         <Link to="/login">

@@ -202,6 +202,7 @@ const RequestDetails = () => {
     });
 
     const data = {
+      username,
       transID,
       transactor: auth.username,
       items,

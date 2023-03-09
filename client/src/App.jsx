@@ -51,6 +51,7 @@ import AdminCreate from "./page/admin/Admin/AdminCreate";
 import AdminRecord from "./page/admin/Admin/AdminRecord";
 import AdminRecordEdit from "./page/admin/Admin/AdminRecordEdit";
 import WalkIn from "./page/admin/Walk-in/WalkIn";
+import Prescription from "./page/admin/Request/Prescription";
 
 //!USER
 import USER_Layout from "./page/user/Layout/USER_Layout";
@@ -103,6 +104,10 @@ function App() {
                   <Route
                     path="request/details/:reqID"
                     element={<RequestDetails />}
+                  />
+                  <Route
+                    path="request/prescription/:reqID"
+                    element={<Prescription />}
                   />
                   <Route path="request/create" element={<RequestCreate />} />
                   <Route path="transaction" element={<Transaction />} />
@@ -169,18 +174,9 @@ function App() {
                     path="transaction/details/:transID"
                     element={<UserTransactionDetails />}
                   />
-                  <Route
-                    path="profile/:username"
-                    element={<UUserRecord />}
-                  />
-                  <Route
-                    path="edit/:username"
-                    element={<UUserRecordEdit />}
-                  />
-                  <Route
-                    path="changePassword"
-                    element={<ChangePassword />}
-                  />
+                  <Route path="profile/:username" element={<UUserRecord />} />
+                  <Route path="edit/:username" element={<UUserRecordEdit />} />
+                  <Route path="changePassword" element={<ChangePassword />} />
                 </Route>
               </Route>
             </Route>
