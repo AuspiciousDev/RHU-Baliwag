@@ -131,6 +131,7 @@ const RequestDetails = () => {
           setTransactor(json?.transactor || "");
           setItems(json?.items || []);
           setStatus(json?.status || "-");
+          setReleasedDate(json?.updatedAt || null);
         }
 
         const response = await axiosPrivate.get(
@@ -148,7 +149,6 @@ const RequestDetails = () => {
           setCity(json?.city || "");
           setProvince(json?.province || "");
           setCreatedAt(json?.createdAt || null);
-          setReleasedDate(json?.updatedAt || null);
         }
 
         setLoadingDialog({ isOpen: false });
@@ -192,8 +192,13 @@ const RequestDetails = () => {
       }
     };
     getUsersDetails();
-  }, [requestDispatch]);
+  }, [requestDispatch, transactions]);
   const toggleStatus = async ({ val, newStat }) => {
+    setDecisionDialog({
+      ...decisionDialog,
+      isOpen: false,
+    });
+
     const data = {
       transID,
       transactor: auth.username,
@@ -217,7 +222,7 @@ const RequestDetails = () => {
         setSuccessDialog({
           isOpen: true,
           message: `Transaction  ${transID} ${
-            status === "released" ? "has been released!" : "was unavailable!"
+            newStat === "released" ? "has been released!" : "was unavailable!"
           }`,
         });
       }
@@ -367,7 +372,7 @@ const RequestDetails = () => {
             </Typography>
             <Typography textAlign="end">Released Date : </Typography>
             <Typography fontWeight={600}>
-              {releasedDate && format(new Date(createdAt), "MMMM dd, yyyy")}
+              {releasedDate && format(new Date(releasedDate), " MMMM dd, yyyy")}
             </Typography>
             <Typography textAlign="end">Status : </Typography>
             <Box>
@@ -379,7 +384,7 @@ const RequestDetails = () => {
                     onConfirm: () => {
                       setDecisionDialog({
                         isOpen: true,
-                        title: `Pending Request Action ${transID}? `,
+                        title: `Release transaction ${transID}? `,
                         onConfirm: () => {
                           toggleStatus({
                             val: status,

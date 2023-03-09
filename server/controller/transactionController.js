@@ -1,7 +1,8 @@
 const Transaction = require("../model/Transaction");
 const Request = require("../model/Request");
 const Inventory = require("../model/Inventory");
-
+const currDate = new Date();
+const { format } = require("date-fns");
 const transactionController = {
   getAllDoc: async (req, res) => {
     try {
@@ -98,6 +99,65 @@ const transactionController = {
       res.status(500).json({ message: error.message });
     }
   },
+  getAllTrans: async (req, res) => {
+    try {
+      const transactions = await Transaction.find()
+        .sort({ createdAt: -1 })
+        .lean();
+      if (!transactions)
+        return res.status(204).json({ message: "No transaction Found!" });
+      const transactionUpdate = await Transaction.find({
+        releasingDate: currDate,
+      })
+        .sort({ createdAt: -1 })
+        .lean();
+      console.log(
+        "🚀 ~ file: RestockController.js:70 ~ getAllRestock: ~ restockUpdate",
+        transactionUpdate
+      );
+      let bulkStatus = [];
+      transactions
+        .filter((tag) => {
+          return (
+            tag.status === "releasing" &&
+            format(new Date(currDate), "MMMM dd yyyy") ===
+              format(new Date(tag.releasingDate), "MMMM dd yyyy")
+          );
+        })
+        .map((tag) => {
+          return bulkStatus.push({
+            updateOne: {
+              filter: {
+                transID: tag?.transID,
+              },
+              update: {
+                $set: {
+                  status: "unavailable",
+                },
+              },
+              upsert: true,
+            },
+          });
+        });
+      Transaction.bulkWrite(bulkStatus, (error, result) => {
+        if (error) {
+          res.status(400).json({ message: error.message });
+        } else {
+          // console.log(
+          //   "🚀 ~ file: RestockController.js:139 ~ Restock.bulkWrite ~ error",
+          //   error
+          // );
+        }
+      });
+      res.status(200).json(transactions);
+    } catch (error) {
+      console.log(
+        "🚀 ~ file: transactionController.js:144 ~ getAllTrans: ~ error:",
+        error
+      );
+      res.status(500).json({ message: error.message });
+    }
+  },
   getDocByReqID: async (req, res) => {
     const reqID = req.params.reqID;
     if (!reqID)
@@ -175,7 +235,7 @@ const transactionController = {
     if (!transID)
       return res.status(400).json({ message: `Transaction ID is required!` });
     try {
-      const { transID, transactor, status, releasedDate } = req.body;
+      const { transID, items, transactor, status, releasedDate } = req.body;
       console.log(
         "🚀 ~ file: transactionController.js:179 ~ toggleDocStatus: ~ req.body:",
         req.body
@@ -227,7 +287,10 @@ const transactionController = {
       console.log(update);
       res.status(200).json(update);
     } catch (error) {
-      console.log("🚀 ~ file: transactionController.js:230 ~ toggleDocStatus: ~ error:", error)
+      console.log(
+        "🚀 ~ file: transactionController.js:230 ~ toggleDocStatus: ~ error:",
+        error
+      );
       res.status(500).json({ message: error.message });
     }
   },

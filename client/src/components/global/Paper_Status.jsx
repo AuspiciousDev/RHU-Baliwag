@@ -37,7 +37,7 @@ const Paper_Active = (props) => {
             color: colors.whiteOnly[500],
             borderRadius: "20px",
             alignItems: "center",
-            width: "120px",
+            width: "150px",
             justifyContent: "center",
           }}
         >

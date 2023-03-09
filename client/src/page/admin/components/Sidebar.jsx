@@ -272,13 +272,13 @@ const Sidebar = () => {
             selected={selected}
             setSelected={setSelected}
           />
-         <Item
+          {/* <Item
             title="Walk-in"
             to="walk-in"
             icon={<MoveToInboxOutlined />}
             selected={selected}
             setSelected={setSelected}
-          />
+          /> */}
           <Item
             title="Transactions"
             to="transaction"

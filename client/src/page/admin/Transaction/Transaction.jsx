@@ -240,8 +240,8 @@ const Transaction = () => {
     },
 
     {
-      field: "createdAt",
-      headerName: "Transaction Date",
+      field: "releasingDate",
+      headerName: "Release Date",
       width: 240,
       align: "center",
       headerAlign: "center",

@@ -224,9 +224,10 @@ const Request = () => {
         return (
           <>
             <ButtonBase
-              disabled={
-                params?.value === "denied" || params?.value === "approved"
-              }
+              disabled
+              // disabled={
+              //   params?.value === "denied" || params?.value === "approved"
+              // }
               onClick={() => {
                 setValidateDialog({
                   isOpen: true,

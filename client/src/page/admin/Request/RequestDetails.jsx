@@ -94,6 +94,7 @@ const RequestDetails = () => {
   const [usernameError, setUsernameError] = useState(false);
   const [page, setPage] = React.useState(15);
   const [medIDError, setMedIDError] = useState(false);
+  const [releasingDateError, setReleasingDateError] = useState(false);
 
   const handleAddItem = async (e) => {
     if (!medID) return setMedIDError(true);
@@ -123,6 +124,7 @@ const RequestDetails = () => {
 
   const handleDate = (newValue) => {
     setReleasingDate(newValue);
+    setReleasingDateError(false);
   };
   const [confirmDialog, setConfirmDialog] = useState({
     isOpen: false,
@@ -245,6 +247,7 @@ const RequestDetails = () => {
       items,
       status,
       releasingDate,
+      email,
     };
     console.log("🚀 ~ file: Request.jsx:329 ~ toggleStatus ~ data:", data);
 
@@ -349,12 +352,27 @@ const RequestDetails = () => {
   };
 
   const handleUpdateItem = async () => {
+    if (items.length === 0) {
+      return setErrorDialog({
+        isOpen: true,
+        message: `No items added!`,
+      });
+    }
+    if (releasingDate === null) {
+      return (
+        setReleasingDateError(true),
+        setErrorDialog({
+          isOpen: true,
+          message: `Set releasing date!`,
+        })
+      );
+    }
     setValidateDialog({
       isOpen: true,
       onConfirm: () => {
         setDecisionDialog({
           isOpen: true,
-          title: `Pending Request Action ${reqID}? `,
+          title: `Approve request ${reqID}? `,
           onConfirm: () => {
             toggleStatus({
               val: status,
@@ -599,6 +617,7 @@ const RequestDetails = () => {
                       size="small"
                       disabled
                       {...params}
+                      error={releasingDateError}
                     />
                   )}
                 />
@@ -612,14 +631,14 @@ const RequestDetails = () => {
             <Typography textAlign="end">Status : </Typography>
             <Box>
               <ButtonBase
-                disabled={status === "approved" || status === "denied"}
+                disabled
                 onClick={() => {
                   setValidateDialog({
                     isOpen: true,
                     onConfirm: () => {
                       setDecisionDialog({
                         isOpen: true,
-                        title: `Pending Request Action ${reqID}? `,
+                        title: `Approve request ${reqID}? `,
                         onConfirm: () => {
                           toggleStatus({
                             val: status,
@@ -803,7 +822,7 @@ const RequestDetails = () => {
                   <Table sx={{ minWidth: "100%" }} size="small">
                     <TableHead>
                       <TableRow>
-                        <TableCell>Lot Number</TableCell>
+                        <TableCell>Medicine ID</TableCell>
                         <TableCell align="left">Generic Name</TableCell>
                         <TableCell align="left">Brand Name</TableCell>
                         <TableCell align="left">Quantity</TableCell>
@@ -821,7 +840,7 @@ const RequestDetails = () => {
                                 },
                               }}
                             >
-                              <TableCell>{val?.lotNum}</TableCell>
+                              <TableCell>{val?.medID}</TableCell>
                               <TableCell>{val?.genericName}</TableCell>
                               <TableCell>{val?.brandName}</TableCell>
                               <TableCell>{val?.quantity}</TableCell>

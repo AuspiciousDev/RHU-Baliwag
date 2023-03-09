@@ -3,6 +3,7 @@ const router = express.Router();
 const transactionController = require("../../controller/transactionController");
 
 router.get("/", transactionController.getAllDoc);
+router.get("/allTransactions", transactionController.getAllTrans);
 router.patch("/update/:transID", transactionController.updateDocByID);
 router.patch("/update/req/:reqID", transactionController.updateDocByReqID);
 router.get("/search/:transID", transactionController.getDocByID);

@@ -100,9 +100,13 @@ const ADMIN_Dashboard = () => {
         const apiUsers = await axiosPrivate.get("/api/user");
         const apiStocks = await axiosPrivate.get("/api/inventory");
         const apiLogins = await axiosPrivate.get("/api/loginHistory");
-        const apiRequests = await axiosPrivate.get("/api/request");
+        const apiRequests = await axiosPrivate.get("/api/request/info");
         const apiTransaction = await axiosPrivate.get("/api/transaction");
-
+        const apiTransactionExpiry = await axiosPrivate.get(
+          "/api/transaction/allTransactions"
+        );
+        if (apiTransactionExpiry.status === 200) {
+        }
         if (apiUsers.status === 200) {
           const json = await apiUsers.data;
           console.log(json);
@@ -212,12 +216,12 @@ const ADMIN_Dashboard = () => {
           </Box>
         </TableCell>
 
-        <TableCell align="left">
+        <TableCell align="left" sx={{ textTransform: "capitalize" }}>
           {val?.middleName
             ? val.firstName + " " + val.middleName + " " + val.lastName
             : val.firstName + " " + val.lastName}
         </TableCell>
-        <TableCell align="left"> {val?.mobile}</TableCell>
+        <TableCell align="left"> {val?.email || "-"}</TableCell>
 
         <TableCell align="left" sx={{ textTransform: "capitalize" }}>
           {format(new Date(val.createdAt), "MMMM dd, yyyy")}
@@ -324,7 +328,6 @@ const ADMIN_Dashboard = () => {
         />
       </Box>
       <Box height="100%">
-       
         <Box
           sx={{
             height: "100%",
@@ -350,7 +353,7 @@ const ADMIN_Dashboard = () => {
                   <TableRow>
                     <TableCell>Request ID</TableCell>
                     <TableCell align="left">Name</TableCell>
-                    <TableCell align="left">Mobile Number</TableCell>
+                    <TableCell align="left">Email</TableCell>
                     <TableCell align="left">Request Date</TableCell>
                     <TableCell align="left">Status</TableCell>
                   </TableRow>
