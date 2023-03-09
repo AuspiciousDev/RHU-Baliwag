@@ -43,6 +43,7 @@ import RequestCreatee from "./page/admin/Request/RequestCreatee";
 import RequestCreate from "./page/admin/Request/RequestCreate";
 import RequestDetails from "./page/admin/Request/RequestDetails";
 import TransactionsDetails from "./page/admin/Transaction/TransactionDetails";
+import TransactionScan from "./page/admin/Transaction/TransactionScan";
 import InventoryEdit from "./page/admin/Inventory/InventoryEdit";
 import ResetPassword from "./page/public/ResetPassword";
 import Admin from "./page/admin/Admin/Admin";
@@ -98,6 +99,10 @@ function App() {
                     path="transaction/details/:transID"
                     element={<TransactionsDetails />}
                   />
+                  <Route
+                    path="transaction/scan"
+                    element={<TransactionScan />}
+                  />
                   <Route path="inventory" element={<Inventory />} />
                   <Route
                     path="inventory/edit/:medID"
@@ -123,7 +128,6 @@ function App() {
                     path="user/changePassword"
                     element={<ChangePassword />}
                   />
-
                   <Route path="archive" element={<Archive />} />
                   <Route path="admin" element={<Admin />} />
                   <Route path="admin/create" element={<AdminCreate />} />

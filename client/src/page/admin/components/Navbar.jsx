@@ -166,7 +166,7 @@ const Navbar = () => {
       >
         <MenuItem
           onClick={() => {
-            navigate(`/admin/user/profile/${auth.username}`);
+            navigate(`/admin/admin/profile/${auth.username}`);
           }}
           disableRipple
         >

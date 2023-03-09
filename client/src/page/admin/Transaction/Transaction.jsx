@@ -24,6 +24,7 @@ import {
   Search,
   DeleteOutline,
   AccessTime,
+  QrCodeScanner,
 } from "@mui/icons-material";
 import { tokens } from "../../../theme";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
@@ -452,6 +453,37 @@ const Transaction = () => {
             >
               Transactions
             </Typography>
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "column", sm: "row" },
+              justifyContent: "end",
+              alignItems: "center",
+            }}
+          >
+            {auth.userType === "admin" && (
+              <Button
+                type="button"
+                color="secondary"
+                startIcon={<QrCodeScanner />}
+                onClick={() => {
+                  navigate("scan");
+                }}
+                variant="contained"
+                sx={{
+                  width: { xs: "100%", sm: "200px" },
+                  height: "50px",
+                  marginLeft: { xs: "0", sm: "20px" },
+                  marginTop: { xs: "20px", sm: "0" },
+                  color: "white",
+                }}
+              >
+                <Typography variant="h6" fontWeight="500">
+                  Scan QR
+                </Typography>
+              </Button>
+            )}
           </Box>
         </Box>
       </Paper>

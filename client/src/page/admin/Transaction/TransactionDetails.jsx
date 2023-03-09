@@ -31,6 +31,7 @@ import {
   Search,
   DeleteOutline,
   AccessTime,
+  QrCode,
 } from "@mui/icons-material";
 import { tokens } from "../../../theme";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
@@ -43,6 +44,7 @@ import { DataGrid, GridToolbar, GridToolbarContainer } from "@mui/x-data-grid";
 import Paper_Status from "../../../components/global/Paper_Status";
 import Paper_Icon from "../../../components/global/Paper_Icon";
 import { format } from "date-fns-tz";
+import QRCode from "react-qr-code";
 
 function CustomToolbar() {
   return (
@@ -303,11 +305,27 @@ const RequestDetails = () => {
         <Box
           sx={{
             display: "grid",
-            gridTemplateColumns: " 1fr 1fr",
+            gridTemplateColumns: "0.5fr 1fr 1fr",
             paddingTop: 1,
             paddingBottom: 1,
           }}
         >
+          <Box
+            sx={{
+              height: "auto",
+              margin: "auto auto",
+              maxWidth: 200,
+              width: "100%",
+              border: "solid 5px white",
+            }}
+          >
+            <QRCode
+              size={200}
+              style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+              value={transID}
+              viewBox={`0 0 256 256`}
+            />
+          </Box>
           <Box
             sx={{
               display: "grid",

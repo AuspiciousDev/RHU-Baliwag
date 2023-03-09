@@ -36,13 +36,31 @@ import {
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns-tz";
 import { DataGrid, GridToolbar, GridToolbarContainer } from "@mui/x-data-grid";
+import { useRequestsContext } from "../../../hooks/useRequestContext";
+import Paper_Status from "../../../components/global/Paper_Status";
+function CustomToolbar() {
+  return (
+    <GridToolbarContainer>
+      <GridToolbar
+      // printOptions={{
+      //   fields: ["schoolYearID", "fullName", "userType", "createdAt"],
+      // }}
+      // csvOptions={{ fields: ["username", "firstName"] }}
+      />
+      {/* <GridToolbarExport */}
 
+      {/* /> */}
+    </GridToolbarContainer>
+  );
+}
 const UserRecord = () => {
   const { username } = useParams();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
   const axiosPrivate = useAxiosPrivate();
+  const { requests, requestDispatch } = useRequestsContext();
+
   const [val, setVal] = useState([]);
   const getAge = (birthDate) =>
     Math.floor((new Date() - new Date(birthDate).getTime()) / 3.15576e10);
@@ -64,9 +82,17 @@ const UserRecord = () => {
         if (response.status === 200) {
           const json = await response.data;
           console.log("Employees GET : ", json);
-          setLoadingDialog({ isOpen: false });
+
           setVal(json);
         }
+
+        const apiRequest = await axiosPrivate.get("/api/request");
+        if (apiRequest.status === 200) {
+          const json = await apiRequest.data;
+          console.log(json);
+          requestDispatch({ type: "SET_REQUESTS", payload: json });
+        }
+        setLoadingDialog({ isOpen: false });
       } catch (error) {
         console.log(
           "🚀 ~ file: UserProfile.jsx:64 ~ getUsersDetails ~ error",
@@ -122,6 +148,187 @@ const UserRecord = () => {
     message: "",
   });
 
+  const [page, setPage] = React.useState(15);
+  const columns = [
+    {
+      field: "reqID",
+      headerName: "Request ID",
+      width: 300,
+      align: "center",
+      headerAlign: "center",
+      renderCell: (params) => {
+        return (
+          <Box display="flex" gap={2}>
+            <Link
+              to={`/admin/request/details/${params?.value}`}
+              style={{
+                alignItems: "center",
+                textDecoration: "none",
+              }}
+            >
+              <Paper
+                sx={{
+                  padding: "2px 10px",
+                  borderRadius: "5px",
+                  display: "flex",
+                  justifyContent: "center",
+                  backgroundColor: colors.whiteOnly[500],
+                  alignItems: "center",
+                }}
+              >
+                <Typography
+                  sx={{ fontSize: "11pt", color: colors.blackOnly[500] }}
+                >
+                  {params?.value}
+                </Typography>
+              </Paper>
+            </Link>
+          </Box>
+        );
+      },
+    },
+    {
+      field: "username",
+      headerName: "Username",
+      width: 200,
+      align: "center",
+      headerAlign: "center",
+      renderCell: (params) => {
+        return (
+          <Box
+            display="flex"
+            gap={2}
+            width="60%"
+            sx={{ justifyContent: "center" }}
+          >
+            <Link
+              to={`/admin/user/profile/${params?.value}`}
+              style={{
+                alignItems: "center",
+                textDecoration: "none",
+              }}
+            >
+              <Paper
+                sx={{
+                  width: "100%",
+                  padding: "2px 20px",
+                  borderRadius: "5px",
+                  display: "flex",
+                  justifyContent: "center",
+                  backgroundColor: colors.whiteOnly[500],
+                  alignItems: "center",
+                }}
+              >
+                <Typography
+                  fontWeight="bold"
+                  sx={{ color: colors.blackOnly[500] }}
+                >
+                  {params?.value}
+                </Typography>
+              </Paper>
+            </Link>
+          </Box>
+        );
+      },
+    },
+    {
+      field: "requestType",
+      headerName: "Request Type",
+      width: 180,
+      align: "center",
+      headerAlign: "center",
+      renderCell: (params) => {
+        return (
+          <Typography sx={{ textTransform: "lowercase", fontSize: "0.9rem" }}>
+            {params?.value}
+          </Typography>
+        );
+      },
+    },
+    {
+      field: "prescriptionIMG_URL",
+      headerName: "Prescription",
+      width: 180,
+      align: "center",
+      headerAlign: "center",
+      renderCell: (params) => {
+        return (
+          <Typography sx={{ textTransform: "lowercase", fontSize: "0.9rem" }}>
+            {params?.value || "-"}
+          </Typography>
+        );
+      },
+    },
+    {
+      field: "createdAt",
+      headerName: "Date Created",
+      width: 180,
+      align: "center",
+      headerAlign: "center",
+      valueFormatter: (params) =>
+        format(new Date(params?.value), "MMMM dd, yyyy"),
+    },
+    {
+      field: "updatedAt",
+      headerName: "Date Modified",
+      width: 180,
+      align: "center",
+      headerAlign: "center",
+      valueFormatter: (params) =>
+        format(new Date(params?.value), "MMMM dd, yyyy"),
+    },
+    {
+      field: "status",
+      headerName: "Status",
+      width: 175,
+      sortable: false,
+      align: "center",
+      headerAlign: "center",
+      renderCell: (params) => {
+        return (
+          <>
+            <ButtonBase
+              disabled
+              // disabled={
+              //   params?.value === "denied" || params?.value === "approved"
+              // }
+              onClick={() => {
+                setValidateDialog({
+                  isOpen: true,
+                  onConfirm: () => {
+                    setDecisionDialog({
+                      isOpen: true,
+                      title: `Pending Request Action ${params?.row?.reqID}? `,
+                      onConfirm: () => {
+                        toggleStatus({
+                          val: params?.row,
+                          status: "approved",
+                        });
+                      },
+                      onDeny: () => {
+                        toggleStatus({
+                          val: params?.row,
+                          status: "denied",
+                        });
+                      },
+                    });
+                  },
+                });
+              }}
+            >
+              {params?.value === "approved" ? (
+                <Paper_Status icon={<CheckCircle />} title={"Approved"} />
+              ) : params?.value === "denied" ? (
+                <Paper_Status icon={<Cancel />} title={"Denied"} />
+              ) : (
+                <Paper_Status icon={<AccessTime />} title={"pending"} />
+              )}
+            </ButtonBase>
+          </>
+        );
+      },
+    },
+  ];
   return (
     <Box className="container-layout_body_contents">
       <ConfirmDialogue
@@ -421,6 +628,54 @@ const UserRecord = () => {
           </Box>
         </Paper>
       </Box>
+      <Paper
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          width: "100%",
+          height: "100%",
+          mt: 2,
+        }}
+      >
+        <Box sx={{ height: "100%", width: "100%" }}>
+          <DataGrid
+            rows={
+              requests
+                ? requests.filter((filter) => {
+                    return filter.username === username;
+                  })
+                : []
+            }
+            getRowId={(row) => row._id}
+            columns={columns}
+            pageSize={page}
+            onPageSizeChange={(newPageSize) => setPage(newPageSize)}
+            rowsPerPageOptions={[15, 50]}
+            pagination
+            sx={{
+              "& .MuiDataGrid-cell": {
+                textTransform: "capitalize",
+              },
+              "& .MuiDataGrid-columnHeaderTitle": {
+                fontWeight: "bold",
+              },
+            }}
+            initialState={{
+              columns: {
+                columnVisibilityModel: {
+                  createdAt: false,
+                  updatedAt: false,
+                  _id: false,
+                  gender: false,
+                },
+              },
+            }}
+            components={{
+              Toolbar: CustomToolbar,
+            }}
+          />
+        </Box>
+      </Paper>
     </Box>
   );
 };
