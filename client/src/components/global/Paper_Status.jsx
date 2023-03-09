@@ -8,7 +8,8 @@ const Paper_Active = (props) => {
   const colors = tokens(theme.palette.mode);
   return (
     <>
-      {title.toLowerCase() === "accepted" ? (
+      {title.toLowerCase() === "approved" ||
+      title.toLowerCase() === "released" ? (
         <Paper
           sx={{
             display: "flex",
@@ -26,7 +27,8 @@ const Paper_Active = (props) => {
             {title}
           </Typography>
         </Paper>
-      ) : title.toLowerCase() === "denied" ? (
+      ) : title.toLowerCase() === "denied" ||
+        title.toLowerCase() === "unavailable" ? (
         <Paper
           sx={{
             display: "flex",

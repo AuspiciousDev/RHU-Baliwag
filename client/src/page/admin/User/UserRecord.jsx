@@ -218,6 +218,7 @@ const UserRecord = () => {
                 style={{
                   objectFit: "contain",
                   borderRadius: "50%",
+                  border: `5px solid ${colors.primary[500]}`,
                 }}
               />
             </Paper>
@@ -241,14 +242,14 @@ const UserRecord = () => {
                 display: "flex",
                 flexDirection: "row",
                 borderRadius: "10px",
-                padding: "10px 20px",
+                padding: "5px 30px",
                 alignItems: "center",
+                backgroundColor: colors.primary[500],
+                color: "white",
               }}
             >
               {/* <School /> */}
-              <Typography sx={{ ml: "10px" }} textTransform="capitalize">
-                {val?.userType}
-              </Typography>
+              <Typography textTransform="uppercase">{val?.userType}</Typography>
             </Paper>
             <Box sx={{ display: "flex", gap: 1 }}>
               <Typography variant="h6" textAlign="center">
@@ -327,37 +328,6 @@ const UserRecord = () => {
                     {val?.dateOfBirth
                       ? format(new Date(val?.dateOfBirth), "MMMM dd, yyyy")
                       : ""}
-                  </Typography>
-                </Box>
-
-                <Box mt="10px" display="flex" flexDirection="row">
-                  <Typography>Civil Status : </Typography>
-                  <Typography
-                    ml="10px"
-                    textTransform="capitalize"
-                    fontWeight="bold"
-                  >
-                    {val?.civilStatus}
-                  </Typography>
-                </Box>
-                <Box mt="10px" display="flex" flexDirection="row">
-                  <Typography>Nationality : </Typography>
-                  <Typography
-                    ml="10px"
-                    textTransform="capitalize"
-                    fontWeight="bold"
-                  >
-                    {val?.nationality}
-                  </Typography>
-                </Box>
-                <Box mt="10px" display="flex" flexDirection="row">
-                  <Typography>Religion : </Typography>
-                  <Typography
-                    ml="10px"
-                    textTransform="capitalize"
-                    fontWeight="bold"
-                  >
-                    {val?.religion}
                   </Typography>
                 </Box>
               </Box>
@@ -444,53 +414,6 @@ const UserRecord = () => {
                     fontWeight="bold"
                   >
                     {val?.mobile && "09" + val?.mobile}
-                  </Typography>
-                </Box>
-              </Box>
-              <Divider sx={{ mt: "20px" }} />
-            </Box>
-            <Box padding="10px 10px 10px 10px">
-              <Typography variant="h4">Emergency Information</Typography>
-              <Box
-                mt="10px"
-                display="grid"
-                sx={{
-                  gridTemplateColumns: {
-                    xs: "1fr",
-                    sm: "1fr 1fr 1fr",
-                  },
-                }}
-              >
-                <Box mt="10px" display="flex" flexDirection="row">
-                  <Typography>Contact Name : </Typography>
-                  <Typography
-                    ml="10px"
-                    textTransform="capitalize"
-                    fontWeight="bold"
-                  >
-                    {val?.emergencyContactName}
-                  </Typography>
-                </Box>
-
-                <Box mt="10px" display="flex" flexDirection="row">
-                  <Typography>Contact Relationship :</Typography>
-                  <Typography
-                    ml="10px"
-                    textTransform="capitalize"
-                    fontWeight="bold"
-                  >
-                    {val?.emergencyContactRelationship}
-                  </Typography>
-                </Box>
-                <Box mt="10px" display="flex" flexDirection="row">
-                  <Typography>Contact Number :</Typography>
-                  <Typography
-                    ml="10px"
-                    textTransform="capitalize"
-                    fontWeight="bold"
-                  >
-                    {val?.emergencyContactNumber &&
-                      "09" + val?.emergencyContactNumber}{" "}
                   </Typography>
                 </Box>
               </Box>

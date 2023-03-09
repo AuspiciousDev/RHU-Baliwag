@@ -272,6 +272,13 @@ const Sidebar = () => {
             selected={selected}
             setSelected={setSelected}
           />
+         <Item
+            title="Walk-in"
+            to="walk-in"
+            icon={<MoveToInboxOutlined />}
+            selected={selected}
+            setSelected={setSelected}
+          />
           <Item
             title="Transactions"
             to="transaction"
@@ -279,7 +286,6 @@ const Sidebar = () => {
             selected={selected}
             setSelected={setSelected}
           />
-
           {!isCollapsed ? (
             <Typography
               variant="h6"

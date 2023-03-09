@@ -37,6 +37,7 @@ import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
 import { useRequestsContext } from "../../../hooks/useRequestContext";
+import { useTransactionsContext } from "../../../hooks/useTransactionContext";
 
 import { DataGrid, GridToolbar, GridToolbarContainer } from "@mui/x-data-grid";
 import Paper_Status from "../../../components/global/Paper_Status";
@@ -58,6 +59,7 @@ const RequestDetails = () => {
   const axiosPrivate = useAxiosPrivate();
   const { auth } = useAuth();
   const { requests, requestDispatch } = useRequestsContext();
+  const { transactions, transactionDispatch } = useTransactionsContext();
 
   const [reqID, setReqID] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -70,6 +72,8 @@ const RequestDetails = () => {
   const [province, setProvince] = useState("");
   const [createdAt, setCreatedAt] = useState("");
   const [transactor, setTransactor] = useState("");
+  const [status, setStatus] = useState("");
+  const [releasedDate, setReleasedDate] = useState("");
 
   let [items, setItems] = useState([]);
 
@@ -101,18 +105,22 @@ const RequestDetails = () => {
     title: "",
     message: "",
   });
-
+  const [decisionDialog, setDecisionDialog] = useState({
+    isOpen: false,
+    title: "",
+    subTitle: "",
+  });
   useEffect(() => {
     const getUsersDetails = async () => {
       let reqIDl;
       try {
         setLoadingDialog({ isOpen: true });
 
-        const response = await axiosPrivate.get(
+        const response1 = await axiosPrivate.get(
           `/api/transaction/search/${transID}`
         );
-        if (response.status === 200) {
-          const json = await response.data;
+        if (response1.status === 200) {
+          const json = await response1.data;
           console.log(
             "🚀 ~ file: TransactionDetails.jsx:115 ~ getUsersDetails ~ json",
             json
@@ -121,15 +129,16 @@ const RequestDetails = () => {
           reqIDl = json?.reqID;
           setCreatedAt(json?.createdAt || "");
           setTransactor(json?.transactor || "");
+          setItems(json?.items || []);
+          setStatus(json?.status || "-");
         }
 
-        const reqAPI = await axiosPrivate.get(`/api/request/search/${reqIDl}`);
-        if (reqAPI.status === 200) {
-          const json = await reqAPI.data;
-          console.log(
-            "🚀 ~ file: TransactionDetails.jsx:129 ~ getUsersDetails ~ json",
-            json
-          );
+        const response = await axiosPrivate.get(
+          `/api/request/search/${reqIDl}`
+        );
+        if (response.status === 200) {
+          const json1 = await response.data[0];
+          const json = await response.data[0].profile;
           setFirstName(json?.firstName || "");
           setMiddleName(json?.middleName || "");
           setLastName(json?.lastName || "");
@@ -138,11 +147,16 @@ const RequestDetails = () => {
           setAddress(json?.address || "");
           setCity(json?.city || "");
           setProvince(json?.province || "");
-          setItems(json?.items || []);
-          setCreatedAt(json?.createdAt || []);
+          setCreatedAt(json?.createdAt || null);
+          setReleasedDate(json?.updatedAt || null);
         }
+
         setLoadingDialog({ isOpen: false });
       } catch (error) {
+        console.log(
+          "🚀 ~ file: TransactionDetails.jsx:150 ~ getUsersDetails ~ error:",
+          error
+        );
         setLoadingDialog({ isOpen: false });
 
         if (!error?.response) {
@@ -179,7 +193,36 @@ const RequestDetails = () => {
     };
     getUsersDetails();
   }, [requestDispatch]);
+  const toggleStatus = async ({ val, newStat }) => {
+    const data = {
+      transID,
+      transactor: auth.username,
+      items,
+      status: newStat,
+    };
+    console.log(
+      "🚀 ~ file: TransactionDetails.jsx:198 ~ toggleStatus ~ data:",
+      data
+    );
 
+    const apiTransact = await axiosPrivate.patch(
+      `/api/transaction/update/status/${transID}`,
+      JSON.stringify(data)
+    );
+    if (apiTransact.status === 200) {
+      const response = await axiosPrivate.get("/api/transaction");
+      if (response.status === 200) {
+        const json = await response.data;
+        transactionDispatch({ type: "SET_TRANSACTIONS", payload: json });
+        setSuccessDialog({
+          isOpen: true,
+          message: `Transaction  ${transID} ${
+            status === "released" ? "has been released!" : "was unavailable!"
+          }`,
+        });
+      }
+    }
+  };
   return (
     <Box className="container-layout_body_contents">
       <ConfirmDialogue
@@ -202,7 +245,10 @@ const RequestDetails = () => {
         loadingDialog={loadingDialog}
         setLoadingDialog={setLoadingDialog}
       />
-
+      <DecisionDialogue
+        decisionDialog={decisionDialog}
+        setDecisionDialog={setDecisionDialog}
+      />
       <Paper
         elevation={2}
         sx={{
@@ -229,7 +275,7 @@ const RequestDetails = () => {
               variant="h2"
               fontWeight="bold"
               sx={{
-              borderLeft: `5px solid ${colors.secondary[500]}`,
+                borderLeft: `5px solid ${colors.secondary[500]}`,
                 paddingLeft: 2,
                 textTransform: "uppercase",
               }}
@@ -315,11 +361,51 @@ const RequestDetails = () => {
             <Typography fontWeight={600}>{province}</Typography>
             <Typography textAlign="end">Transactor : </Typography>
             <Typography fontWeight={600}>{transactor}</Typography>
-            <Typography textAlign="end">Transaction Date : </Typography>
+            <Typography textAlign="end">Approved Date : </Typography>
             <Typography fontWeight={600}>
-              {createdAt &&
-                format(new Date(createdAt), "hh:mm a - MMMM dd, yyyy")}
+              {createdAt && format(new Date(createdAt), "MMMM dd, yyyy")}
             </Typography>
+            <Typography textAlign="end">Released Date : </Typography>
+            <Typography fontWeight={600}>
+              {releasedDate && format(new Date(createdAt), "MMMM dd, yyyy")}
+            </Typography>
+            <Typography textAlign="end">Status : </Typography>
+            <Box>
+              <ButtonBase
+                disabled={status === "released"}
+                onClick={() => {
+                  setValidateDialog({
+                    isOpen: true,
+                    onConfirm: () => {
+                      setDecisionDialog({
+                        isOpen: true,
+                        title: `Pending Request Action ${transID}? `,
+                        onConfirm: () => {
+                          toggleStatus({
+                            val: status,
+                            newStat: "released",
+                          });
+                        },
+                        onDeny: () => {
+                          toggleStatus({
+                            val: status,
+                            newStat: "unavailable",
+                          });
+                        },
+                      });
+                    },
+                  });
+                }}
+              >
+                {status === "released" ? (
+                  <Paper_Status icon={<CheckCircle />} title={"released"} />
+                ) : status === "unavailable" ? (
+                  <Paper_Status icon={<Cancel />} title={"unavailable"} />
+                ) : (
+                  <Paper_Status icon={<AccessTime />} title={"releasing"} />
+                )}
+              </ButtonBase>
+            </Box>
           </Box>
         </Box>
         <Divider sx={{ m: "1em 0" }} />
@@ -339,10 +425,10 @@ const RequestDetails = () => {
             }}
           >
             <TableContainer>
-              <Table sx={{ minWidth: "100%" }}>
+              <Table size="small" sx={{ minWidth: "100%" }}>
                 <TableHead>
                   <TableRow>
-                    <TableCell>Lot Number</TableCell>
+                    <TableCell>Medicine ID</TableCell>
                     <TableCell align="left">Generic Name</TableCell>
                     <TableCell align="left">Brand Name</TableCell>
                     <TableCell align="left">Quantity</TableCell>
@@ -359,7 +445,7 @@ const RequestDetails = () => {
                             },
                           }}
                         >
-                          <TableCell>{val?.lotNum}</TableCell>
+                          <TableCell>{val?.medID}</TableCell>
                           <TableCell>{val?.genericName}</TableCell>
                           <TableCell>{val?.brandName}</TableCell>
                           <TableCell>{val?.quantity}</TableCell>

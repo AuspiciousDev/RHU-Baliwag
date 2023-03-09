@@ -5,7 +5,7 @@ const schema = new Schema(
   {
     imgURL: String,
     username: {
-      type: Number,
+      type: String,
       required: true,
     },
     userType: {

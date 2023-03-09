@@ -90,6 +90,85 @@ const userController = {
       res.status(500).json({ message: error.message });
     }
   },
+  quickCreateDoc: async (req, res) => {
+    let emptyFields = [];
+    let genUsername;
+    try {
+      const {
+        username,
+        userType,
+        firstName,
+        middleName,
+        lastName,
+        gender,
+        email,
+        dateOfBirth,
+        address,
+        city,
+        province,
+      } = req.body;
+      if (!username) {
+        genUsername = generateCredential.username(10);
+      } else {
+        if (username?.length != 10)
+          emptyFields.push("User ID must be 10 Digits!");
+        if (!isNumber(username)) emptyFields.push("User ID must be a digit");
+      }
+      if (!userType) emptyFields.push("User Type");
+      if (!ROLES_LIST.includes(userType)) emptyFields.push("Invalid User Type");
+      if (!email) emptyFields.push("Email");
+      if (!isEmail(email)) emptyFields.push("Invalid email");
+      if (!firstName) emptyFields.push("First Name");
+      if (!lastName) emptyFields.push("Last Name");
+      if (!gender) emptyFields.push("Gender");
+      if (!dateOfBirth) emptyFields.push("Birthday");
+
+      if (emptyFields.length > 0)
+        return res
+          .status(400)
+          .json({ message: "Please fill in all the fields", emptyFields });
+
+      const duplicateID = await User.findOne({ username }).exec();
+      if (duplicateID)
+        return res.status(409).json({ message: "Username Already Exists!" });
+
+      const duplicateEmail = await User.findOne({ email }).exec();
+      if (duplicateEmail)
+        return res.status(409).json({ message: "Email Already Exists!" });
+
+      const genPassword = generateCredential.password(10);
+      const docObject = {
+        username: genUsername,
+        password: genPassword,
+        firstName,
+        middleName,
+        lastName,
+        gender,
+        email,
+        userType,
+        dateOfBirth,
+        address,
+        city,
+        province,
+      };
+      const response = await User.create(docObject);
+      if (response) {
+        sendMail.sendNoVerifNewUser(
+          email,
+          "Verify your account",
+          genUsername,
+          genPassword
+        );
+        res.status(201).json(response);
+      }
+    } catch (error) {
+      console.log(
+        "🚀 ~ file: userController.js:110 ~ createDoc: ~ error",
+        error
+      );
+      res.status(500).json({ message: error.message });
+    }
+  },
   getAllDoc: async (req, res) => {
     try {
       const doc = await User.find().sort({ createdAt: -1 }).lean();

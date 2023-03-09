@@ -23,6 +23,7 @@ import {
   Add,
   Search,
   DeleteOutline,
+  AccessTime,
 } from "@mui/icons-material";
 import { tokens } from "../../../theme";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
@@ -32,6 +33,7 @@ import { DataGrid, GridToolbar, GridToolbarContainer } from "@mui/x-data-grid";
 import { useTransactionsContext } from "../../../hooks/useTransactionContext";
 import { format } from "date-fns-tz";
 import Paper_Icon from "../../../components/global/Paper_Icon";
+import Paper_Status from "../../../components/global/Paper_Status";
 
 function CustomToolbar() {
   return (
@@ -247,6 +249,54 @@ const Transaction = () => {
         format(new Date(params?.value), "hh:mm a - MMMM dd, yyyy"),
     },
     {
+      field: "status",
+      headerName: "Status",
+      width: 175,
+      sortable: false,
+      align: "center",
+      headerAlign: "center",
+      renderCell: (params) => {
+        return (
+          <>
+            <ButtonBase
+              disabled
+              onClick={() => {
+                setValidateDialog({
+                  isOpen: true,
+                  onConfirm: () => {
+                    setDecisionDialog({
+                      isOpen: true,
+                      title: `Pending Request Action ${params?.row?.reqID}? `,
+                      onConfirm: () => {
+                        toggleStatus({
+                          val: params?.row,
+                          status: "approved",
+                        });
+                      },
+                      onDeny: () => {
+                        toggleStatus({
+                          val: params?.row,
+                          status: "denied",
+                        });
+                      },
+                    });
+                  },
+                });
+              }}
+            >
+              {params?.value === "released" ? (
+                <Paper_Status icon={<CheckCircle />} title={"released"} />
+              ) : params?.value === "unavailable" ? (
+                <Paper_Status icon={<Cancel />} title={"unavailable"} />
+              ) : (
+                <Paper_Status icon={<AccessTime />} title={"releasing"} />
+              )}
+            </ButtonBase>
+          </>
+        );
+      },
+    },
+    {
       field: "_id",
       headerName: "Action",
       width: 175,
@@ -395,7 +445,7 @@ const Transaction = () => {
               variant="h2"
               fontWeight="bold"
               sx={{
-              borderLeft: `5px solid ${colors.secondary[500]}`,
+                borderLeft: `5px solid ${colors.secondary[500]}`,
                 paddingLeft: 2,
                 textTransform: "uppercase",
               }}

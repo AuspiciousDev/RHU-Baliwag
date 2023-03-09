@@ -223,8 +223,8 @@ const ADMIN_Dashboard = () => {
           {format(new Date(val.createdAt), "MMMM dd, yyyy")}
         </TableCell>
         <TableCell align="left">
-          {val?.status === "accepted" ? (
-            <Paper_Status icon={<CheckCircle />} title={"Accepted"} />
+          {val?.status === "approved" ? (
+            <Paper_Status icon={<CheckCircle />} title={"Approved"} />
           ) : val?.status === "denied" ? (
             <Paper_Status icon={<Cancel />} title={"Denied"} />
           ) : (

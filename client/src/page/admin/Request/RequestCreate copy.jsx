@@ -156,6 +156,7 @@ const RequestCreate = () => {
     const data = {
       username,
       requestType,
+      items,
     };
     console.log(
       "🚀 ~ file: RequestCreate.jsx:157 ~ handleSubmit ~ data:",
@@ -172,7 +173,7 @@ const RequestCreate = () => {
           isOpen: true,
           message: `Request ${response.data._id} has been created!`,
         });
-        clearFields();
+        clearScheduleFields();
       }
       setLoadingDialog({ isOpen: false });
     } catch (error) {
@@ -214,8 +215,38 @@ const RequestCreate = () => {
     }
   };
 
-  const clearFields = () => {
-    setUsername("");
+  const handleAddItem = async (e) => {
+    if (!lotNum) return setLotNumError(true);
+    if (!quantity) return setQuantityError(true);
+    e.preventDefault();
+    setItems;
+    const value = {
+      lotNum,
+      genericName,
+      brandName,
+      quantity,
+    };
+
+    let existingItem = items?.find((item) => {
+      return item.lotNum === value.lotNum;
+    });
+    if (existingItem) {
+      existingItem.lotNum = value.lotNum;
+      existingItem.genericName = value.genericName;
+      existingItem.brandName = value.brandName;
+      existingItem.quantity = value.quantity;
+    } else {
+      value && setItems((arr) => [...arr, value]);
+    }
+    clearItems();
+  };
+  const clearItems = () => {
+    setLotNum("");
+    setGenericName("");
+    setBrandName("");
+    setQuantity("");
+  };
+  const clearScheduleFields = () => {
     setFirstName("");
     setLastName("");
     setMiddleName("");
@@ -224,8 +255,26 @@ const RequestCreate = () => {
     setProvince("");
     setEmail("");
     setMobile("");
+    clearItems();
+    setItems([]);
   };
-
+  const handleRowClick = async (val) => {
+    setConfirmDialog({
+      isOpen: true,
+      message: `Are you sure to remove ${val.lotNum}?`,
+      onConfirm: () => {
+        handleRemoveRow(val.lotNum);
+      },
+    });
+  };
+  const handleRemoveRow = async (value) => {
+    setConfirmDialog({
+      ...confirmDialog,
+      isOpen: false,
+    });
+    let newItems = items.filter((val) => val.lotNum != value);
+    setItems(newItems);
+  };
   return (
     <Box className="container-layout_body_contents">
       <ConfirmDialogue
@@ -280,8 +329,7 @@ const RequestCreate = () => {
                 textTransform: "uppercase",
               }}
             >
-              {/* Request &#62; Create */}
-             Create Walk-in Request
+              Request &#62; Create
             </Typography>
           </Box>
         </Box>
@@ -316,6 +364,7 @@ const RequestCreate = () => {
               renderInput={(params) => (
                 <TextField
                   {...params}
+                  size="small"
                   label="Username"
                   required
                   error={usernameError}
@@ -343,11 +392,9 @@ const RequestCreate = () => {
                   });
               }}
             />
-            <Box></Box>
-            <Box></Box>
-            <Box></Box>
             <TextField
               required
+              size="small"
               autoComplete="off"
               variant="outlined"
               label="First Name"
@@ -366,6 +413,7 @@ const RequestCreate = () => {
             />
             <TextField
               autoComplete="off"
+              size="small"
               variant="outlined"
               label="Middle Name"
               placeholder="Optional"
@@ -384,6 +432,7 @@ const RequestCreate = () => {
             <TextField
               required
               autoComplete="off"
+              size="small"
               variant="outlined"
               label="Last Name"
               placeholder="Last Name"
@@ -398,9 +447,9 @@ const RequestCreate = () => {
               //   }
               // }}
               inputProps={{ style: { textTransform: "capitalize" } }}
-            />{" "}
-            <Box></Box>
+            />
             <TextField
+              size="small"
               required
               autoComplete="off"
               variant="outlined"
@@ -413,6 +462,7 @@ const RequestCreate = () => {
               inputProps={{ style: { textTransform: "capitalize" } }}
             />
             <TextField
+              size="small"
               required
               autoComplete="off"
               variant="outlined"
@@ -427,6 +477,7 @@ const RequestCreate = () => {
               inputProps={{ style: { textTransform: "capitalize" } }}
             />
             <TextField
+              size="small"
               required
               autoComplete="off"
               variant="outlined"
@@ -439,9 +490,9 @@ const RequestCreate = () => {
               //   }
               // }}
               inputProps={{ style: { textTransform: "capitalize" } }}
-            />{" "}
-            <Box></Box>
+            />
             <TextField
+              size="small"
               required
               type="email"
               autoComplete="off"
@@ -455,6 +506,7 @@ const RequestCreate = () => {
             />
             <TextField
               required
+              size="small"
               autoComplete="off"
               variant="outlined"
               label="Mobile Number"
@@ -479,6 +531,191 @@ const RequestCreate = () => {
             />
           </Box>
 
+          <Typography variant="h5" sx={{ margin: "15px 0 10px 0" }}>
+            Item Information
+          </Typography>
+          <Box
+            sx={{
+              display: "grid",
+              width: "100%",
+              gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr 1fr 1fr " },
+              gap: "20px",
+            }}
+          >
+            <Autocomplete
+              disablePortal
+              id="combo-box-demo"
+              options={
+                stocks
+                  ? stocks
+                      .filter((filter) => {
+                        return filter.status === true;
+                      })
+                      .map((val) => {
+                        return val?.lotNum;
+                      })
+                  : []
+              }
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  size="small"
+                  label="Lot Number"
+                  error={lotNumError}
+                />
+              )}
+              value={lotNum}
+              onChange={(event, newValue) => {
+                console.log(newValue);
+                setLotNum(newValue);
+                setLotNumError(false);
+                setQuantityError(false);
+                stocks
+                  .filter((filter) => {
+                    return filter.lotNum === newValue;
+                  })
+                  .map((val) => {
+                    return (
+                      setGenericName(val?.genericName),
+                      setBrandName(val?.brandName)
+                    );
+                  });
+              }}
+            />
+
+            <TextField
+              size="small"
+              autoComplete="off"
+              variant="outlined"
+              label="Generic Name"
+              placeholder="eg. Paracetamol, Ibuprofen"
+              value={genericName}
+              inputProps={{ style: { textTransform: "capitalize" } }}
+            />
+            <TextField
+              autoComplete="off"
+              size="small"
+              variant="outlined"
+              label="Brand Name"
+              placeholder="eg. Biogesic, Medicol, Solmux"
+              value={brandName}
+              inputProps={{ style: { textTransform: "capitalize" } }}
+            />
+
+            <TextField
+              size="small"
+              type="number"
+              autoComplete="off"
+              variant="outlined"
+              label="Quantity"
+              value={quantity}
+              error={quantityError}
+              onChange={(e) => {
+                setQuantity(e.target.value);
+                setQuantityError(false);
+              }}
+            />
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                gap: 2,
+                gridColumn: "4",
+                justifyContent: "end",
+                "& > .MuiButtonBase-root": {
+                  width: "200px",
+                  height: "35px",
+                },
+              }}
+            >
+              <Button
+                type="button"
+                variant="contained"
+                sx={{ width: "250px", height: "50px" }}
+                onClick={() => {
+                  clearItems();
+                }}
+              >
+                <Typography variant="h5">clear</Typography>
+              </Button>
+              <Button
+                type="button"
+                variant="contained"
+                color="secondary"
+                onClick={handleAddItem}
+                sx={{ width: "250px", height: "50px" }}
+              >
+                <Typography variant="h5" sx={{ color: "white" }}>
+                  add Item
+                </Typography>
+              </Button>
+            </Box>
+          </Box>
+          <Typography variant="h5" sx={{ margin: "15px 0 10px 0" }}>
+            Item Table
+          </Typography>
+          <Box
+            sx={{
+              borderTop: `solid 1px ${colors.primary[500]}`,
+              mt: 2,
+              height: "200px",
+            }}
+          >
+            <TableContainer>
+              <Table sx={{ minWidth: "100%" }} size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Lot Number</TableCell>
+                    <TableCell align="left">Generic Name</TableCell>
+                    <TableCell align="left">Brand Name</TableCell>
+                    <TableCell align="left">Quantity</TableCell>
+                    <TableCell align="left">Action</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {items &&
+                    items.map((val, key) => {
+                      return (
+                        <TableRow
+                          sx={{
+                            "& > td ": {
+                              textTransform: "capitalize",
+                            },
+                          }}
+                        >
+                          <TableCell>{val?.lotNum}</TableCell>
+                          <TableCell>{val?.genericName}</TableCell>
+                          <TableCell>{val?.brandName}</TableCell>
+                          <TableCell>{val?.quantity}</TableCell>
+                          <TableCell>
+                            <ButtonBase
+                              onClick={() => {
+                                handleRowClick(val);
+                              }}
+                            >
+                              <Paper
+                                sx={{
+                                  padding: "2px 10px",
+                                  borderRadius: "20px",
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  backgroundColor: colors.whiteOnly[500],
+                                  color: colors.blackOnly[500],
+                                  alignItems: "center",
+                                }}
+                              >
+                                <Delete />
+                                <Typography ml="5px">Remove</Typography>
+                              </Paper>
+                            </ButtonBase>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Box>
           <Box
             sx={{
               mt: 3,

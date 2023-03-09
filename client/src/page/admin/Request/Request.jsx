@@ -123,46 +123,95 @@ const Request = () => {
         );
       },
     },
-
     {
-      field: "fullName",
-      headerName: "Name",
-      // description: "This column has a value getter and is not sortable.",
-      // sortable: false,
-      width: 220,
-
-      valueGetter: (params) =>
-        `${params.row.firstName || ""} ${
-          (params.row.middleName && params.row.middleName.charAt(0) + ".") || ""
-        } ${params.row.lastName || ""}`,
-    },
-    { field: "mobile", headerName: "Mobile", width: 150 },
-    {
-      field: "email",
-      headerName: "Email",
-      width: 150,
+      field: "username",
+      headerName: "Username",
+      width: 200,
+      align: "center",
+      headerAlign: "center",
       renderCell: (params) => {
         return (
-          <Typography textTransform="lowercase" variant="h6">
-            {params.value}
+          <Box
+            display="flex"
+            gap={2}
+            width="60%"
+            sx={{ justifyContent: "center" }}
+          >
+            <Link
+              to={`/admin/user/profile/${params?.value}`}
+              style={{
+                alignItems: "center",
+                textDecoration: "none",
+              }}
+            >
+              <Paper
+                sx={{
+                  width: "100%",
+                  padding: "2px 20px",
+                  borderRadius: "5px",
+                  display: "flex",
+                  justifyContent: "center",
+                  backgroundColor: colors.whiteOnly[500],
+                  alignItems: "center",
+                }}
+              >
+                <Typography
+                  fontWeight="bold"
+                  sx={{ color: colors.blackOnly[500] }}
+                >
+                  {params?.value}
+                </Typography>
+              </Paper>
+            </Link>
+          </Box>
+        );
+      },
+    },
+    {
+      field: "requestType",
+      headerName: "Request Type",
+      width: 180,
+      align: "center",
+      headerAlign: "center",
+      renderCell: (params) => {
+        return (
+          <Typography sx={{ textTransform: "lowercase", fontSize: "0.9rem" }}>
+            {params?.value}
           </Typography>
         );
       },
     },
-
+    {
+      field: "prescriptionIMG_URL",
+      headerName: "Prescription",
+      width: 180,
+      align: "center",
+      headerAlign: "center",
+      renderCell: (params) => {
+        return (
+          <Typography sx={{ textTransform: "lowercase", fontSize: "0.9rem" }}>
+            {params?.value || "-"}
+          </Typography>
+        );
+      },
+    },
     {
       field: "createdAt",
       headerName: "Date Created",
-      width: 240,
+      width: 180,
+      align: "center",
+      headerAlign: "center",
       valueFormatter: (params) =>
-        format(new Date(params?.value), "hh:mm a - MMMM dd, yyyy"),
+        format(new Date(params?.value), "MMMM dd, yyyy"),
     },
     {
       field: "updatedAt",
       headerName: "Date Modified",
-      width: 240,
+      width: 180,
+      align: "center",
+      headerAlign: "center",
       valueFormatter: (params) =>
-        format(new Date(params?.value), "hh:mm a - MMMM dd, yyyy"),
+        format(new Date(params?.value), "MMMM dd, yyyy"),
     },
     {
       field: "status",
@@ -176,7 +225,7 @@ const Request = () => {
           <>
             <ButtonBase
               disabled={
-                params?.value === "denied" || params?.value === "accepted"
+                params?.value === "denied" || params?.value === "approved"
               }
               onClick={() => {
                 setValidateDialog({
@@ -188,7 +237,7 @@ const Request = () => {
                       onConfirm: () => {
                         toggleStatus({
                           val: params?.row,
-                          status: "accepted",
+                          status: "approved",
                         });
                       },
                       onDeny: () => {
@@ -202,8 +251,8 @@ const Request = () => {
                 });
               }}
             >
-              {params?.value === "accepted" ? (
-                <Paper_Status icon={<CheckCircle />} title={"Accepted"} />
+              {params?.value === "approved" ? (
+                <Paper_Status icon={<CheckCircle />} title={"Approved"} />
               ) : params?.value === "denied" ? (
                 <Paper_Status icon={<Cancel />} title={"Denied"} />
               ) : (
@@ -276,11 +325,13 @@ const Request = () => {
       reqID: val.reqID,
       transactor: auth.username,
       items: val.items,
+      status,
     };
+    console.log("🚀 ~ file: Request.jsx:329 ~ toggleStatus ~ data:", data);
 
     try {
       setLoadingDialog({ isOpen: true });
-      if (status === "accepted") {
+      if (status === "approved") {
         const apiTransact = await axiosPrivate.post(
           "/api/transaction/create",
           JSON.stringify(data)
@@ -288,7 +339,7 @@ const Request = () => {
         if (apiTransact.status === 201) {
           const response = await axiosPrivate.patch(
             `/api/request/update/status/${val?.reqID}`,
-            JSON.stringify({ status })
+            JSON.stringify(data)
           );
           if (response.status === 200) {
             const response = await axiosPrivate.get("/api/request");
@@ -299,8 +350,8 @@ const Request = () => {
               setSuccessDialog({
                 isOpen: true,
                 message: `Request ${val.reqID} ${
-                  status === "accepted"
-                    ? "has been accepted!"
+                  status === "approved"
+                    ? "has been approved!"
                     : "has been denied!"
                 }`,
               });
@@ -326,8 +377,8 @@ const Request = () => {
               setSuccessDialog({
                 isOpen: true,
                 message: `Request ${val.reqID} ${
-                  status === "accepted"
-                    ? "has been accepted!"
+                  status === "approved"
+                    ? "has been approved!"
                     : "has been denied!"
                 }`,
               });
@@ -463,7 +514,7 @@ const Request = () => {
                 }}
               >
                 <Typography variant="h6" fontWeight="500">
-                  Create a request
+                  Walk in
                 </Typography>
               </Button>
             )}

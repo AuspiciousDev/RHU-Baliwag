@@ -11,7 +11,6 @@ const schema = new Schema(
     },
     prescriptionIMG_URL: {
       type: String,
-      required: true,
     },
     username: {
       type: String,
@@ -20,6 +19,9 @@ const schema = new Schema(
     requestType: {
       type: String,
       required: true,
+    },
+    releasingDate: {
+      type: String,
     },
     actionBy: {
       type: String,

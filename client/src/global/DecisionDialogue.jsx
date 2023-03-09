@@ -48,14 +48,7 @@ export const DecisionDialogue = (props) => {
           padding: "10px 50px",
         }}
       >
-        <Button
-          fullWidth
-          variant="contained"
-          //   onClick={() => setSuccessDialog({ ...successDialog, isOpen: false })}
-          onClick={decisionDialog.onConfirm}
-        >
-          Accept
-        </Button>
+        {" "}
         <Button
           fullWidth
           variant="contained"
@@ -64,6 +57,14 @@ export const DecisionDialogue = (props) => {
           onClick={decisionDialog.onDeny}
         >
           Deny
+        </Button>
+        <Button
+          fullWidth
+          variant="contained"
+          //   onClick={() => setSuccessDialog({ ...successDialog, isOpen: false })}
+          onClick={decisionDialog.onConfirm}
+        >
+          Accept
         </Button>
       </DialogActions>
     </Dialog>

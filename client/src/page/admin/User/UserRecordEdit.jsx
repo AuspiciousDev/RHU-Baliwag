@@ -52,10 +52,6 @@ const UserRecordEdit = () => {
   const [lastName, setLastName] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState(null);
   const [gender, setGender] = useState("");
-  const [placeOfBirth, setPlaceOfBirth] = useState("");
-  const [civilStatus, setCivilStatus] = useState("");
-  const [nationality, setNationality] = useState("");
-  const [religion, setReligion] = useState("");
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [province, setProvince] = useState("");
@@ -110,19 +106,12 @@ const UserRecordEdit = () => {
           setLastName(json?.lastName || "");
           setDateOfBirth(json?.dateOfBirth || null);
           setGender(json?.gender || "");
-          setPlaceOfBirth(json?.placeOfBirth || "");
-          setCivilStatus(json?.civilStatus || "");
-          setNationality(json?.nationality || "");
-          setReligion(json?.religion || "");
           setAddress(json?.address || "");
           setCity(json?.city || "");
           setProvince(json?.province || "");
           setEmail(json?.email || "");
           setMobile(json?.mobile || "");
           setTelephone(json?.telephone || "");
-          setEmergencyName(json?.emergencyContactName || "");
-          setEmergencyRelationship(json?.emergencyContactNumber || "");
-          setEmergencyNumber(json?.emergencyContactRelationship || "");
         }
         setLoadingDialog({ isOpen: false });
       } catch (error) {
@@ -178,19 +167,12 @@ const UserRecordEdit = () => {
       lastName,
       dateOfBirth,
       gender,
-      placeOfBirth,
-      civilStatus,
-      nationality,
-      religion,
       address,
       city,
       province,
       email,
       mobile,
       telephone,
-      emergencyContactName: emergencyName,
-      emergencyContactNumber: emergencyRelationship,
-      emergencyContactRelationship: emergencyNumber,
     };
     try {
       const response = await axiosPrivate.patch(
@@ -482,22 +464,6 @@ const UserRecordEdit = () => {
               placeholder="10 Digit Employee ID"
               value={username}
             />
-            <FormControl required fullWidth>
-              <InputLabel id="demo-simple-select-label">User Type</InputLabel>
-              <Select
-                size="small"
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={userType}
-                label="User Type"
-                onChange={(e) => {
-                  setUserType(e.target.value);
-                }}
-              >
-                <MenuItem value={"admin"}>Admin</MenuItem>
-                <MenuItem value={"distributor"}>Distributor</MenuItem>
-              </Select>
-            </FormControl>
           </Box>
           {/* // ! Personal Information */}
           <Typography variant="h5" sx={{ margin: "15px 0 10px 0" }}>
@@ -596,72 +562,7 @@ const UserRecordEdit = () => {
                 <MenuItem value={"female"}>Female</MenuItem>
               </Select>
             </FormControl>
-            <TextField
-              size="small"
-              required
-              autoComplete="off"
-              variant="outlined"
-              label="Place of Birth"
-              placeholder="City"
-              value={placeOfBirth}
-              onChange={(e) => {
-                if (isLetters(e.target.value)) {
-                  setPlaceOfBirth(e.target.value);
-                }
-              }}
-              inputProps={{ style: { textTransform: "capitalize" } }}
-            />
-            <FormControl required fullWidth size="small">
-              <InputLabel id="demo-simple-select-label">
-                Civil Status
-              </InputLabel>
-              <Select
-                size="small"
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={civilStatus}
-                label="Civil Status"
-                onChange={(e) => {
-                  setCivilStatus(e.target.value);
-                }}
-              >
-                <MenuItem value={"single"}>Single</MenuItem>
-                <MenuItem value={"married"}>Married</MenuItem>
-                <MenuItem value={"widowed"}>Widowed</MenuItem>
-                <MenuItem value={"divorced"}>Divorced</MenuItem>
-                <MenuItem value={"separated"}>Separated </MenuItem>
-              </Select>
-            </FormControl>
 
-            <TextField
-              required
-              size="small"
-              autoComplete="off"
-              variant="outlined"
-              label="Nationality"
-              placeholder="Filipino, Chinese, American ..."
-              value={nationality}
-              onChange={(e) => {
-                if (isLetters(e.target.value)) {
-                  setNationality(e.target.value);
-                }
-              }}
-              inputProps={{ style: { textTransform: "capitalize" } }}
-            />
-            <TextField
-              size="small"
-              autoComplete="off"
-              variant="outlined"
-              label="Religion"
-              placeholder="Catholic, Muslim, Christian ..."
-              value={religion}
-              onChange={(e) => {
-                if (isLetters(e.target.value)) {
-                  setReligion(e.target.value);
-                }
-              }}
-              inputProps={{ style: { textTransform: "capitalize" } }}
-            />
             <TextField
               size="small"
               required
@@ -758,75 +659,6 @@ const UserRecordEdit = () => {
                 }
               }}
             />
-          </Box>
-          <Typography variant="h5">Family Information</Typography>
-          <Box marginBottom="40px">
-            <Box
-              sx={{
-                display: "grid",
-                width: "100%",
-                gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr 1fr " },
-                gap: "20px",
-                mt: 2,
-              }}
-            >
-              <TextField
-                size="small"
-                required
-                autoComplete="off"
-                variant="outlined"
-                label="Emergency Contact Name"
-                placeholder="Full name"
-                value={emergencyName}
-                onChange={(e) => {
-                  if (isLetters(e.target.value)) {
-                    setEmergencyName(e.target.value);
-                  }
-                }}
-                inputProps={{ style: { textTransform: "capitalize" } }}
-              />
-              <TextField
-                size="small"
-                required
-                autoComplete="off"
-                variant="outlined"
-                label="Relationship"
-                placeholder="Relationship"
-                value={emergencyRelationship}
-                onChange={(e) => {
-                  if (isLetters(e.target.value)) {
-                    setEmergencyRelationship(e.target.value);
-                  }
-                }}
-                inputProps={{ style: { textTransform: "capitalize" } }}
-              />
-              <TextField
-                required
-                size="small"
-                autoComplete="off"
-                variant="outlined"
-                label="Mobile Number"
-                value={emergencyNumber}
-                placeholder="9 Digit Mobile Number"
-                inputProps={{ maxLength: 9 }}
-                onChange={(e) => {
-                  if (isNumber(e.target.value) || "") {
-                    setEmergencyNumber(e.target.value);
-                  }
-                }}
-                InputProps={{
-                  startAdornment: (
-                    <>
-                      <Typography>09</Typography>
-                      <Divider
-                        sx={{ height: 28, m: 0.5 }}
-                        orientation="vertical"
-                      />
-                    </>
-                  ),
-                }}
-              />
-            </Box>
           </Box>
 
           {/* //! button */}

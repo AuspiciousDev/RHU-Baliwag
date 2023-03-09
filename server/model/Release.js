@@ -15,7 +15,7 @@ const schema = new Schema(
     },
     items: [
       {
-        lotNum: {
+        medID: {
           type: String,
           required: true,
         },

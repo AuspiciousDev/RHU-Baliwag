@@ -9,14 +9,13 @@ const schema = new Schema(
       required: true,
       auto: true,
     },
-    reqID: String,
-    requested: {
-      type: Boolean,
-      default: false,
+    reqID: {
+      type: String,
+      required: true,
     },
     items: [
       {
-        lotNum: {
+        medID: {
           type: String,
           required: true,
           lowercase: true,
@@ -40,9 +39,15 @@ const schema = new Schema(
       type: String,
       required: false,
     },
+    releasingDate: {
+      type: String,
+    },
+    releasedDate: {
+      type: String,
+    },
     status: {
-      type: Boolean,
-      default: true,
+      type: String,
+      default: "releasing",
     },
   },
   { timestamps: true }

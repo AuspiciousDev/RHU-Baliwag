@@ -59,13 +59,13 @@ const UserCreate = () => {
   const [genderError, setGenderError] = useState(false);
 
   const handleDate = (newValue) => {
-    if (getAge(newValue) >= 18) {
-      setDateOfBirth(newValue);
-      setDateOfBirthError(false);
-    } else {
-      setDateOfBirth(newValue);
-      setDateOfBirthError(true);
-    }
+    // if (getAge(newValue) >= 18) {
+    setDateOfBirth(newValue);
+    setDateOfBirthError(false);
+    // } else {
+    //   setDateOfBirth(newValue);
+    //   setDateOfBirthError(true);
+    // }
   };
   const [successDialog, setSuccessDialog] = useState({
     isOpen: false,
@@ -103,16 +103,16 @@ const UserCreate = () => {
 
     try {
       const response = await axiosPrivate.post(
-        "/api/user/create",
+        "/api/user/quick-create",
         JSON.stringify(doc)
       );
 
-      if (response.status === 200) {
+      if (response.status === 201) {
         const json = await response.data;
         console.log("response;", json);
         setSuccessDialog({
           isOpen: true,
-          message: `A verification token has been sent to ${doc.email} email!`,
+          message: `Account for Mr/Ms. ${lastName} ${doc.email} has been created!`,
         });
         clearFields();
       }
@@ -124,6 +124,10 @@ const UserCreate = () => {
       );
       setLoadingDialog({ isOpen: false });
       const errMessage = error.response.data.message;
+      console.log(
+        "🚀 ~ file: UserCreate.jsx:127 ~ handleSubmit ~ errMessage:",
+        errMessage
+      );
       if (!error?.response) {
         console.log("no server response");
       } else if (error.response.status === 400) {
@@ -340,9 +344,12 @@ const UserCreate = () => {
                 label="Email"
                 placeholder="Active and valid email address"
                 value={email}
+                error={emailError}
                 onChange={(e) => {
                   setEmail(e.target.value);
+                  setEmailError(false);
                 }}
+                helperText={emailError ? "Email already registered!" : ""}
               />
               <TextField
                 required

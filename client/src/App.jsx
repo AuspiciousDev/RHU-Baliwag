@@ -49,6 +49,7 @@ import Admin from "./page/admin/Admin/Admin";
 import AdminCreate from "./page/admin/Admin/AdminCreate";
 import AdminRecord from "./page/admin/Admin/AdminRecord";
 import AdminRecordEdit from "./page/admin/Admin/AdminRecordEdit";
+import WalkIn from "./page/admin/Walk-in/WalkIn";
 
 const USER_TYPE = {
   ADMIN: "admin",
@@ -86,6 +87,7 @@ function App() {
                 <Route path="/admin" element={<ADMIN_Layout />}>
                   <Route index element={<Dashboard />} />
                   <Route path="request" element={<Request />} />
+                  <Route path="walk-in" element={<WalkIn />} />
                   <Route
                     path="request/details/:reqID"
                     element={<RequestDetails />}

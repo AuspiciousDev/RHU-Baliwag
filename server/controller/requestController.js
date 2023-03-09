@@ -17,41 +17,19 @@ const requestController = {
   createDoc: async (req, res) => {
     let emptyFields = [];
     try {
-      const {
-        firstName,
-        middleName,
-        lastName,
-        address,
-        city,
-        province,
-        email,
-        mobile,
-        items,
-      } = req.body;
+      const { username, requestType, prescriptionIMG_URL } = req.body;
 
-      if (!firstName) emptyFields.push("First Name");
-      if (!lastName) emptyFields.push("Last Name");
-      if (!address) emptyFields.push("Address");
-      if (!city) emptyFields.push("City");
-      if (!province) emptyFields.push("Province");
-      if (!email) emptyFields.push("Email");
-      if (!mobile) emptyFields.push("Mobile");
-      if (!items) emptyFields.push("Items");
+      if (!username) emptyFields.push("Username");
+      if (!requestType) emptyFields.push("Request Type");
       if (emptyFields.length > 0)
         return res
           .status(400)
           .json({ message: "Please fill in all the fields", emptyFields });
 
       const docObject = {
-        firstName,
-        middleName,
-        lastName,
-        address,
-        city,
-        province,
-        email,
-        mobile,
-        items,
+        username,
+        requestType,
+        prescriptionIMG_URL,
       };
       const createDoc = await Request.create(docObject);
       res.status(201).json(createDoc);
@@ -65,10 +43,48 @@ const requestController = {
   },
   getDocByID: async (req, res) => {
     const reqID = req.params.reqID;
+    console.log(
+      "🚀 ~ file: requestController.js:46 ~ getDocByID: ~ reqID:",
+      reqID
+    );
     if (!reqID)
       return res.status(400).json({ message: "Request ID is required!" });
     try {
-      const doc = await Request.findOne({ reqID }).exec();
+      // const doc = await Request.findOne({ reqID }).exec();
+      const doc = await Request.aggregate([
+        { $match: { $expr: { $eq: ["$reqID", { $toObjectId: reqID }] } } },
+        {
+          $lookup: {
+            from: "users",
+            localField: "username",
+            foreignField: "username",
+            as: "profile",
+          },
+        },
+        {
+          $unwind: {
+            path: "$profile",
+          },
+        },
+        {
+          $set: {
+            username: {
+              $toString: "$profile.username",
+            },
+            firstName: {
+              $toString: "$profile.firstName",
+            },
+            lastName: {
+              $toString: "$profile.lastName",
+            },
+          },
+        },
+      ]);
+      console.log(
+        "🚀 ~ file: requestController.js:80 ~ getDocByID: ~ doc:",
+        doc
+      );
+
       if (!doc)
         return res
           .status(400)
@@ -99,7 +115,12 @@ const requestController = {
     if (!reqID)
       return res.status(400).json({ message: `Stock ID is required!` });
     try {
-      const { status } = req.body;
+      const { reqID, transactor, status, releasingDate } = req.body;
+      console.log(
+        "🚀 ~ file: transactionController.js:23 ~ createDoc: ~ req.body",
+        transactor,
+        status
+      );
       const doc = await Request.findOne({ reqID }).exec();
 
       if (!doc)
@@ -109,7 +130,9 @@ const requestController = {
       const update = await Request.findOneAndUpdate(
         { reqID },
         {
+          actionBy: transactor,
           status,
+          releasingDate,
         }
       );
       if (!update) {

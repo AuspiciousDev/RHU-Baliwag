@@ -207,6 +207,7 @@ const AdminRecord = () => {
                 style={{
                   objectFit: "contain",
                   borderRadius: "50%",
+                  border: `5px solid ${colors.secondary[500]}`,
                 }}
               />
             </Paper>
@@ -230,14 +231,14 @@ const AdminRecord = () => {
                 display: "flex",
                 flexDirection: "row",
                 borderRadius: "10px",
-                padding: "10px 20px",
+                padding: "5px 30px",
                 alignItems: "center",
+                backgroundColor: colors.secondary[500],
+                color: "white",
               }}
             >
               {/* <School /> */}
-              <Typography sx={{ ml: "10px" }} textTransform="capitalize">
-                {val?.userType}
-              </Typography>
+              <Typography textTransform="uppercase">{val?.userType}</Typography>
             </Paper>
             <Box sx={{ display: "flex", gap: 1 }}>
               <Typography variant="h6" textAlign="center">
