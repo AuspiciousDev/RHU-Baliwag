@@ -101,7 +101,6 @@ const authController = {
 
       const {
         username,
-        password,
         userType,
         firstName,
         middleName,
@@ -109,6 +108,10 @@ const authController = {
         gender,
         email,
         dateOfBirth,
+        address,
+        city,
+        province,
+        mobile,
       } = user;
       const hashedPassword = await bcrypt.hash(password, 10);
       const checkUser = await User.findOne({ username, email });
@@ -129,6 +132,10 @@ const authController = {
         gender,
         email,
         dateOfBirth,
+        address,
+        city,
+        province,
+        mobile,
       });
       await newUser.save();
       res.status(200).json({

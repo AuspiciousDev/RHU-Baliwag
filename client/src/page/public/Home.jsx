@@ -70,7 +70,7 @@ const Home = () => {
               },
             }}
           >
-            <BoxLinks title="Request now!" to="/public/request" />
+            <BoxLinks title="Request now!" to="/register" />
           </Box>
         </Box>
         <img src={welcome2} alt="" style={{ width: "700px" }} />
