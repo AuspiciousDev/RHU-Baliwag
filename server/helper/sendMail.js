@@ -1084,13 +1084,13 @@ const sendRequestStatus = (to, reqID, reqStatus, releasingDate) => {
             "
           >
             <p style="margin: 0">
-              Good day
-              Your request has been
+              Good day!, 
+              Your request (
                <span style="text-transform: capitalize; font-weight: 600"
-              >${reqStatus}</span> has been 
+              >${reqID} )</span> has been 
               <span style="text-transform: uppercase; font-weight: 600">
-                ${reqID}.</span>
-              >
+                ${reqStatus}.</span>
+              
             </p>
           </td>
         </tr>

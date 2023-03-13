@@ -336,7 +336,7 @@ const User = () => {
               >
                 <Typography
                   fontWeight="bold"
-                  sx={{ color: colors.blackOnly[500] }}
+                  sx={{ fontSize: "10pt", color: colors.blackOnly[500] }}
                 >
                   {params?.value}
                 </Typography>

@@ -8,6 +8,7 @@ const generateCredential = require("../helper/generateCredential");
 const ROLES_LIST = require("../config/role_list");
 const isEmail = (str) =>
   /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(str);
+const isNumber = (str) => /^[0-9]*$/.test(str);
 const authController = {
   handleLogin: async (req, res) => {
     try {

@@ -147,6 +147,7 @@ const Restock = () => {
       width: 250,
       align: "center",
       headerAlign: "center",
+      
     },
     {
       field: "medID",

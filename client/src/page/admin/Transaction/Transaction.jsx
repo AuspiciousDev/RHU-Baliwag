@@ -155,7 +155,7 @@ const Transaction = () => {
                 }}
               >
                 <Typography
-                  sx={{ fontSize: "11pt", color: colors.blackOnly[500] }}
+                  sx={{ fontSize: "10pt", color: colors.blackOnly[500] }}
                 >
                   {params?.value}
                 </Typography>
@@ -192,7 +192,7 @@ const Transaction = () => {
                 }}
               >
                 <Typography
-                  sx={{ fontSize: "11pt", color: colors.blackOnly[500] }}
+                  sx={{ fontSize: "10pt", color: colors.blackOnly[500] }}
                 >
                   {params?.value}
                 </Typography>
