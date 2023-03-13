@@ -101,18 +101,18 @@ const authController = {
 
       const {
         username,
-        userType,
+        password,
         firstName,
         middleName,
         lastName,
         gender,
         email,
+        userType,
         dateOfBirth,
         address,
         city,
         province,
         mobile,
-        password
       } = user;
       const hashedPassword = await bcrypt.hash(password, 10);
       const checkUser = await User.findOne({ username, email });
@@ -126,12 +126,12 @@ const authController = {
       const newUser = new User({
         username,
         password: hashedPassword,
-        userType,
         firstName,
         middleName,
         lastName,
         gender,
         email,
+        userType,
         dateOfBirth,
         address,
         city,
@@ -313,13 +313,11 @@ const authController = {
         province,
         mobile,
       } = req.body;
-      if (!username) {
-        genUsername = generateCredential.username(10);
-      } else {
-        if (username?.length != 10)
-          emptyFields.push("User ID must be 10 Digits!");
-        if (!isNumber(username)) emptyFields.push("User ID must be a digit");
-      }
+
+      if (username?.length != 10)
+        emptyFields.push("User ID must be 10 Digits!");
+      if (!isNumber(username)) emptyFields.push("User ID must be a digit");
+
       if (!userType) emptyFields.push("User Type");
       if (!ROLES_LIST.includes(userType)) emptyFields.push("Invalid User Type");
       if (!email) emptyFields.push("Email");
@@ -343,8 +341,9 @@ const authController = {
         return res.status(409).json({ message: "Email Already Exists!" });
 
       const genPassword = generateCredential.password(10);
+
       const docObject = {
-        username: genUsername,
+        username,
         password: genPassword,
         firstName,
         middleName,

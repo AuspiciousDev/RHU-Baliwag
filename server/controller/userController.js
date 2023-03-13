@@ -23,6 +23,7 @@ const userController = {
         address,
         city,
         province,
+        mobile,
       } = req.body;
       if (!username) {
         genUsername = generateCredential.username(10);
@@ -54,8 +55,11 @@ const userController = {
         return res.status(409).json({ message: "Email Already Exists!" });
 
       const genPassword = generateCredential.password(10);
+      let newUserName;
+      username ? (newUserName = username) : (newUserName = genUsername);
+
       const docObject = {
-        username: genUsername,
+        username: newUserName,
         password: genPassword,
         firstName,
         middleName,
@@ -67,15 +71,11 @@ const userController = {
         address,
         city,
         province,
+        mobile,
       };
       const activationToken = createToken.activation(docObject);
       const url = `${process.env.BASE_URL}/#/auth/activate/${activationToken}`;
-      let newUserName;
-      username ? (newUserName = username) : (newUserName = genUsername);
-      console.log(
-        "🚀 ~ file: authController.js:364 ~ publicCreate: ~ newUserName:",
-        newUserName
-      );
+
       sendMail.sendNewUser(
         email,
         url,
