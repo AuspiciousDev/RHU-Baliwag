@@ -374,7 +374,7 @@ const AdminCreate = () => {
             </Button>
             <Button
               type="submit"
-              disabled={emailError || dateOfBirthError}
+              disabled={emailError || dateOfBirthError || empID.length != 10}
               variant="contained"
               color="secondary"
               sx={{ width: "250px", height: "50px" }}

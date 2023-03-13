@@ -70,11 +70,17 @@ const userController = {
       };
       const activationToken = createToken.activation(docObject);
       const url = `${process.env.BASE_URL}/#/auth/activate/${activationToken}`;
+      let newUserName;
+      username ? (newUserName = username) : (newUserName = genUsername);
+      console.log(
+        "🚀 ~ file: authController.js:364 ~ publicCreate: ~ newUserName:",
+        newUserName
+      );
       sendMail.sendNewUser(
         email,
         url,
         "Verify your account",
-        genUsername,
+        newUserName,
         genPassword,
         userType
       );
