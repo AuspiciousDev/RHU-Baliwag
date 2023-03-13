@@ -112,6 +112,7 @@ const authController = {
         city,
         province,
         mobile,
+        password
       } = user;
       const hashedPassword = await bcrypt.hash(password, 10);
       const checkUser = await User.findOne({ username, email });
