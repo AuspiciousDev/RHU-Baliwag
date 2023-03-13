@@ -45,18 +45,19 @@ const LogoutDialogue = (props) => {
       >
         <Button
           fullWidth
-          color="secondary"
-          variant="contained"
-          onClick={logoutDialog.onLogout}
-        >
-          Logout
-        </Button>
-        <Button
-          fullWidth
           variant="contained"
           onClick={() => setLogoutDialog({ ...logoutDialog, isOpen: false })}
         >
           Cancel
+        </Button>
+        <Button
+          fullWidth
+          color="secondary"
+          variant="contained"
+          onClick={logoutDialog.onLogout}
+          sx={{ color: "white" }}
+        >
+          Logout
         </Button>
       </DialogActions>
     </Dialog>

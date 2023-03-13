@@ -10,4 +10,6 @@ router.post("/change-password", auth, authController.changePassword);
 router.post("/activate", authController.activateDoc);
 router.post("/verify", authController.verifyPassword);
 
+router.post("/register", authController.publicCreate);
+
 module.exports = router;

@@ -13,6 +13,7 @@ import NotFound404 from "./page/public/NotFound404";
 import Home from "./page/public/Home";
 import Login from "./page/public/Login";
 import ForgotPassword from "./page/public/ForgotPassword";
+import Register from "./page/public/Register";
 
 import InventoryPublic from "./page/admin/Inventory/InventoryPublic";
 import RequestCreatePublic from "./page/admin/Request/RequestCreatePublic";
@@ -78,6 +79,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="login" element={<Login />} />
+            <Route path="register" element={<Register />} />
             <Route
               path="auth/activate/:activation_token"
               element={<Activate />}

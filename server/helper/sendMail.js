@@ -473,7 +473,7 @@ const sendNewUser = (to, url, text, name, password, userType) => {
     } else console.log("Message %s sent: %s", info.messageId, info.response);
   });
 };
-const sendNoVerifNewUser = (to, url, text, name, password, userType) => {
+const sendNoVerifNewUser = (to, text, name, password) => {
   oauth2client.setCredentials({
     refresh_token: G_REFRESH_TOKEN,
   });

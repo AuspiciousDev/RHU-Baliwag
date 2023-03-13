@@ -41,9 +41,17 @@ const RestockCreate = () => {
 
   const [medIDError, setMedIDError] = useState(false);
   const [lotNumError, setLotNumError] = useState(false);
+  const [deliveryDateError, setDeliveryDateError] = useState(false);
 
   const handleDate = (newValue) => {
-    setDeliveryDate(newValue);
+    let CurrentDate = new Date();
+    let newDate = new Date(newValue);
+    if (newDate > CurrentDate) {
+      setDeliveryDateError(true);
+    } else {
+      setDeliveryDate(newValue);
+      setDeliveryDateError(false);
+    }
   };
 
   const [confirmDialog, setConfirmDialog] = useState({
@@ -357,6 +365,7 @@ const RestockCreate = () => {
                       required
                       disabled
                       {...params}
+                      error={deliveryDateError}
                     />
                   )}
                 />
@@ -382,7 +391,7 @@ const RestockCreate = () => {
             </Button>
             <Button
               type="submit"
-              disabled={lotNumError}
+              disabled={medIDError || deliveryDateError}
               variant="contained"
               color="secondary"
               sx={{ width: "250px", height: "50px" }}
