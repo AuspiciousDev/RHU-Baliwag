@@ -314,11 +314,14 @@ const authController = {
         province,
         mobile,
       } = req.body;
-
-      if (username?.length != 10)
-        emptyFields.push("User ID must be 10 Digits!");
-      if (!isNumber(username)) emptyFields.push("User ID must be a digit");
-
+      if (!username) {
+        genUsername = generateCredential.username(10);
+      } else {
+        if (username?.length != 10)
+          emptyFields.push("User ID must be 10 Digits!");
+        if (!isNumber(username)) emptyFields.push("User ID must be a digit");
+        genUsername = username;
+      }
       if (!userType) emptyFields.push("User Type");
       if (!ROLES_LIST.includes(userType)) emptyFields.push("Invalid User Type");
       if (!email) emptyFields.push("Email");
@@ -344,7 +347,7 @@ const authController = {
       const genPassword = generateCredential.password(10);
 
       const docObject = {
-        username,
+        username: genUsername,
         password: genPassword,
         firstName,
         middleName,

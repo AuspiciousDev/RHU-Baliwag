@@ -123,6 +123,12 @@ const Register = () => {
         error
       );
       setLoadingDialog({ isOpen: false });
+      if (!error?.response) {
+        setErrorDialog({
+          isOpen: true,
+          message: ` ${error.message}`,
+        });
+      }
       const errMessage = error.response.data.message;
       if (!error?.response) {
         console.log("no server response");
@@ -279,7 +285,6 @@ const Register = () => {
                 />
 
                 <TextField
-                  required
                   fullWidth
                   size="small"
                   label="Middle name"
