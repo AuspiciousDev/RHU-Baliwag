@@ -212,7 +212,7 @@ const UserTransaction = () => {
         return (
           <Box display="flex" gap={2}>
             <Link
-              to={`/user/user/profile/${params?.value}`}
+              to={`/user/patient/profile/${params?.value}`}
               style={{
                 alignItems: "center",
                 textDecoration: "none",
@@ -287,8 +287,8 @@ const UserTransaction = () => {
             >
               {params?.value === "released" ? (
                 <Paper_Status icon={<CheckCircle />} title={"released"} />
-              ) : params?.value === "unavailable" ? (
-                <Paper_Status icon={<Cancel />} title={"unavailable"} />
+              ) : params?.value === "unclaimed" ? (
+                <Paper_Status icon={<Cancel />} title={"unclaimed"} />
               ) : (
                 <Paper_Status icon={<AccessTime />} title={"releasing"} />
               )}

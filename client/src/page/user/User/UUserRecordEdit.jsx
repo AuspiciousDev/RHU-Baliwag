@@ -350,7 +350,7 @@ const UserRecordEdit = () => {
                 textTransform: "uppercase",
               }}
             >
-              User &#62; EDIT &#62; {username}
+              Patient &#62; EDIT &#62; {username}
             </Typography>
           </Box>
         </Box>
@@ -444,7 +444,7 @@ const UserRecordEdit = () => {
           {/* <Typography variant="h5">Registration</Typography> */}
           {/* // ! Personal Information */}
           <Typography variant="h5" sx={{ margin: "0 0 10px 0" }}>
-            User Information
+            Patient Information
           </Typography>
           <Box
             sx={{

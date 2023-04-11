@@ -38,6 +38,8 @@ import { format } from "date-fns-tz";
 import { DataGrid, GridToolbar, GridToolbarContainer } from "@mui/x-data-grid";
 import { useRequestsContext } from "../../../hooks/useRequestContext";
 import Paper_Status from "../../../components/global/Paper_Status";
+import QRCode from "qrcode";
+
 function CustomToolbar() {
   return (
     <GridToolbarContainer>
@@ -60,6 +62,7 @@ const UserRecord = () => {
   const navigate = useNavigate();
   const axiosPrivate = useAxiosPrivate();
   const { requests, requestDispatch } = useRequestsContext();
+  const [imgURL, setImgURL] = useState("");
 
   const [val, setVal] = useState([]);
   const getAge = (birthDate) =>
@@ -75,6 +78,15 @@ const UserRecord = () => {
   };
 
   useEffect(() => {
+    const generateQR = async () => {
+      try {
+        let code = await QRCode.toDataURL(`${username}`);
+        console.log("🚀 ~ file: UserRecord.jsx:85 ~ generateQR ~ code:", code);
+        setImgURL(code);
+      } catch (err) {
+        console.error(err);
+      }
+    };
     const getUsersDetails = async () => {
       try {
         setLoadingDialog({ isOpen: true });
@@ -94,10 +106,6 @@ const UserRecord = () => {
         }
         setLoadingDialog({ isOpen: false });
       } catch (error) {
-        console.log(
-          "🚀 ~ file: UserProfile.jsx:64 ~ getUsersDetails ~ error",
-          error
-        );
         if (!error.response) {
           console.log("no server response");
         } else if (error.response.status === 204) {
@@ -120,6 +128,7 @@ const UserRecord = () => {
       }
     };
     getUsersDetails();
+    generateQR();
   }, []);
 
   const [confirmDialog, setConfirmDialog] = useState({
@@ -189,7 +198,7 @@ const UserRecord = () => {
     },
     {
       field: "username",
-      headerName: "Username",
+      headerName: "Patient ID",
       width: 200,
       align: "center",
       headerAlign: "center",
@@ -202,7 +211,7 @@ const UserRecord = () => {
             sx={{ justifyContent: "center" }}
           >
             <Link
-              to={`/admin/user/profile/${params?.value}`}
+              to={`/admin/patient/profile/${params?.value}`}
               style={{
                 alignItems: "center",
                 textDecoration: "none",
@@ -254,7 +263,23 @@ const UserRecord = () => {
       renderCell: (params) => {
         return (
           <Typography sx={{ textTransform: "lowercase", fontSize: "0.9rem" }}>
-            {params?.value || "-"}
+            {params?.row?.reqID ? (
+              <Link
+                to={`/admin/request/prescription/${params?.row?.reqID}`}
+                style={{ textDecoration: "none" }}
+              >
+                <Typography
+                  sx={{ color: `${colors.primary[500]}` }}
+                  fontWeight={600}
+                >
+                  view
+                </Typography>
+              </Link>
+            ) : (
+              <Typography fontWeight={600}>
+                {(params?.row?.prescriptionIMG_URL && "yes") || "none"}
+              </Typography>
+            )}
           </Typography>
         );
       },
@@ -383,7 +408,7 @@ const UserRecord = () => {
                 textTransform: "uppercase",
               }}
             >
-              Users &#62; {username}
+              Patient &#62; {username}
             </Typography>
           </Box>
         </Box>
@@ -419,9 +444,9 @@ const UserRecord = () => {
               }}
             >
               <Avatar
-                alt="profile-user"
+                alt="profile-patient"
                 sx={{ width: "100%", height: "100%" }}
-                src={val?.imgURL}
+                src={imgURL}
                 style={{
                   objectFit: "contain",
                   borderRadius: "50%",
@@ -456,7 +481,9 @@ const UserRecord = () => {
               }}
             >
               {/* <School /> */}
-              <Typography textTransform="uppercase">{val?.userType}</Typography>
+              <Typography textTransform="uppercase">
+                {val?.userType == "user" ? "Patient" : val?.userType}
+              </Typography>
             </Paper>
             <Box sx={{ display: "flex", gap: 1 }}>
               <Typography variant="h6" textAlign="center">
@@ -487,7 +514,7 @@ const UserRecord = () => {
             >
               <MenuItem>
                 <Link
-                  to={`/admin/user/edit/${val?.username}`}
+                  to={`/admin/patient/edit/${val?.username}`}
                   style={{
                     alignItems: "center",
                     color: colors.black[100],
@@ -504,7 +531,7 @@ const UserRecord = () => {
               sx={{ display: "flex", flexDirection: "column" }}
               padding="10px 10px 0 10px"
             >
-              <Typography variant="h4">User Profile</Typography>
+              <Typography variant="h4">Patient Profile</Typography>
               <Box
                 mt="10px"
                 display="grid"
@@ -539,6 +566,47 @@ const UserRecord = () => {
                 </Box>
               </Box>
               <Divider sx={{ mt: "20px" }} />
+            </Box>
+
+            <Box padding="10px 10px 0 10px">
+              <Typography variant="h4">Contact Information</Typography>
+              <Box
+                mt="10px"
+                display="grid"
+                sx={{
+                  gridTemplateColumns: {
+                    xs: "1fr",
+                    sm: "1fr 1fr 1fr",
+                  },
+                }}
+              >
+                <Box mt="10px" display="flex" flexDirection="row">
+                  <Typography>Email : </Typography>
+                  <Typography ml="10px" fontWeight="bold">
+                    {val?.email}
+                  </Typography>
+                </Box>
+                <Box mt="10px" display="flex" flexDirection="row">
+                  <Typography>Telephone : </Typography>
+                  <Typography
+                    ml="10px"
+                    textTransform="capitalize"
+                    fontWeight="bold"
+                  >
+                    {val?.telephone}
+                  </Typography>
+                </Box>
+                <Box mt="10px" display="flex" flexDirection="row">
+                  <Typography>Mobile Number : </Typography>
+                  <Typography
+                    ml="10px"
+                    textTransform="capitalize"
+                    fontWeight="bold"
+                  >
+                    {val?.mobile && "09" + val?.mobile}
+                  </Typography>
+                </Box>
+              </Box>
             </Box>
             <Box padding="10px 10px 0 10px">
               <Typography variant="h4"> Address Information</Typography>
@@ -584,46 +652,6 @@ const UserRecord = () => {
                 </Box>
               </Box>
               <Divider sx={{ mt: "20px" }} />
-            </Box>
-            <Box padding="10px 10px 0 10px">
-              <Typography variant="h4">Contact Information</Typography>
-              <Box
-                mt="10px"
-                display="grid"
-                sx={{
-                  gridTemplateColumns: {
-                    xs: "1fr",
-                    sm: "1fr 1fr 1fr",
-                  },
-                }}
-              >
-                <Box mt="10px" display="flex" flexDirection="row">
-                  <Typography>Email : </Typography>
-                  <Typography ml="10px" fontWeight="bold">
-                    {val?.email}
-                  </Typography>
-                </Box>
-                <Box mt="10px" display="flex" flexDirection="row">
-                  <Typography>Telephone : </Typography>
-                  <Typography
-                    ml="10px"
-                    textTransform="capitalize"
-                    fontWeight="bold"
-                  >
-                    {val?.telephone}
-                  </Typography>
-                </Box>
-                <Box mt="10px" display="flex" flexDirection="row">
-                  <Typography>Mobile Number : </Typography>
-                  <Typography
-                    ml="10px"
-                    textTransform="capitalize"
-                    fontWeight="bold"
-                  >
-                    {val?.mobile && "09" + val?.mobile}
-                  </Typography>
-                </Box>
-              </Box>
             </Box>
           </Box>
         </Paper>

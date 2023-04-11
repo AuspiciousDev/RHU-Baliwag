@@ -204,9 +204,8 @@ const Prescription = () => {
           }
           style={{
             objectFit: "contain",
-            width: "40%",
-            height: "50%",
-            border: "1px solid black",
+            width: "50%",
+            height: "60%",
           }}
         />
       </Paper>

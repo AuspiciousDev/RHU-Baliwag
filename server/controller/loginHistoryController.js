@@ -9,7 +9,38 @@ const loginHistoryController = {
   },
   getAllDoc: async (req, res) => {
     try {
-      const doc = await LoginHistory.find().sort({ createdAt: -1 }).lean();
+      // const doc = await LoginHistory.find().sort({ createdAt: -1 }).lean();
+
+      const doc = await LoginHistory.aggregate([
+        {
+          $lookup: {
+            from: "users",
+            localField: "username",
+            foreignField: "username",
+            as: "profile",
+          },
+        },
+        {
+          $unwind: {
+            path: "$profile",
+          },
+        },
+        {
+          $sort: {
+            createdAt: -1,
+          },
+        },
+        {
+          $set: {
+            imgURL: {
+              $toString: "$profile.imgURL",
+            },
+          },
+        },
+        {
+          $unset: "profile",
+        },
+      ]);
       if (!doc) return res.status(204).json({ message: "No Records Found!" });
       res.status(200).json(doc);
     } catch (error) {

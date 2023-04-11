@@ -541,7 +541,7 @@ const Admin = () => {
                 textTransform: "uppercase",
               }}
             >
-              ADMIN
+              ADMINS
             </Typography>
           </Box>
           <Box

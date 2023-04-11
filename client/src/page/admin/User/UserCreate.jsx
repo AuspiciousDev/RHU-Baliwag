@@ -202,7 +202,7 @@ const UserCreate = () => {
                 textTransform: "uppercase",
               }}
             >
-              USER &#62; Create
+              PATIENT &#62; Create
             </Typography>
           </Box>
         </Box>
@@ -211,7 +211,7 @@ const UserCreate = () => {
         <form onSubmit={handleSubmit} style={{ width: "100%" }}>
           {/* <Typography variant="h5">Registration</Typography> */}
           <Typography variant="h5" sx={{ margin: "0 0 10px 0" }}>
-            User Information
+          Patient Information
           </Typography>
           <Box sx={{ mb: "20px" }}>
             <Box

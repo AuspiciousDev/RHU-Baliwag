@@ -346,7 +346,7 @@ const UserRecord = () => {
                 textTransform: "uppercase",
               }}
             >
-              Users &#62; {username}
+              Patient &#62; {username}
             </Typography>
           </Box>
         </Box>
@@ -450,7 +450,7 @@ const UserRecord = () => {
             >
               <MenuItem>
                 <Link
-                  to={`/user/edit/${val?.username}`}
+                  to={`/patient/edit/${val?.username}`}
                   style={{
                     alignItems: "center",
                     color: colors.black[100],

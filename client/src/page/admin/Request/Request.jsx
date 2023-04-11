@@ -125,7 +125,7 @@ const Request = () => {
     },
     {
       field: "username",
-      headerName: "Username",
+      headerName: "Patient ID",
       width: 200,
       align: "center",
       headerAlign: "center",
@@ -138,7 +138,7 @@ const Request = () => {
             sx={{ justifyContent: "center" }}
           >
             <Link
-              to={`/admin/user/profile/${params?.value}`}
+              to={`/admin/patient/profile/${params?.value}`}
               style={{
                 alignItems: "center",
                 textDecoration: "none",

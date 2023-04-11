@@ -132,18 +132,18 @@ function App() {
                   />
                   <Route path="restock" element={<Restock />} />
                   <Route path="restock/create" element={<RestockCreate />} />
-                  <Route path="user" element={<User />} />
-                  <Route path="user/create" element={<UserCreate />} />
+                  <Route path="patient" element={<User />} />
+                  <Route path="patient/create" element={<UserCreate />} />
                   <Route
-                    path="user/profile/:username"
+                    path="patient/profile/:username"
                     element={<UserRecord />}
                   />
                   <Route
-                    path="user/edit/:username"
+                    path="patient/edit/:username"
                     element={<UserRecordEdit />}
                   />
                   <Route
-                    path="user/changePassword"
+                    path="patient/changePassword"
                     element={<ChangePassword />}
                   />
                   <Route path="archive" element={<Archive />} />
@@ -160,7 +160,7 @@ function App() {
                 </Route>
               </Route>
               <Route element={<RequireAuth allowedRoles={[USER_TYPE.USER]} />}>
-                <Route path="/user" element={<USER_Layout />}>
+                <Route path="/patient" element={<USER_Layout />}>
                   <Route index element={<UserDashboard />} />
                   <Route path="request" element={<UserRequest />} />
                   <Route

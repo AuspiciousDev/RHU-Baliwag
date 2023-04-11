@@ -138,7 +138,7 @@ const Request = () => {
             sx={{ justifyContent: "center" }}
           >
             <Link
-              to={`/user/user/profile/${params?.value}`}
+              to={`/user/patient/profile/${params?.value}`}
               style={{
                 alignItems: "center",
                 textDecoration: "none",

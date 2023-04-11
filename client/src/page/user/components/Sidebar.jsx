@@ -43,7 +43,7 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
   return (
     <MenuItem
       active={
-        subLocation === "/user"
+        subLocation === "/patient"
           ? subLocation === to
           : subLocation.substring(6).includes(to)
       }
@@ -225,7 +225,7 @@ const Sidebar = () => {
                       textTransform="uppercase"
                       fontWeight={800}
                     >
-                      {auth.userType}
+                      {auth.userType === "user" ? "patient" : "admin"}
                     </Typography>
                   </Box>
                 </Box>
@@ -244,7 +244,7 @@ const Sidebar = () => {
           </SidebarHeader>
           <Item
             title="Dashboard"
-            to="/user"
+            to="/patient"
             icon={<DashboardOutlined />}
             selected={selected}
             setSelected={setSelected}

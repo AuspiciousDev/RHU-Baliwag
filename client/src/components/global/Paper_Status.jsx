@@ -28,7 +28,8 @@ const Paper_Active = (props) => {
           </Typography>
         </Paper>
       ) : title.toLowerCase() === "denied" ||
-        title.toLowerCase() === "unavailable" ? (
+      
+        title.toLowerCase() === "unclaimed" ? (
         <Paper
           sx={{
             display: "flex",

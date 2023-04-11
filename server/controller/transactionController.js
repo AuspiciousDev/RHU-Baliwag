@@ -173,7 +173,7 @@ const transactionController = {
               },
               update: {
                 $set: {
-                  status: "unavailable",
+                  status: "unclaimed",
                 },
               },
               upsert: true,

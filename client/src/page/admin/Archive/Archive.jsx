@@ -358,7 +358,7 @@ const Archive = () => {
         return (
           <Box display="flex" gap={2}>
             <Link
-              to={`/admin/user/profile/${params?.value}`}
+              to={`/admin/patient/profile/${params?.value}`}
               style={{
                 alignItems: "center",
                 textDecoration: "none",

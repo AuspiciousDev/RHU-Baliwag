@@ -40,7 +40,7 @@ export const WelcomeDialogue = (props) => {
         <Typography variant="h3">
           {welcomeDialog?.message}
           <span style={{ textTransform: "capitalize" }}>
-            {welcomeDialog?.type}!
+            {welcomeDialog?.type === "user" ? "patient" : "admin"}!
           </span>
         </Typography>
       </DialogContent>

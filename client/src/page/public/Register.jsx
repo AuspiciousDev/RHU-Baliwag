@@ -151,6 +151,7 @@ const Register = () => {
     setUserType("");
     setDateOfBirth(null);
     setGender("");
+    setMobile("");
   };
 
   return (

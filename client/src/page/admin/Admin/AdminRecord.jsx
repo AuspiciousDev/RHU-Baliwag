@@ -165,7 +165,7 @@ const AdminRecord = () => {
                 textTransform: "uppercase",
               }}
             >
-              Users &#62; {username}
+              Admin &#62; {username}
             </Typography>
           </Box>
         </Box>
@@ -286,7 +286,7 @@ const AdminRecord = () => {
               sx={{ display: "flex", flexDirection: "column" }}
               padding="10px 10px 0 10px"
             >
-              <Typography variant="h4">User Information</Typography>
+              <Typography variant="h4">Admin Information</Typography>
               <Box
                 mt="10px"
                 display="grid"
@@ -323,7 +323,7 @@ const AdminRecord = () => {
               <Divider sx={{ mt: "20px" }} />
             </Box>
             <Box padding="10px 10px 0 10px">
-              <Typography variant="h4"> Address </Typography>
+              <Typography variant="h4"> Address Information</Typography>
               <Box
                 mt="10px"
                 display="grid"
@@ -368,7 +368,7 @@ const AdminRecord = () => {
               <Divider sx={{ mt: "20px" }} />
             </Box>
             <Box padding="10px 10px 0 10px">
-              <Typography variant="h4">Contact </Typography>
+              <Typography variant="h4">Contact Information</Typography>
               <Box
                 mt="10px"
                 display="grid"

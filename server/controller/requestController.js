@@ -97,28 +97,33 @@ const requestController = {
         requestType,
         prescriptionIMG_URL,
       };
-      if (getFrequency.length > 0) {
-        lastDate = getFrequency[0].createdAt;
-        const now = currDate;
-        console.log(
-          "🚀 ~ file: requestController.js:57 ~ createDoc: ~ now:",
-          now
-        );
-        const thirtyDaysInMs = 30 * 24 * 60 * 60 * 1000;
-        const timeDiffInMs = now.getTime() - lastDate.getTime();
+      //! Once a month rule
+      // if (getFrequency.length > 0) {
+      //   lastDate = getFrequency[0].createdAt;
+      //   const now = currDate;
+      //   console.log(
+      //     "🚀 ~ file: requestController.js:57 ~ createDoc: ~ now:",
+      //     now
+      //   );
+      //   const thirtyDaysInMs = 30 * 24 * 60 * 60 * 1000;
+      //   const timeDiffInMs = now.getTime() - lastDate.getTime();
 
-        if (timeDiffInMs >= thirtyDaysInMs) {
-          const createDoc = await Request.create(docObject);
-          res.status(201).json(createDoc);
-        } else {
-          res.status(400).json({
-            message: "A month has not passed yet since the last request!",
-          });
-        }
-      } else {
-        const createDoc = await Request.create(docObject);
-        res.status(201).json(createDoc);
-      }
+      //   if (timeDiffInMs >= thirtyDaysInMs) {
+      //     const createDoc = await Request.create(docObject);
+      //     res.status(201).json(createDoc);
+      //   } else {
+      //     res.status(400).json({
+      //       message: "A month has not passed yet since the last request!",
+      //     });
+      //   }
+      // } else {
+      //   const createDoc = await Request.create(docObject);
+      //   res.status(201).json(createDoc);
+      // }
+      //! Once a month rule
+
+      const createDoc = await Request.create(docObject);
+      res.status(201).json(createDoc);
     } catch (error) {
       console.log(
         "🚀 ~ file: requestController.js:71 ~ createDoc: ~ error:",

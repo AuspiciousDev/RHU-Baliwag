@@ -224,7 +224,7 @@ const RequestDetails = () => {
         setSuccessDialog({
           isOpen: true,
           message: `Transaction  ${transID} ${
-            newStat === "released" ? "has been released!" : "was unavailable!"
+            newStat === "released" ? "has been released!" : "was unclaimed!"
           }`,
         });
       }
@@ -305,12 +305,12 @@ const RequestDetails = () => {
         <Box
           sx={{
             display: "grid",
-            gridTemplateColumns: "0.5fr 1fr 1fr",
+            gridTemplateColumns: " 1fr 1fr",
             paddingTop: 1,
             paddingBottom: 1,
           }}
         >
-          <Box
+          {/* <Box
             sx={{
               height: "auto",
               margin: "auto auto",
@@ -325,7 +325,7 @@ const RequestDetails = () => {
               value={transID}
               viewBox={`0 0 256 256`}
             />
-          </Box>
+          </Box> */}
           <Box
             sx={{
               display: "grid",
@@ -412,7 +412,7 @@ const RequestDetails = () => {
                         onDeny: () => {
                           toggleStatus({
                             val: status,
-                            newStat: "unavailable",
+                            newStat: "unclaimed",
                           });
                         },
                       });
@@ -422,8 +422,8 @@ const RequestDetails = () => {
               >
                 {status === "released" ? (
                   <Paper_Status icon={<CheckCircle />} title={"released"} />
-                ) : status === "unavailable" ? (
-                  <Paper_Status icon={<Cancel />} title={"unavailable"} />
+                ) : status === "unclaimed" ? (
+                  <Paper_Status icon={<Cancel />} title={"unclaimed"} />
                 ) : (
                   <Paper_Status icon={<AccessTime />} title={"releasing"} />
                 )}

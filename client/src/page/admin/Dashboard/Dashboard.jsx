@@ -13,6 +13,7 @@ import {
   TableBody,
   TablePagination,
   Avatar,
+  Button,
 } from "@mui/material";
 import { format } from "date-fns-tz";
 import React from "react";
@@ -26,13 +27,14 @@ import {
   CheckCircle,
   Cancel,
   AccessTime,
+  QrCodeScanner,
 } from "@mui/icons-material";
 
 import LoadingDialogue from "../../../global/LoadingDialogue";
 import ErrorDialogue from "../../../global/ErrorDialogue";
 import WelcomeDialogue from "../../../global/WelcomeDialogue";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
 import { useUsersContext } from "../../../hooks/useUserContext";
 import { useInventoriesContext } from "../../../hooks/useInventoryContext";
@@ -46,6 +48,7 @@ const ADMIN_Dashboard = () => {
   const colors = tokens(theme.palette.mode);
   const axiosPrivate = useAxiosPrivate();
   const { auth } = useAuth();
+  const navigate = useNavigate();
   const { users, userDispatch } = useUsersContext();
   const { stocks, stockDispatch } = useInventoriesContext();
   const { logins, loginDispatch } = useLoginsContext();
@@ -286,6 +289,37 @@ const ADMIN_Dashboard = () => {
               DASHBOARD
             </Typography>
           </Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "column", sm: "row" },
+              justifyContent: "end",
+              alignItems: "center",
+            }}
+          >
+            {auth.userType === "admin" && (
+              <Button
+                type="button"
+                color="secondary"
+                startIcon={<QrCodeScanner />}
+                onClick={() => {
+                  navigate("scan");
+                }}
+                variant="contained"
+                sx={{
+                  width: { xs: "100%", sm: "200px" },
+                  height: "50px",
+                  marginLeft: { xs: "0", sm: "20px" },
+                  marginTop: { xs: "20px", sm: "0" },
+                  color: "white",
+                }}
+              >
+                <Typography variant="h6" fontWeight="500">
+                  Scan QR
+                </Typography>
+              </Button>
+            )}
+          </Box>
         </Box>
       </Paper>
       <Box
@@ -324,7 +358,7 @@ const ADMIN_Dashboard = () => {
           to={"user"}
           value={users ? users.length : "0"}
           icon={<Person2Outlined />}
-          description="Total Number of Users"
+          description="Total Number of Patients"
         />
       </Box>
       <Box height="100%">
@@ -440,7 +474,7 @@ const ADMIN_Dashboard = () => {
                       }}
                     >
                       <Link
-                        to={`/registrar/user/profile/${val?.username}`}
+                        to={`/admin/admin/profile/${val?.username}`}
                         style={{
                           alignItems: "center",
                           color: colors.black[100],

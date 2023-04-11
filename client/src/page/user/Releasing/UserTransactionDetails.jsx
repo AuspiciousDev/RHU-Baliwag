@@ -225,7 +225,7 @@ const UserTransactionDetails = () => {
         setSuccessDialog({
           isOpen: true,
           message: `Transaction  ${transID} ${
-            newStat === "released" ? "has been released!" : "was unavailable!"
+            newStat === "released" ? "has been released!" : "was unclaimed!"
           }`,
         });
       }
@@ -413,7 +413,7 @@ const UserTransactionDetails = () => {
                         onDeny: () => {
                           toggleStatus({
                             val: status,
-                            newStat: "unavailable",
+                            newStat: "unclaimed",
                           });
                         },
                       });
@@ -423,8 +423,8 @@ const UserTransactionDetails = () => {
               >
                 {status === "released" ? (
                   <Paper_Status icon={<CheckCircle />} title={"released"} />
-                ) : status === "unavailable" ? (
-                  <Paper_Status icon={<Cancel />} title={"unavailable"} />
+                ) : status === "unclaimed" ? (
+                  <Paper_Status icon={<Cancel />} title={"unclaimed"} />
                 ) : (
                   <Paper_Status icon={<AccessTime />} title={"releasing"} />
                 )}

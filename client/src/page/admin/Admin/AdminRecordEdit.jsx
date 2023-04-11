@@ -346,7 +346,7 @@ const AdminRecordEdit = () => {
                 textTransform: "uppercase",
               }}
             >
-              User &#62; EDIT &#62; {username}
+              Admin &#62; EDIT &#62; {username}
             </Typography>
           </Box>
         </Box>

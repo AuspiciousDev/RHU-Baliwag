@@ -442,38 +442,26 @@ const ADMIN_Dashboard = () => {
                           width: "100%",
                         }}
                       >
-                        <Link
-                          to={`/registrar/user/profile/${val?.username}`}
-                          style={{
-                            alignItems: "center",
-                            color: colors.black[100],
-                            textDecoration: "none",
-                          }}
-                        >
-                          <Box sx={{ display: "flex", alignItems: "center" }}>
-                            <Avatar
-                              alt="profile-user"
-                              sx={{ width: "35px", height: "35px" }}
-                              src={val.imgURL}
-                              style={{
-                                marginRight: "15px",
-                                objectFit: "contain",
-                                borderRadius: "50%",
-                              }}
-                            />
-                            <Box>
-                              <Typography textTransform="capitalize">
-                                {val.username}
-                              </Typography>
-                              <Typography textTransform="capitalize">
-                                {format(
-                                  new Date(val.createdAt),
-                                  "hh:mm a, EEEE"
-                                )}
-                              </Typography>
-                            </Box>
+                        <Box sx={{ display: "flex", alignItems: "center" }}>
+                          <Avatar
+                            alt="profile-user"
+                            sx={{ width: "35px", height: "35px" }}
+                            src={val.imgURL}
+                            style={{
+                              marginRight: "15px",
+                              objectFit: "contain",
+                              borderRadius: "50%",
+                            }}
+                          />
+                          <Box>
+                            <Typography textTransform="capitalize">
+                              {val.username}
+                            </Typography>
+                            <Typography textTransform="capitalize">
+                              {format(new Date(val.createdAt), "hh:mm a, EEEE")}
+                            </Typography>
                           </Box>
-                        </Link>
+                        </Box>
                       </Paper>
                     ))}
               </Box>
