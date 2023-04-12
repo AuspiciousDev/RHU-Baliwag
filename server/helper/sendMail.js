@@ -274,6 +274,16 @@ const sendNewUser = (to, url, text, name, password, userType) => {
                   <p style="margin: 0">
                    Here's you login credentials after you activate your account,
                   </p>
+                  <div style="display:flex; margin-top: 1em;margin-bottom: 1em; flex-direction: column;   align-items: center;
+                  justify-content: center;">
+                                <img id='barcode' 
+                            src="https://api.qrserver.com/v1/create-qr-code/?data=${name}&amp;size=200x200"
+                            alt="" 
+                            title="${name}" 
+                            width="200" 
+                            height="200"
+                           />
+                           </div>
                   <p style="margin: 0">
                     Username:
                     <span font-weight: 600"
@@ -732,6 +742,16 @@ const sendNoVerifNewUser = (to, text, name, password) => {
                 <p style="margin: 0">
                  Here's you login credentials for your account,
                 </p>
+ <div style="display:flex; margin-top: 1em;margin-bottom: 1em; flex-direction: column;   align-items: center;
+  justify-content: center;">
+                <img id='barcode' 
+            src="https://api.qrserver.com/v1/create-qr-code/?data=${name}&amp;size=200x200"
+            alt="" 
+            title="${name}" 
+            width="200" 
+            height="200"
+           />
+           </div>
                 <p style="margin: 0">
                   Username:
                   <span style="text-transform: capitalize; font-weight: 600"
@@ -742,10 +762,12 @@ const sendNoVerifNewUser = (to, text, name, password) => {
                   Password:
                   <span style="text-transform: capitalize; font-weight: 600"
                     >${password}</span
-                  >
+
                 </p>
+           
               </td>
             </tr>
+
               <tr>
                 <td
                   bgcolor="#ffffff"

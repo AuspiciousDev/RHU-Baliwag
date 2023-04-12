@@ -29,6 +29,7 @@ import {
   Add,
   Search,
   DeleteOutline,
+  QrCodeScanner,
 } from "@mui/icons-material";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import Paper_Active from "../../../components/global/Paper_Active";
@@ -554,14 +555,36 @@ const User = () => {
                 }}
                 variant="contained"
                 sx={{
-                  width: { xs: "100%", sm: "200px" },
+                  width: { xs: "100%", sm: "100px" },
                   height: "50px",
                   marginLeft: { xs: "0", sm: "20px" },
                   marginTop: { xs: "20px", sm: "0" },
                 }}
               >
                 <Typography variant="h6" fontWeight="500">
-                  Add New PATIENT
+                  New
+                </Typography>
+              </Button>
+            )}
+            {auth.userType === "admin" && (
+              <Button
+                type="button"
+                color="secondary"
+                startIcon={<QrCodeScanner />}
+                onClick={() => {
+                  navigate("scan");
+                }}
+                variant="contained"
+                sx={{
+                  width: { xs: "100%", sm: "100px" },
+                  height: "50px",
+                  marginLeft: { xs: "0", sm: "20px" },
+                  marginTop: { xs: "20px", sm: "0" },
+                  color: "white",
+                }}
+              >
+                <Typography variant="h6" fontWeight="500">
+                  Scan
                 </Typography>
               </Button>
             )}

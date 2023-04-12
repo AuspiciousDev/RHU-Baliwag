@@ -9,9 +9,7 @@ import ValidateDialogue from "../../../global/ValidateDialogue";
 import LoadingDialogue from "../../../global/LoadingDialogue";
 import {
   Box,
-  Button,
   IconButton,
-  InputBase,
   Paper,
   Typography,
   Divider,
@@ -21,18 +19,7 @@ import {
   MenuItem,
   Avatar,
 } from "@mui/material";
-import {
-  Delete,
-  CheckCircle,
-  Cancel,
-  Add,
-  Search,
-  MoreVert,
-  School,
-  LocalPrintshopOutlined,
-  DescriptionOutlined,
-  ScheduleOutlined,
-} from "@mui/icons-material";
+import { CheckCircle, Cancel, MoreVert } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns-tz";
 import { DataGrid, GridToolbar, GridToolbarContainer } from "@mui/x-data-grid";
@@ -43,15 +30,7 @@ import QRCode from "qrcode";
 function CustomToolbar() {
   return (
     <GridToolbarContainer>
-      <GridToolbar
-      // printOptions={{
-      //   fields: ["schoolYearID", "fullName", "userType", "createdAt"],
-      // }}
-      // csvOptions={{ fields: ["username", "firstName"] }}
-      />
-      {/* <GridToolbarExport */}
-
-      {/* /> */}
+      <GridToolbar />
     </GridToolbarContainer>
   );
 }
@@ -446,7 +425,7 @@ const UserRecord = () => {
               <Avatar
                 alt="profile-patient"
                 sx={{ width: "100%", height: "100%" }}
-                src={imgURL}
+                src={val?.imgURL || ""}
                 style={{
                   objectFit: "contain",
                   borderRadius: "50%",

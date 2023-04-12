@@ -64,6 +64,7 @@ import UserTransaction from "./page/user/Releasing/UserTransaction";
 import UserTransactionDetails from "./page/user/Releasing/UserTransactionDetails";
 import UUserRecordEdit from "./page/user/User/UUserRecordEdit";
 import UUserRecord from "./page/user/User/UUserRecord";
+import UserScan from "./page/admin/User/UserScan";
 
 const USER_TYPE = {
   ADMIN: "admin",
@@ -146,6 +147,7 @@ function App() {
                     path="patient/changePassword"
                     element={<ChangePassword />}
                   />
+                  <Route path="patient/scan" element={<UserScan />} />
                   <Route path="archive" element={<Archive />} />
                   <Route path="admin" element={<Admin />} />
                   <Route path="admin/create" element={<AdminCreate />} />

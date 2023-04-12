@@ -315,7 +315,7 @@ const ADMIN_Dashboard = () => {
                 }}
               >
                 <Typography variant="h6" fontWeight="500">
-                  Scan QR
+                  Scan Patient
                 </Typography>
               </Button>
             )}
