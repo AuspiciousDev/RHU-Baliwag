@@ -152,6 +152,9 @@ const Register = () => {
     setDateOfBirth(null);
     setGender("");
     setMobile("");
+    setAddress("");
+    setCity("");
+    setProvince("");
   };
 
   return (

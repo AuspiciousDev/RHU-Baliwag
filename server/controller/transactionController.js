@@ -2,7 +2,7 @@ const Transaction = require("../model/Transaction");
 const Request = require("../model/Request");
 const Inventory = require("../model/Inventory");
 const currDate = new Date();
-const { format } = require("date-fns");
+const { format, addDays } = require("date-fns");
 const transactionController = {
   getAllDoc: async (req, res) => {
     try {
@@ -141,6 +141,8 @@ const transactionController = {
     }
   },
   getAllTrans: async (req, res) => {
+    const newCurrDate = addDays(currDate, 1);
+
     try {
       const transactions = await Transaction.find()
         .sort({ createdAt: -1 })
@@ -161,7 +163,7 @@ const transactionController = {
         .filter((tag) => {
           return (
             tag.status === "releasing" &&
-            format(new Date(currDate), "MMMM dd yyyy") ===
+            format(new Date(newCurrDate), "MMMM dd yyyy") >=
               format(new Date(tag.releasingDate), "MMMM dd yyyy")
           );
         })

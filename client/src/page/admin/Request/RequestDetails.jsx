@@ -103,6 +103,7 @@ const RequestDetails = () => {
     setItems;
     const value = {
       medID,
+      lotNum,
       genericName,
       brandName,
       quantity,
@@ -113,6 +114,7 @@ const RequestDetails = () => {
     });
     if (existingItem) {
       existingItem.medID = value.medID;
+      existingItem.lotNum = value.lotNum;
       existingItem.genericName = value.genericName;
       existingItem.brandName = value.brandName;
       existingItem.quantity = value.quantity;
@@ -432,6 +434,7 @@ const RequestDetails = () => {
     }
   };
   const clearItems = () => {
+    setLotNum("");
     setMedID("");
     setGenericName("");
     setBrandName("");
@@ -698,7 +701,7 @@ const RequestDetails = () => {
                 options={
                   stocks
                     ? stocks.map((val) => {
-                        return val?.medID;
+                        return val?.lotNum;
                       })
                     : []
                 }
@@ -706,21 +709,22 @@ const RequestDetails = () => {
                   <TextField
                     {...params}
                     size="small"
-                    label="Medicine ID"
+                    label="Lot Number"
                     required
-                    error={medIDError}
+                    error={lotNumError}
                   />
                 )}
-                value={medID}
+                value={lotNum}
                 onChange={(event, newValue) => {
-                  setMedID(newValue);
-                  setMedIDError(false);
+                  setLotNum(newValue);
+                  setLotNumError(false);
                   stocks
                     .filter((filter) => {
-                      return filter.medID === newValue;
+                      return filter?.lotNum === newValue;
                     })
                     .map((val) => {
                       return (
+                        setMedID(val?.medID),
                         setGenericName(val?.genericName),
                         setBrandName(val?.brandName),
                         setMaxQty(val?.quantity)
@@ -801,6 +805,7 @@ const RequestDetails = () => {
                   <Typography variant="h5">clear</Typography>
                 </Button>
                 <Button
+                  disabled={!quantity || !lotNum || !medID}
                   type="button"
                   variant="contained"
                   color="secondary"
@@ -833,6 +838,7 @@ const RequestDetails = () => {
                     <TableHead>
                       <TableRow>
                         <TableCell>Medicine ID</TableCell>
+                        <TableCell align="left">Lot Number</TableCell>
                         <TableCell align="left">Generic Name</TableCell>
                         <TableCell align="left">Brand Name</TableCell>
                         <TableCell align="left">Quantity</TableCell>
@@ -851,6 +857,7 @@ const RequestDetails = () => {
                               }}
                             >
                               <TableCell>{val?.medID}</TableCell>
+                              <TableCell>{val?.lotNum}</TableCell>
                               <TableCell>{val?.genericName}</TableCell>
                               <TableCell>{val?.brandName}</TableCell>
                               <TableCell>{val?.quantity}</TableCell>

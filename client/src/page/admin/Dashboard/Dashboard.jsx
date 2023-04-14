@@ -303,7 +303,7 @@ const ADMIN_Dashboard = () => {
                 color="secondary"
                 startIcon={<QrCodeScanner />}
                 onClick={() => {
-                  navigate("scan");
+                  navigate("patient/scan");
                 }}
                 variant="contained"
                 sx={{
