@@ -382,13 +382,14 @@ const Reports = () => {
                 {...a11yProps(0)}
                 sx={{ fontWeight: "bold" }}
               />
+           
               <Tab
-                label="Weekly"
+                label="Monthly"
                 {...a11yProps(1)}
                 sx={{ fontWeight: "bold" }}
               />
-              <Tab
-                label="Monthly"
+                 <Tab
+                label="Date"
                 {...a11yProps(2)}
                 sx={{ fontWeight: "bold" }}
               />
@@ -476,7 +477,7 @@ const Reports = () => {
             />
           </Box>
         </TabPanel>
-        <TabPanel value={value} index={1}>
+        <TabPanel value={value} index={2}>
           <Box sx={{ display: "flex", gap: 2, m: 1, mt: 2, mb: 2 }}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DesktopDatePicker
@@ -573,7 +574,7 @@ const Reports = () => {
             />
           </Box>
         </TabPanel>
-        <TabPanel value={value} index={2}>
+        <TabPanel value={value} index={1}>
           <Box sx={{ m: 1, mt: 2, mb: 2 }}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DesktopDatePicker
