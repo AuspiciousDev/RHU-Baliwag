@@ -59,10 +59,6 @@ const UserRecordEdit = () => {
   const [mobile, setMobile] = useState("");
   const [telephone, setTelephone] = useState("");
 
-  const [emergencyName, setEmergencyName] = useState("");
-  const [emergencyRelationship, setEmergencyRelationship] = useState("");
-  const [emergencyNumber, setEmergencyNumber] = useState("");
-
   const [firstNameError, setFirstNameError] = useState(false);
   const [lastNameError, setLastNameError] = useState(false);
   const [dateOfBirthError, setDateOfBirthError] = useState(false);

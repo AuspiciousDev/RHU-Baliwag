@@ -33,6 +33,7 @@ import {
   InventoryOutlined,
   WarehouseOutlined,
   AdminPanelSettingsOutlined,
+  IosShareOutlined,
 } from "@mui/icons-material";
 import "react-pro-sidebar/dist/css/styles.css";
 import logo from "../../../assets/logo.png";
@@ -292,7 +293,7 @@ const Sidebar = () => {
               color={colors.primary[100]}
               sx={{ m: "15px 0 5px 20px" }}
             >
-              Maintenance
+              Manage
             </Typography>
           ) : (
             <SidebarHeader />
@@ -322,6 +323,13 @@ const Sidebar = () => {
             title="Admin"
             to="admin"
             icon={<AdminPanelSettingsOutlined />}
+            selected={selected}
+            setSelected={setSelected}
+          />
+          <Item
+            title="Report"
+            to="reports"
+            icon={<IosShareOutlined />}
             selected={selected}
             setSelected={setSelected}
           />

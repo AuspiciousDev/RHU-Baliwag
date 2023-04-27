@@ -247,7 +247,16 @@ const Transaction = () => {
       align: "center",
       headerAlign: "center",
       valueFormatter: (params) =>
-        format(new Date(params?.value), "hh:mm a - MMMM dd, yyyy"),
+        format(new Date(params?.value), "MMMM dd, yyyy"),
+    },
+    {
+      field: "updatedAt",
+      headerName: "updatedAt",
+      width: 240,
+      align: "center",
+      headerAlign: "center",
+      valueFormatter: (params) =>
+        format(new Date(params?.value), "MMMM dd, yyyy"),
     },
     {
       field: "status",

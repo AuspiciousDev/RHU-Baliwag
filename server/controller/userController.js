@@ -24,6 +24,7 @@ const userController = {
         city,
         province,
         mobile,
+        telephone,
       } = req.body;
       if (!username) {
         genUsername = generateCredential.username(10);

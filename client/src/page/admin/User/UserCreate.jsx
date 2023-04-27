@@ -99,6 +99,8 @@ const UserCreate = () => {
       address,
       city,
       province,
+      mobile,
+      telephone,
     };
 
     try {
@@ -211,7 +213,7 @@ const UserCreate = () => {
         <form onSubmit={handleSubmit} style={{ width: "100%" }}>
           {/* <Typography variant="h5">Registration</Typography> */}
           <Typography variant="h5" sx={{ margin: "0 0 10px 0" }}>
-          Patient Information
+            Patient Information
           </Typography>
           <Box sx={{ mb: "20px" }}>
             <Box

@@ -56,6 +56,7 @@ function CustomToolbar() {
   );
 }
 
+
 const Archive = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -560,35 +561,6 @@ const Archive = () => {
             >
               Archive
             </Typography>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: { xs: "column", sm: "row" },
-              justifyContent: "end",
-              alignItems: "center",
-            }}
-          >
-            {auth.userType === "admin" && (
-              <Button
-                type="button"
-                startIcon={<Add />}
-                onClick={() => {
-                  navigate("create");
-                }}
-                variant="contained"
-                sx={{
-                  width: { xs: "100%", sm: "200px" },
-                  height: "50px",
-                  marginLeft: { xs: "0", sm: "20px" },
-                  marginTop: { xs: "20px", sm: "0" },
-                }}
-              >
-                <Typography variant="h6" fontWeight="500">
-                  Add Item
-                </Typography>
-              </Button>
-            )}
           </Box>
         </Box>
       </Paper>

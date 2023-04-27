@@ -760,7 +760,7 @@ const sendNoVerifNewUser = (to, text, name, password) => {
                 </p>
                 <p style="margin: 0">
                   Password:
-                  <span style="text-transform: capitalize; font-weight: 600"
+                  <span font-weight: 600"
                     >${password}</span
 
                 </p>

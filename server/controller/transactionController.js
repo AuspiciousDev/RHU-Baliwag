@@ -3,6 +3,7 @@ const Request = require("../model/Request");
 const Inventory = require("../model/Inventory");
 const currDate = new Date();
 const { format, addDays } = require("date-fns");
+const Dispense = require("../model/Dispense");
 const transactionController = {
   getAllDoc: async (req, res) => {
     try {
@@ -40,6 +41,7 @@ const transactionController = {
             },
           },
         },
+        { $sort: { createdAt: -1 } },
       ]);
       console.log(
         "🚀 ~ file: transactionController.js:44 ~ getAllDocInfo: ~ doc:",
@@ -301,6 +303,7 @@ const transactionController = {
         return res.status(400).json({ message: "Stock update failed!" });
       }
       let bulkTags = [];
+      let bulkInsert = [];
       items.forEach(async (tag) => {
         bulkTags.push({
           updateOne: {
@@ -327,6 +330,8 @@ const transactionController = {
           );
         }
       });
+      const insManyRecCount = Dispense.insertMany(items);
+      console.log(update);
       console.log(update);
       res.status(200).json(update);
     } catch (error) {
@@ -334,6 +339,21 @@ const transactionController = {
         "🚀 ~ file: transactionController.js:230 ~ toggleDocStatus: ~ error:",
         error
       );
+      res.status(500).json({ message: error.message });
+    }
+  },
+
+  reportGenerate: async (req, res) => {
+    try {
+      const doc = await Dispense.find().sort({ quantity: -1 }).lean();
+      if (!doc) return res.status(204).json({ message: "No Records Found!" });
+      res.status(200).json(doc);
+    } catch (error) {
+      console.log(
+        "🚀 ~ file: transactionController.js:352 ~ reportGenerate: ~ error:",
+        error
+      );
+
       res.status(500).json({ message: error.message });
     }
   },
