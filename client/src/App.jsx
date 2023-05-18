@@ -89,7 +89,6 @@ function App() {
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/public/inventory" element={<InventoryPublic />} />
             <Route path="/public/request" element={<RequestCreatePublic />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
             {/* <Route path="/register" element={""} />
               <Route path="unauthorized" element={""} />
               */}

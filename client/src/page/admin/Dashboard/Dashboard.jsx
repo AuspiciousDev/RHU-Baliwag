@@ -394,9 +394,14 @@ const ADMIN_Dashboard = () => {
                 </TableHead>
                 <TableBody>
                   {requests &&
-                    requests.map((val) => {
-                      return val && tableDetails({ val });
-                    })}
+                    requests
+                      .slice(
+                        page * rowsPerPage,
+                        page * rowsPerPage + rowsPerPage
+                      )
+                      .map((val) => {
+                        return val && tableDetails({ val });
+                      })}
                 </TableBody>
               </Table>
             </TableContainer>
@@ -409,15 +414,7 @@ const ADMIN_Dashboard = () => {
               }}
               rowsPerPageOptions={[5, 10]}
               component="div"
-              count={
-                "0"
-                // activeYear
-                //   ? enrollments &&
-                //     enrollments.filter((filter) => {
-                //       return filter?.schoolYearID === activeYear.schoolYearID;
-                //     }).length
-                //   : 0
-              }
+              count={requests && requests.length}
               rowsPerPage={rowsPerPage}
               page={page}
               onPageChange={handleChangePage}
@@ -451,7 +448,6 @@ const ADMIN_Dashboard = () => {
               <Box
                 sx={{
                   width: "100%",
-                  height: "100%",
                   mt: 1,
                   display: "grid",
                   gridTemplateColumns: "1fr",

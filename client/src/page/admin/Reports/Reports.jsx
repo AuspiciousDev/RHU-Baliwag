@@ -83,13 +83,14 @@ const Reports = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [dispenses, setDispenses] = useState([]);
-  const [items, setItems] = useState({});
+  const [items, setItems] = useState([]);
   const navigate = useNavigate();
   const axiosPrivate = useAxiosPrivate();
   const { auth } = useAuth();
   const { stocks, stockDispatch } = useInventoriesContext();
   const { transactions, transactionDispatch } = useTransactionsContext();
   const [value, setValue] = React.useState(0);
+
   const [DateFilter, setDateFilter] = useState(new Date());
   const [DateFilterEnd, setDateFilterEnd] = useState(null);
   const [DateFilterError, setDateFilterError] = useState(false);
@@ -127,24 +128,57 @@ const Reports = () => {
     message: "",
   });
   const handleChange = (event, newValue) => {
+    console.log(
+      "🚀 ~ file: Reports.jsx:131 ~ handleChange ~ newValue:",
+      newValue
+    );
     setValue(newValue);
-    setDateFilter(null);
+    if (newValue === 1) {
+      DateFilter
+        ? setDateFilter(new Date(DateFilter), "MM yyyy")
+        : setDateFilter(new Date(), "MM yyyy");
+    } else {
+      setDateFilter(null);
+    }
+
     setDateFilterEnd(null);
   };
   const [page, setPage] = React.useState(15);
   useEffect(() => {
     const getUsersDetails = async () => {
       try {
+        console.log(
+          "🚀 ~ file: Reports.jsx:144 ~ handleChange ~ newValue:",
+          format(new Date(DateFilter), "MM yyyy")
+        );
+        let apiMonth = format(new Date(DateFilter), "MM");
+        let apiYear = format(new Date(DateFilter), "yyyy");
+        var apiCall;
         setLoadingDialog({ isOpen: true });
-
-        const response = await axiosPrivate.get("/api/transaction/reportGen");
+        if (value === 0) {
+          apiCall = "/api/transaction/reportGenDaily";
+        } else if (value === 1) {
+          apiCall = `/api/transaction/reportGen/${apiMonth}/${apiYear}`;
+        } else if (value === 2) {
+          let apiStartDate = format(new Date(DateFilter), "yyyy-MM-dd");
+          let apiEndDate = format(new Date(DateFilterEnd), "yyyy-MM-dd");
+          apiCall = `/api/transaction/reportGenDated/${apiStartDate}/${apiEndDate}`;
+        }
+        const response = await axiosPrivate.get(apiCall);
         if (response.status === 200) {
           const json = await response.data;
-          console.log(json);
+          console.log(
+            "🚀 ~ file: Reports.jsx:144 ~ getUsersDetails ~ json:",
+            json
+          );
           setDispenses(json);
         }
         setLoadingDialog({ isOpen: false });
       } catch (error) {
+        console.log(
+          "🚀 ~ file: Reports.jsx:176 ~ getUsersDetails ~ error:",
+          error
+        );
         setLoadingDialog({ isOpen: false });
         if (!error?.response) {
           setErrorDialog({
@@ -179,41 +213,41 @@ const Reports = () => {
       }
     };
     getUsersDetails();
-  }, [value, transactionDispatch]);
+  }, [value, DateFilter, DateFilterEnd, transactionDispatch]);
 
-  const handleWeek = () => {
-    let currentDate = new Date(DateFilter);
-    console.log(
-      "🚀 ~ file: Reports.jsx:185 ~ handleWeek ~ currentDate:",
-      currentDate
-    );
+  // const handleWeek = () => {
+  //   let currentDate = new Date(DateFilter);
+  //   console.log(
+  //     "🚀 ~ file: Reports.jsx:185 ~ handleWeek ~ currentDate:",
+  //     currentDate
+  //   );
 
-    let newCurrDate = new Date(DateFilterEnd);
-    console.log(
-      "🚀 ~ file: Reports.jsx:188 ~ handleWeek ~ newCurrDate:",
-      newCurrDate
-    );
+  //   let newCurrDate = new Date(DateFilterEnd);
+  //   console.log(
+  //     "🚀 ~ file: Reports.jsx:188 ~ handleWeek ~ newCurrDate:",
+  //     newCurrDate
+  //   );
 
-    let startDate = new Date(currentDate.getFullYear(), 0, 1);
-    let days = Math.floor((currentDate - startDate) / (24 * 60 * 60 * 1000));
-    let weekNumber = Math.ceil(days / 7);
+  //   let startDate = new Date(currentDate.getFullYear(), 0, 1);
+  //   let days = Math.floor((currentDate - startDate) / (24 * 60 * 60 * 1000));
+  //   let weekNumber = Math.ceil(days / 7);
 
-    let newStartDate = new Date(newCurrDate.getFullYear(), 0, 1);
-    let newDays = Math.floor(
-      (newCurrDate - newStartDate) / (24 * 60 * 60 * 1000)
-    );
-    let newWeekNumber = Math.ceil(newDays / 7);
-    console.log(
-      "🚀 ~ file: Reports.jsx:180 ~ handleWeek ~ newWeekNumber:",
-      newWeekNumber
-    );
+  //   let newStartDate = new Date(newCurrDate.getFullYear(), 0, 1);
+  //   let newDays = Math.floor(
+  //     (newCurrDate - newStartDate) / (24 * 60 * 60 * 1000)
+  //   );
+  //   let newWeekNumber = Math.ceil(newDays / 7);
+  //   console.log(
+  //     "🚀 ~ file: Reports.jsx:180 ~ handleWeek ~ newWeekNumber:",
+  //     newWeekNumber
+  //   );
 
-    if (newWeekNumber === weekNumber) {
-      return true;
-    } else {
-      return false;
-    }
-  };
+  //   if (newWeekNumber === weekNumber) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // };
 
   // useEffect(() => {
   //   try {
@@ -242,7 +276,7 @@ const Reports = () => {
 
   const columns = [
     {
-      field: "medID",
+      field: "_id",
       headerName: "Medicine ID",
       width: 200,
       align: "center",
@@ -273,21 +307,11 @@ const Reports = () => {
     },
 
     {
-      field: "quantity",
+      field: "totalAmount",
       headerName: "Quantity",
       align: "center",
       headerAlign: "center",
       width: 150,
-    },
-
-    {
-      field: "createdAt",
-      headerName: "Date Released",
-      align: "center",
-      headerAlign: "center",
-      width: 180,
-      valueFormatter: (params) =>
-        format(new Date(params?.value), "MMMM dd, yyyy"),
     },
   ];
 
@@ -382,26 +406,89 @@ const Reports = () => {
                 {...a11yProps(0)}
                 sx={{ fontWeight: "bold" }}
               />
-           
+
               <Tab
                 label="Monthly"
                 {...a11yProps(1)}
                 sx={{ fontWeight: "bold" }}
               />
-                 <Tab
-                label="Date"
-                {...a11yProps(2)}
-                sx={{ fontWeight: "bold" }}
-              />
+              <Tab label="Date" {...a11yProps(2)} sx={{ fontWeight: "bold" }} />
             </Tabs>
           </greenOnly>
         </Box>
         <TabPanel value={value} index={0}>
           <Box sx={{ m: 1, mt: 2, mb: 2 }}>
+            <TextField
+              autoComplete="off"
+              label="Date Today"
+              value={format(new Date(), "MMMM dd yyyy")}
+            />
+          </Box>
+          <Box
+            sx={{
+              height: "100%",
+              width: "100%",
+              "& .super-app-theme--Low": {
+                bgcolor: "#F68181",
+                "&:hover": {
+                  bgcolor: (theme) =>
+                    getHoverBackgroundColor(
+                      theme.palette.warning.main,
+                      theme.palette.mode
+                    ),
+                },
+              },
+            }}
+          >
+            <DataGrid
+              rows={
+                dispenses
+                  ? dispenses.filter((fill) => {
+                      return (
+                        format(new Date(), "MMMM dd yyyy") ===
+                        format(new Date(DateFilter), "MMMM dd yyyy")
+                      );
+                    })
+                  : []
+              }
+              getRowId={(row) => row?._id}
+              columns={columns}
+              pageSize={page}
+              onPageSizeChange={(newPageSize) => setPage(newPageSize)}
+              rowsPerPageOptions={[15, 50]}
+              pagination
+              sx={{
+                height: "700px",
+                "& .MuiDataGrid-cell": {
+                  textTransform: "capitalize",
+                },
+                "& .MuiDataGrid-columnHeaderTitle": {
+                  fontWeight: "bold",
+                },
+              }}
+              initialState={{
+                columns: {
+                  columnVisibilityModel: {
+                    // status: auth.userType === "admin" ? true : false,
+                  },
+                },
+              }}
+              components={{
+                Toolbar: CustomToolbar,
+              }}
+              // getRowClassName={(params) =>
+              //   `super-app-theme--${params.row.quantity > 20 ? "High" : "Low"}`
+              // }
+            />
+          </Box>
+        </TabPanel>
+        <TabPanel value={value} index={1}>
+          <Box sx={{ m: 1, mt: 2, mb: 2 }}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DesktopDatePicker
-                label="Date of Filter"
-                inputFormat="MMMM DD, YYYY"
+                views={["year", "month"]}
+                label="Select Month"
+                inputFormat="MMMM YYYY"
                 value={DateFilter}
                 onChange={handleDate}
                 renderInput={(params) => (
@@ -433,17 +520,10 @@ const Reports = () => {
           >
             <DataGrid
               rows={
-                dispenses
-                  ? dispenses
-                      .filter((fill) => {
-                        return (
-                          format(new Date(fill?.createdAt), "MMMM dd yyyy") ===
-                          format(new Date(DateFilter), "MMMM dd yyyy")
-                        );
-                      })
-                      .map((val) => {
-                        return val;
-                      })
+                dispenses && DateFilter
+                  ? dispenses.map((val) => {
+                      return val;
+                    })
                   : []
               }
               getRowId={(row) => row?._id}
@@ -464,7 +544,13 @@ const Reports = () => {
               initialState={{
                 columns: {
                   columnVisibilityModel: {
-                    // status: auth.userType === "admin" ? true : false,
+                    // lotNum: false,
+                    // createdAt: false,
+                    // updatedAt: false,
+                    // _id: false,
+                    // createdBy: false,
+                    // status: false,
+                    // // status: auth.userType === "admin" ? true : false,
                   },
                 },
               }}
@@ -527,18 +613,9 @@ const Reports = () => {
             <DataGrid
               rows={
                 dispenses
-                  ? dispenses
-                      .filter((fill) => {
-                        return (
-                          format(new Date(fill?.createdAt), "MMMM dd yyyy") >=
-                            format(new Date(DateFilter), "MMMM dd yyyy") &&
-                          format(new Date(fill?.createdAt), "MMMM dd yyyy") <=
-                            format(new Date(DateFilterEnd), "MMMM dd yyyy")
-                        );
-                      })
-                      .map((val) => {
-                        return val;
-                      })
+                  ? dispenses.map((val) => {
+                      return val;
+                    })
                   : []
               }
               getRowId={(row) => row?._id}
@@ -570,94 +647,6 @@ const Reports = () => {
               //   `super-app-theme--${
               //     params.row.quantity > params.row.quantity ? "High" : "Low"
               //   }`
-              // }
-            />
-          </Box>
-        </TabPanel>
-        <TabPanel value={value} index={1}>
-          <Box sx={{ m: 1, mt: 2, mb: 2 }}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DesktopDatePicker
-                views={["year", "month"]}
-                label="Select Month"
-                inputFormat="MMMM"
-                value={DateFilter}
-                onChange={handleDate}
-                renderInput={(params) => (
-                  <TextField
-                    autoComplete="off"
-                    disabled
-                    {...params}
-                    error={DateFilterError}
-                  />
-                )}
-              />
-            </LocalizationProvider>
-          </Box>
-          <Box
-            sx={{
-              height: "100%",
-              width: "100%",
-              "& .super-app-theme--Low": {
-                bgcolor: "#F68181",
-                "&:hover": {
-                  bgcolor: (theme) =>
-                    getHoverBackgroundColor(
-                      theme.palette.warning.main,
-                      theme.palette.mode
-                    ),
-                },
-              },
-            }}
-          >
-            <DataGrid
-              rows={
-                dispenses && DateFilter
-                  ? dispenses
-                      .filter((fill) => {
-                        return (
-                          format(new Date(fill?.createdAt), "MMMM yyyy") ===
-                          format(new Date(DateFilter), "MMMM yyyy")
-                        );
-                      })
-                      .map((val) => {
-                        return val;
-                      })
-                  : []
-              }
-              getRowId={(row) => row?._id}
-              columns={columns}
-              pageSize={page}
-              onPageSizeChange={(newPageSize) => setPage(newPageSize)}
-              rowsPerPageOptions={[15, 50]}
-              pagination
-              sx={{
-                height: "700px",
-                "& .MuiDataGrid-cell": {
-                  textTransform: "capitalize",
-                },
-                "& .MuiDataGrid-columnHeaderTitle": {
-                  fontWeight: "bold",
-                },
-              }}
-              initialState={{
-                columns: {
-                  columnVisibilityModel: {
-                    // lotNum: false,
-                    // createdAt: false,
-                    // updatedAt: false,
-                    // _id: false,
-                    // createdBy: false,
-                    // status: false,
-                    // // status: auth.userType === "admin" ? true : false,
-                  },
-                },
-              }}
-              components={{
-                Toolbar: CustomToolbar,
-              }}
-              // getRowClassName={(params) =>
-              //   `super-app-theme--${params.row.quantity > 20 ? "High" : "Low"}`
               // }
             />
           </Box>

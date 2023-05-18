@@ -343,9 +343,150 @@ const transactionController = {
     }
   },
 
-  reportGenerate: async (req, res) => {
+  reportGenerateMonth: async (req, res) => {
+    const apiMonth = req.params.month;
+    const apiYear = req.params.year;
+    console.log(
+      "🚀 ~ file: transactionController.js:348 ~ reportGenerate: ~ req.body:",
+      req.params
+    );
+
     try {
-      const doc = await Dispense.find().sort({ quantity: -1 }).lean();
+      const doc = await Dispense.aggregate([
+        {
+          $match: {
+            createdAt: {
+              $gte: new Date(`${apiYear}-${apiMonth}-01`),
+              $lt: new Date(`${apiYear}-${parseInt(apiMonth) + 1}-01`),
+            },
+          },
+        },
+        {
+          $group: {
+            _id: "$medID",
+            totalAmount: {
+              $sum: "$quantity",
+            },
+            brandName: {
+              $first: "$brandName",
+            },
+            brandName: {
+              $first: "$brandName",
+            },
+            genericName: {
+              $first: "$genericName",
+            },
+          },
+        },
+        {
+          $sort: {
+            totalAmount: -1,
+          },
+        },
+      ]);
+      if (!doc) return res.status(204).json({ message: "No Records Found!" });
+      res.status(200).json(doc);
+    } catch (error) {
+      console.log(
+        "🚀 ~ file: transactionController.js:352 ~ reportGenerate: ~ error:",
+        error
+      );
+
+      res.status(500).json({ message: error.message });
+    }
+  },
+  reportGenerateDated: async (req, res) => {
+    const apiStartDate = req.params.startDate;
+    const apiEndDate = req.params.endDate;
+    console.log(
+      "🚀 ~ file: transactionController.js:348 ~ reportGenerateDated: ~ req.body:",
+      req.params
+    );
+
+    try {
+      const doc = await Dispense.aggregate([
+        {
+          $match: {
+            createdAt: {
+              $gte: new Date(apiStartDate),
+              $lte: new Date(apiEndDate),
+            },
+          },
+        },
+        {
+          $group: {
+            _id: "$medID",
+            totalAmount: {
+              $sum: "$quantity",
+            },
+            brandName: {
+              $first: "$brandName",
+            },
+            brandName: {
+              $first: "$brandName",
+            },
+            genericName: {
+              $first: "$genericName",
+            },
+          },
+        },
+        {
+          $sort: {
+            totalAmount: -1,
+          },
+        },
+      ]);
+      if (!doc) return res.status(204).json({ message: "No Records Found!" });
+      console.log(
+        "🚀 ~ file: transactionController.js:431 ~ reportGenerateDated: ~ doc:",
+        doc
+      );
+      res.status(200).json(doc);
+    } catch (error) {
+      console.log(
+        "🚀 ~ file: transactionController.js:352 ~ reportGenerate: ~ error:",
+        error
+      );
+
+      res.status(500).json({ message: error.message });
+    }
+  },
+  reportGenerateDaily: async (req, res) => {
+    console.log(
+      "🚀 ~ file: transactionController.js:393 ~ reportGenerateDaily: ~ reportGenerateDaily:"
+    );
+    console.log("DailyGenerate");
+
+    try {
+      const doc = await Dispense.aggregate([
+        {
+          $match: {
+            createdAt: new Date(),
+          },
+        },
+        {
+          $group: {
+            _id: "$medID",
+            totalAmount: {
+              $sum: "$quantity",
+            },
+            brandName: {
+              $first: "$brandName",
+            },
+            brandName: {
+              $first: "$brandName",
+            },
+            genericName: {
+              $first: "$genericName",
+            },
+          },
+        },
+        {
+          $sort: {
+            totalAmount: -1,
+          },
+        },
+      ]);
       if (!doc) return res.status(204).json({ message: "No Records Found!" });
       res.status(200).json(doc);
     } catch (error) {

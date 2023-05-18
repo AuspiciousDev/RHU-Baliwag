@@ -12,6 +12,13 @@ router.get("/getAllDocInfo", transactionController.getAllDocInfo);
 router.post("/create", transactionController.createDoc);
 router.delete("/delete/:transID", transactionController.deleteDocByID);
 router.patch("/update/status/:transID", transactionController.toggleDocStatus);
-router.get("/reportGen", transactionController.reportGenerate);
-
+router.get(
+  "/reportGen/:month/:year",
+  transactionController.reportGenerateMonth
+);
+router.get("/reportGenDaily", transactionController.reportGenerateDaily);
+router.get(
+  "/reportGenDated/:startDate/:endDate",
+  transactionController.reportGenerateDated
+);
 module.exports = router;
