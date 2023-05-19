@@ -8,6 +8,7 @@ import LoadingDialogue from "../../../global/LoadingDialogue";
 import { useInventoriesContext } from "../../../hooks/useInventoryContext";
 import { DataGrid, GridToolbar, GridToolbarContainer } from "@mui/x-data-grid";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+
 import {
   Box,
   Button,
@@ -30,6 +31,10 @@ import {
   CheckCircle,
   DeleteOutline,
   ArchiveOutlined,
+  DescriptionOutlined,
+  MoveToInboxOutlined,
+  WhatshotOutlined,
+  HourglassTopOutlined,
 } from "@mui/icons-material";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import Paper_Active from "../../../components/global/Paper_Active";
@@ -40,6 +45,20 @@ import { darken, lighten } from "@mui/material/styles";
 import { useTransactionsContext } from "../../../hooks/useTransactionContext";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import Paper_Totals from "../../../components/Dashboard/Paper_Totals";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+} from "recharts";
+
 const getHoverBackgroundColor = (color, mode) =>
   mode === "dark" ? darken(color, 0.5) : lighten(color, 0.5);
 
@@ -337,321 +356,402 @@ const Reports = () => {
         loadingDialog={loadingDialog}
         setLoadingDialog={setLoadingDialog}
       />
-
-      <Paper
-        elevation={2}
+      <Box
         sx={{
-          width: "100%",
-          padding: { xs: "10px", sm: "0 10px" },
+          display: "flex",
+          flexDirection: "column",
+          gap: 1,
+          height: "100%",
         }}
       >
-        <Box
+        <Paper
+          elevation={2}
           sx={{
             width: "100%",
+            padding: { xs: "10px", sm: "0 10px" },
+          }}
+        >
+          <Box
+            sx={{
+              width: "100%",
+              display: "grid",
+              gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: { sm: "end" },
+                justifyContent: { xs: "center", sm: "start" },
+                m: { xs: "20px 0" },
+              }}
+            >
+              <Typography
+                variant="h2"
+                fontWeight="bold"
+                sx={{
+                  borderLeft: `5px solid ${colors.secondary[500]}`,
+                  paddingLeft: 2,
+                  textTransform: "uppercase",
+                }}
+              >
+                Reports
+              </Typography>
+            </Box>
+          </Box>
+        </Paper>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "90%",
+            height: "350px",
+            backgroundColor: "white",
+          }}
+        >
+          <ResponsiveContainer width="90%" height="100%">
+            <BarChart
+              width={500}
+              height={300}
+              data={dispenses}
+              margin={{
+                top: 30,
+                bottom: 5,
+              }}
+              barSize={30}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis
+                dataKey="genericName"
+                padding={{ left: 10, right: 10 }}
+                style={{
+                  textTransform: "capitalize",
+                }}
+              />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar
+                dataKey="totalAmount"
+                name={"Quantity"}
+                fill={`${colors.secondary[500]}`}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </Box>
+        {/* <Box
+          sx={{
             display: "grid",
-            gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
+            gridTemplateColumns: { xs: "1fr 1fr", sm: "2fr 2fr 2fr 2fr" },
+            margin: "1em 0em",
+          }}
+          gap={2}
+        >
+          <span></span>
+          <Paper_Totals
+            // to={"inventory"}
+            // value={
+            //   stocks
+            //     ? stocks.filter((filter) => {
+            //         return filter.status === true;
+            //       }).length
+            //     : "0"
+            // }
+            icon={<WhatshotOutlined />}
+            description="Fast Moving Item"
+          />
+          <Paper_Totals
+            // to={"request"}
+            // value={requests ? requests.length : "0"}
+            icon={<HourglassTopOutlined />}
+            description="Slow Moving Item"
+          />
+          <span></span>
+        </Box> */}
+        <Paper
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            width: "100%",
+            height: "100%",
           }}
         >
           <Box
             sx={{
               display: "flex",
-              alignItems: { sm: "end" },
-              justifyContent: { xs: "center", sm: "start" },
-              m: { xs: "20px 0" },
+              width: "100%",
+              borderBottom: 1,
+              borderColor: "divider",
             }}
           >
-            <Typography
-              variant="h2"
-              fontWeight="bold"
+            <greenOnly
+              position="static"
+              sx={{ backgroundColor: colors.greenOnly[100] }}
+              enableColorOnDark
+            >
+              <Tabs
+                value={value}
+                onChange={handleChange}
+                aria-label="full width tabs example"
+                variant="fullWidth"
+              >
+                <Tab
+                  label="Daily"
+                  {...a11yProps(0)}
+                  sx={{ fontWeight: "bold" }}
+                />
+
+                <Tab
+                  label="Monthly"
+                  {...a11yProps(1)}
+                  sx={{ fontWeight: "bold" }}
+                />
+                <Tab
+                  label="Date"
+                  {...a11yProps(2)}
+                  sx={{ fontWeight: "bold" }}
+                />
+              </Tabs>
+            </greenOnly>
+          </Box>
+          <TabPanel value={value} index={0}>
+            <Box sx={{ m: 1, mt: 2, mb: 2 }}>
+              <TextField
+                autoComplete="off"
+                label="Date Today"
+                value={format(new Date(), "MMMM dd yyyy")}
+              />
+            </Box>
+            <Box
               sx={{
-                borderLeft: `5px solid ${colors.secondary[500]}`,
-                paddingLeft: 2,
-                textTransform: "uppercase",
+                height: "100%",
+                width: "100%",
+                "& .super-app-theme--Low": {
+                  bgcolor: "#F68181",
+                  "&:hover": {
+                    bgcolor: (theme) =>
+                      getHoverBackgroundColor(
+                        theme.palette.warning.main,
+                        theme.palette.mode
+                      ),
+                  },
+                },
               }}
             >
-              Reports
-            </Typography>
-          </Box>
-        </Box>
-      </Paper>
-      <Paper
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          width: "100%",
-          mt: 2,
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            width: "100%",
-            borderBottom: 1,
-            borderColor: "divider",
-          }}
-        >
-          <greenOnly
-            position="static"
-            sx={{ backgroundColor: colors.greenOnly[100] }}
-            enableColorOnDark
-          >
-            <Tabs
-              value={value}
-              onChange={handleChange}
-              aria-label="full width tabs example"
-              variant="fullWidth"
+              <DataGrid
+                rows={
+                  dispenses
+                    ? dispenses.filter((fill) => {
+                        return (
+                          format(new Date(), "MMMM dd yyyy") ===
+                          format(new Date(DateFilter), "MMMM dd yyyy")
+                        );
+                      })
+                    : []
+                }
+                getRowId={(row) => row?._id}
+                columns={columns}
+                pageSize={page}
+                onPageSizeChange={(newPageSize) => setPage(newPageSize)}
+                rowsPerPageOptions={[15, 50]}
+                pagination
+                sx={{
+                  height: "500px",
+                  "& .MuiDataGrid-cell": {
+                    textTransform: "capitalize",
+                  },
+                  "& .MuiDataGrid-columnHeaderTitle": {
+                    fontWeight: "bold",
+                  },
+                }}
+                initialState={{
+                  columns: {
+                    columnVisibilityModel: {
+                      // status: auth.userType === "admin" ? true : false,
+                    },
+                  },
+                }}
+                components={{
+                  Toolbar: CustomToolbar,
+                }}
+                // getRowClassName={(params) =>
+                //   `super-app-theme--${params.row.quantity > 20 ? "High" : "Low"}`
+                // }
+              />
+            </Box>
+          </TabPanel>
+          <TabPanel value={value} index={1}>
+            <Box sx={{ m: 1, mt: 2, mb: 2 }}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DesktopDatePicker
+                  views={["year", "month"]}
+                  label="Select Month"
+                  inputFormat="MMMM YYYY"
+                  value={DateFilter}
+                  onChange={handleDate}
+                  renderInput={(params) => (
+                    <TextField
+                      autoComplete="off"
+                      disabled
+                      {...params}
+                      error={DateFilterError}
+                    />
+                  )}
+                />
+              </LocalizationProvider>
+            </Box>
+            <Box
+              sx={{
+                height: "100%",
+                width: "100%",
+                "& .super-app-theme--Low": {
+                  bgcolor: "#F68181",
+                  "&:hover": {
+                    bgcolor: (theme) =>
+                      getHoverBackgroundColor(
+                        theme.palette.warning.main,
+                        theme.palette.mode
+                      ),
+                  },
+                },
+              }}
             >
-              <Tab
-                label="Daily"
-                {...a11yProps(0)}
-                sx={{ fontWeight: "bold" }}
+              <DataGrid
+                rows={
+                  dispenses && DateFilter
+                    ? dispenses.map((val) => {
+                        return val;
+                      })
+                    : []
+                }
+                getRowId={(row) => row?._id}
+                columns={columns}
+                pageSize={page}
+                onPageSizeChange={(newPageSize) => setPage(newPageSize)}
+                rowsPerPageOptions={[15, 50]}
+                pagination
+                sx={{
+                  height: "500px",
+                  "& .MuiDataGrid-cell": {
+                    textTransform: "capitalize",
+                  },
+                  "& .MuiDataGrid-columnHeaderTitle": {
+                    fontWeight: "bold",
+                  },
+                }}
+                initialState={{
+                  columns: {
+                    columnVisibilityModel: {
+                      // lotNum: false,
+                      // createdAt: false,
+                      // updatedAt: false,
+                      // _id: false,
+                      // createdBy: false,
+                      // status: false,
+                      // // status: auth.userType === "admin" ? true : false,
+                    },
+                  },
+                }}
+                components={{
+                  Toolbar: CustomToolbar,
+                }}
+                // getRowClassName={(params) =>
+                //   `super-app-theme--${params.row.quantity > 20 ? "High" : "Low"}`
+                // }
               />
+            </Box>
+          </TabPanel>
+          <TabPanel value={value} index={2}>
+            <Box sx={{ display: "flex", gap: 2, m: 1, mt: 2, mb: 2 }}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DesktopDatePicker
+                  label="Start Date"
+                  inputFormat="MM/DD/YYYY"
+                  value={DateFilter}
+                  onChange={handleDate}
+                  renderInput={(params) => (
+                    <TextField
+                      autoComplete="off"
+                      disabled
+                      {...params}
+                      error={DateFilterError}
+                    />
+                  )}
+                />
+              </LocalizationProvider>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DesktopDatePicker
+                  label="End Date"
+                  inputFormat="MM/DD/YYYY"
+                  value={DateFilterEnd}
+                  onChange={handleEndDate}
+                  renderInput={(params) => (
+                    <TextField autoComplete="off" disabled {...params} />
+                  )}
+                />
+              </LocalizationProvider>
+            </Box>
 
-              <Tab
-                label="Monthly"
-                {...a11yProps(1)}
-                sx={{ fontWeight: "bold" }}
-              />
-              <Tab label="Date" {...a11yProps(2)} sx={{ fontWeight: "bold" }} />
-            </Tabs>
-          </greenOnly>
-        </Box>
-        <TabPanel value={value} index={0}>
-          <Box sx={{ m: 1, mt: 2, mb: 2 }}>
-            <TextField
-              autoComplete="off"
-              label="Date Today"
-              value={format(new Date(), "MMMM dd yyyy")}
-            />
-          </Box>
-          <Box
-            sx={{
-              height: "100%",
-              width: "100%",
-              "& .super-app-theme--Low": {
-                bgcolor: "#F68181",
-                "&:hover": {
-                  bgcolor: (theme) =>
-                    getHoverBackgroundColor(
-                      theme.palette.warning.main,
-                      theme.palette.mode
-                    ),
-                },
-              },
-            }}
-          >
-            <DataGrid
-              rows={
-                dispenses
-                  ? dispenses.filter((fill) => {
-                      return (
-                        format(new Date(), "MMMM dd yyyy") ===
-                        format(new Date(DateFilter), "MMMM dd yyyy")
-                      );
-                    })
-                  : []
-              }
-              getRowId={(row) => row?._id}
-              columns={columns}
-              pageSize={page}
-              onPageSizeChange={(newPageSize) => setPage(newPageSize)}
-              rowsPerPageOptions={[15, 50]}
-              pagination
+            <Box
               sx={{
-                height: "700px",
-                "& .MuiDataGrid-cell": {
-                  textTransform: "capitalize",
-                },
-                "& .MuiDataGrid-columnHeaderTitle": {
-                  fontWeight: "bold",
-                },
-              }}
-              initialState={{
-                columns: {
-                  columnVisibilityModel: {
-                    // status: auth.userType === "admin" ? true : false,
+                height: "100%",
+                width: "100%",
+                "& .super-app-theme--Low": {
+                  bgcolor: "#F68181",
+                  "&:hover": {
+                    bgcolor: (theme) =>
+                      getHoverBackgroundColor(
+                        theme.palette.warning.main,
+                        theme.palette.mode
+                      ),
                   },
                 },
               }}
-              components={{
-                Toolbar: CustomToolbar,
-              }}
-              // getRowClassName={(params) =>
-              //   `super-app-theme--${params.row.quantity > 20 ? "High" : "Low"}`
-              // }
-            />
-          </Box>
-        </TabPanel>
-        <TabPanel value={value} index={1}>
-          <Box sx={{ m: 1, mt: 2, mb: 2 }}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DesktopDatePicker
-                views={["year", "month"]}
-                label="Select Month"
-                inputFormat="MMMM YYYY"
-                value={DateFilter}
-                onChange={handleDate}
-                renderInput={(params) => (
-                  <TextField
-                    autoComplete="off"
-                    disabled
-                    {...params}
-                    error={DateFilterError}
-                  />
-                )}
-              />
-            </LocalizationProvider>
-          </Box>
-          <Box
-            sx={{
-              height: "100%",
-              width: "100%",
-              "& .super-app-theme--Low": {
-                bgcolor: "#F68181",
-                "&:hover": {
-                  bgcolor: (theme) =>
-                    getHoverBackgroundColor(
-                      theme.palette.warning.main,
-                      theme.palette.mode
-                    ),
-                },
-              },
-            }}
-          >
-            <DataGrid
-              rows={
-                dispenses && DateFilter
-                  ? dispenses.map((val) => {
-                      return val;
-                    })
-                  : []
-              }
-              getRowId={(row) => row?._id}
-              columns={columns}
-              pageSize={page}
-              onPageSizeChange={(newPageSize) => setPage(newPageSize)}
-              rowsPerPageOptions={[15, 50]}
-              pagination
-              sx={{
-                height: "700px",
-                "& .MuiDataGrid-cell": {
-                  textTransform: "capitalize",
-                },
-                "& .MuiDataGrid-columnHeaderTitle": {
-                  fontWeight: "bold",
-                },
-              }}
-              initialState={{
-                columns: {
-                  columnVisibilityModel: {
-                    // lotNum: false,
-                    // createdAt: false,
-                    // updatedAt: false,
-                    // _id: false,
-                    // createdBy: false,
-                    // status: false,
-                    // // status: auth.userType === "admin" ? true : false,
+            >
+              <DataGrid
+                rows={
+                  dispenses
+                    ? dispenses.map((val) => {
+                        return val;
+                      })
+                    : []
+                }
+                getRowId={(row) => row?._id}
+                columns={columns}
+                pageSize={page}
+                onPageSizeChange={(newPageSize) => setPage(newPageSize)}
+                rowsPerPageOptions={[15, 50]}
+                pagination
+                sx={{
+                  height: "500px",
+                  "& .MuiDataGrid-cell": {
+                    textTransform: "capitalize",
                   },
-                },
-              }}
-              components={{
-                Toolbar: CustomToolbar,
-              }}
-              // getRowClassName={(params) =>
-              //   `super-app-theme--${params.row.quantity > 20 ? "High" : "Low"}`
-              // }
-            />
-          </Box>
-        </TabPanel>
-        <TabPanel value={value} index={2}>
-          <Box sx={{ display: "flex", gap: 2, m: 1, mt: 2, mb: 2 }}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DesktopDatePicker
-                label="Start Date"
-                inputFormat="MM/DD/YYYY"
-                value={DateFilter}
-                onChange={handleDate}
-                renderInput={(params) => (
-                  <TextField
-                    autoComplete="off"
-                    disabled
-                    {...params}
-                    error={DateFilterError}
-                  />
-                )}
-              />
-            </LocalizationProvider>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DesktopDatePicker
-                label="End Date"
-                inputFormat="MM/DD/YYYY"
-                value={DateFilterEnd}
-                onChange={handleEndDate}
-                renderInput={(params) => (
-                  <TextField autoComplete="off" disabled {...params} />
-                )}
-              />
-            </LocalizationProvider>
-          </Box>
-
-          <Box
-            sx={{
-              height: "100%",
-              width: "100%",
-              "& .super-app-theme--Low": {
-                bgcolor: "#F68181",
-                "&:hover": {
-                  bgcolor: (theme) =>
-                    getHoverBackgroundColor(
-                      theme.palette.warning.main,
-                      theme.palette.mode
-                    ),
-                },
-              },
-            }}
-          >
-            <DataGrid
-              rows={
-                dispenses
-                  ? dispenses.map((val) => {
-                      return val;
-                    })
-                  : []
-              }
-              getRowId={(row) => row?._id}
-              columns={columns}
-              pageSize={page}
-              onPageSizeChange={(newPageSize) => setPage(newPageSize)}
-              rowsPerPageOptions={[15, 50]}
-              pagination
-              sx={{
-                height: "700px",
-                "& .MuiDataGrid-cell": {
-                  textTransform: "capitalize",
-                },
-                "& .MuiDataGrid-columnHeaderTitle": {
-                  fontWeight: "bold",
-                },
-              }}
-              initialState={{
-                columns: {
-                  columnVisibilityModel: {
-                    // status: auth.userType === "admin" ? true : false,
+                  "& .MuiDataGrid-columnHeaderTitle": {
+                    fontWeight: "bold",
                   },
-                },
-              }}
-              components={{
-                Toolbar: CustomToolbar,
-              }}
-              // getRowClassName={(params) =>
-              //   `super-app-theme--${
-              //     params.row.quantity > params.row.quantity ? "High" : "Low"
-              //   }`
-              // }
-            />
-          </Box>
-        </TabPanel>
-      </Paper>
+                }}
+                initialState={{
+                  columns: {
+                    columnVisibilityModel: {
+                      // status: auth.userType === "admin" ? true : false,
+                    },
+                  },
+                }}
+                components={{
+                  Toolbar: CustomToolbar,
+                }}
+                // getRowClassName={(params) =>
+                //   `super-app-theme--${
+                //     params.row.quantity > params.row.quantity ? "High" : "Low"
+                //   }`
+                // }
+              />
+            </Box>
+          </TabPanel>
+        </Paper>
+      </Box>
     </Box>
   );
 };
